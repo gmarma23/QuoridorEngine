@@ -25,6 +25,8 @@
         {
             neighbours.Remove(node);
         }
+
+        public abstract void GetNeighbours();
     }
 
     internal abstract class Board
@@ -45,8 +47,6 @@
 
         public abstract void Update(Move move);
 
-        public abstract void Generate();
-       
         public abstract void Clear();
     }
 }
