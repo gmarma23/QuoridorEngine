@@ -1,6 +1,6 @@
 ﻿namespace QuoridorEngine
 {
-    partial class Form1
+    partial class ui
     {
         /// <summary>
         ///  Required designer variable.
