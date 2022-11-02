@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using QuoridorEngine.src.game;
+using QuoridorEngine.src.solver;
 
 namespace GameSolver
 {
