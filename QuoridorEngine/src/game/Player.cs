@@ -21,9 +21,29 @@
     internal abstract class Player
     {
         protected List<Piece>? pieces;
+        protected int victories = 0;
+        protected int defeats = 0;
+        protected int draws = 0;
         protected char id;
-
+        
         public abstract char Id { set; get; }
+
+        public int Victories { 
+            set { victories++; }
+            get { return victories; }
+        }
+
+        public int Defeats
+        {
+            set { defeats++; }
+            get { return victories; }
+        }
+
+        public int Draws
+        {
+            set { draws++; }
+            get { return victories; }
+        }
 
         Player()
         {
