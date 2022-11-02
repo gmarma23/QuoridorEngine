@@ -1,4 +1,4 @@
-﻿using QuoridorEngine.src.game;
+﻿using QuoridorEngine.src.solver;
 
 namespace QuoridorEngine.src.quoridor
 {
