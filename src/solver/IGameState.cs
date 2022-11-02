@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using QuoridorEngine.src.solver;
-
-namespace GameSolver
+﻿namespace QuoridorEngine.src.solver
 {
     /// <summary>
     /// Defines the interface to be implemented by any class 

@@ -1,6 +1,4 @@
-﻿using QuoridorEngine.src.solver;
-
-namespace GameSolver
+﻿namespace QuoridorEngine.src.solver
 {
     /// <summary>
     /// Common interface to be abided by any Solver class
