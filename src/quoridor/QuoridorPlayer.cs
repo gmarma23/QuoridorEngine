@@ -1,23 +1,5 @@
-﻿using QuoridorEngine.src.game;
-
-namespace QuoridorEngine.src.quoridor
+﻿namespace QuoridorEngine.src.quoridor
 {
-    /// <summary>
-    /// Class representing quoridor pawn
-    /// </summary>
-    internal class QuoridorPawn //: Piece
-    {
-
-    }
-
-    /// <summary>
-    /// Class representing quoridor wall
-    /// </summary>
-    internal class QuoridorWall //: Piece
-    {
-
-    }
-
     /// <summary>
     /// Class representing quoridor player
     /// </summary>
@@ -29,41 +11,21 @@ namespace QuoridorEngine.src.quoridor
         private int defeats = 0;
         private int draws = 0;
         private bool isWhite;
-        
-        public int AvailableWalls
-        {
-            get { return availableWalls; }
-        }
+        private int x;
+        private int y;
 
-        public bool IsWhite
-        { 
-            set { isWhite = value; }
-            get { return isWhite; } 
-        }
-
-        public int Victories
-        {
-            set { victories++; }
-            get { return victories; }
-        }
-
-        public int Defeats
-        {
-            set { defeats++; }
-            get { return defeats; }
-        }
-
-        public int Draws
-        {
-            set { draws++; }
-            get { return draws; }
-        }
+        public int AvailableWalls { get; }
+        public bool IsWhite { set; get; }
+        public int Victories { get; }
+        public int Defeats { get; }
+        public int Draws { get; }
+        public int X { set; get; }
+        public int Y { set; get; }
 
         QuoridorPlayer(bool isWhite)
         {
             availableWalls = totalWalls;
             IsWhite = isWhite;
         }
-
     }
 }
