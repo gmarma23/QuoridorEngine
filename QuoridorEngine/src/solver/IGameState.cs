@@ -1,13 +1,14 @@
 ﻿using System.Collections;
+using QuoridorEngine.src.game;
 
 namespace GameSolver
 {
-	/// <summary>
-	/// Defines the interface to be implemented by any class 
-	/// that is used to define a Game solvable by the solvers
-	/// included in this project.
-	/// </summary>
-	public interface IGameState
+    /// <summary>
+    /// Defines the interface to be implemented by any class 
+    /// that is used to define a Game solvable by the solvers
+    /// included in this project.
+    /// </summary>
+    public interface IGameState
 	{
         /// <summary>
         /// Returns true if the state is terminal (i.e. game is over)
