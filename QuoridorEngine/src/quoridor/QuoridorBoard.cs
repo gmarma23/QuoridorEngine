@@ -30,14 +30,16 @@ namespace QuoridorEngine.src.quoridor
             Height = height;
         }
 
-        public void AddWall(int x, int y)
+        public void AddWall(QuoridorPlayer player, int x, int y)
         {
             usedWalls.Add((x, y));
+            player.DecreaseAvailableWalls();
         }
 
-        public void RemoveWall(int x, int y)
+        public void RemoveWall(QuoridorPlayer player, int x, int y)
         {
             usedWalls.Remove((x, y));
+            player.IncreaseAvailableWalls();
         }
     }
 }
