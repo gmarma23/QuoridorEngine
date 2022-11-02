@@ -7,6 +7,7 @@ namespace QuoridorEngine.src.quoridor
     /// </summary>
     internal class QuoridorBoard
     {
+        List<(int, int)> usedWalls;
         private int width;
         private int height;
 
@@ -24,29 +25,19 @@ namespace QuoridorEngine.src.quoridor
 
         QuoridorBoard(int width, int height)
         {
+            usedWalls = new List<(int, int)>();
             Width = width;
             Height = height;
         }
 
-        /// <summary>
-        /// Update board according to newly played moves
-        /// </summary>
-        /// <param name="move">Last played move</param>
-        public void Update(Move move)
+        public void AddWall(int x, int y)
         {
-
+            usedWalls.Add((x, y));
         }
 
-        // Initialize board at the begining of aech round
-        public void Initialize()
+        public void RemoveWall(int x, int y)
         {
-
-        }
-
-        // Clear board
-        public void Clear()
-        {
-
+            usedWalls.Remove((x, y));
         }
     }
 }
