@@ -27,5 +27,9 @@
             availableWalls = totalWalls;
             IsWhite = isWhite;
         }
+
+        public void IncreaseAvailableWalls() { availableWalls++; }
+
+        public void DecreaseAvailableWalls() { availableWalls--; }
     }
 }
