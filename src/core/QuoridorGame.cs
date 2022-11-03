@@ -86,24 +86,15 @@ namespace QuoridorEngine.Core
             if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
 
             // Check if any walls make the move impossible
-            int currentRow, currentColumn;
-            if (move.IsWhitePlayer)
-            {
-                currentRow = white.Row;
-                currentColumn = white.Column;
-            }
-            else
-            {
-                currentRow = black.Row; 
-                currentColumn = black.Column;
-            }
+            int currentRow = 0, currentColumn = 0;
+            getPlayerCoordinates(move.IsWhitePlayer, ref currentRow, ref currentColumn);
 
-            int dRow = move.Row - currentRow;
-            int dColumn = move.Column - currentColumn;
+            int deltaRow = move.Row - currentRow;
+            int deltaColumn = move.Column - currentColumn;
 
-            if (dRow == 0 && board.CheckWallHorizontal(currentRow, currentColumn, move.Column)) 
+            if (deltaRow == 0 && board.CheckWallHorizontal(currentRow, currentColumn, move.Column)) 
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (dColumn == 0 && board.CheckWallVertical(currentColumn, currentRow, move.Row))
+            if (deltaColumn == 0 && board.CheckWallVertical(currentColumn, currentRow, move.Row))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // Checking if another player is already located on destination coordinates
@@ -127,6 +118,8 @@ namespace QuoridorEngine.Core
             }
         }
 
+        
+
         /// <summary>
         /// Executes a given move in this state
         /// </summary>
@@ -134,6 +127,20 @@ namespace QuoridorEngine.Core
         private void placeWall(QuoridorMove move)
         {
 
+        }
+        
+        private void getPlayerCoordinates(bool isWhite, ref int row, ref int column)
+        {
+            if (isWhite)
+            {
+                row = white.Row;
+                column = white.Column;
+            }
+            else
+            {
+                row = black.Row;
+                column = black.Column;
+            }
         }
     }
 }
