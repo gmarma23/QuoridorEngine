@@ -1,6 +1,6 @@
-﻿using QuoridorEngine.src.solver;
+﻿using QuoridorEngine.solver;
 
-namespace QuoridorEngine.src.quoridor
+namespace QuoridorEngine.src.core
 {
     /// <summary>
     /// Quoridor Move class extending abstract class Move 

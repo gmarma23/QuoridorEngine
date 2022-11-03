@@ -1,4 +1,4 @@
-﻿namespace QuoridorEngine.src.solver
+﻿namespace QuoridorEngine.solver
 {
     /// <summary>
     /// Defines the interface to be implemented by any class 
