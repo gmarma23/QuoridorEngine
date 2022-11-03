@@ -1,8 +1,8 @@
 namespace QuoridorEngine.UI
 {
-    public partial class GUI : Form
+    public partial class QuoridorUI : Form
     {
-        public GUI()
+        public QuoridorUI()
         {
             InitializeComponent();
         }
