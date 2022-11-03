@@ -3,7 +3,11 @@
 namespace QuoridorEngine.Core
 {
     /// <summary>
-    /// Quoridor Move class extending abstract class Move 
+    /// This class holds all information necessary to describe a
+    /// Quoridor Move. Extends the Move class so it can be used as
+    /// a result of the solver. CAUTION: this class is not meant
+    /// to contain any functionality. Its purpose is to carry all
+    /// the move-related data around.
     /// </summary>
     internal class QuoridorMove : Move
     {
@@ -12,6 +16,13 @@ namespace QuoridorEngine.Core
         private readonly Orientation orientation;
         private readonly MoveType type;
 
+        /// <summary>
+        /// Initializes a wall placement QuoridorMove with the data provided
+        /// </summary>
+        /// <param name="row">The target row for the wall</param>
+        /// <param name="column">The target column for the wall</param>
+        /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
+        /// <param name="orientation">The orientation of wall (Horizontal/Vertical)</param>
         public QuoridorMove(int row, int column, bool isWhitePlayer, Orientation orientation)
         {
             this.row = row;
@@ -21,6 +32,12 @@ namespace QuoridorEngine.Core
             type = MoveType.WallPlacement;
         }
 
+        /// <summary>
+        /// Initializes a Player Movement move with the data provided
+        /// </summary>
+        /// <param name="row">The new row of the player</param>
+        /// <param name="column">The new column of the player</param>
+        /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
         public QuoridorMove(int row, int column, bool isWhitePlayer)
         {
             this.row = row;
@@ -31,17 +48,23 @@ namespace QuoridorEngine.Core
 
         public int Row { get; }
         public int Column { get; }
-
         public bool IsWhitePlayer { get; } 
         public Orientation Orientation { get; } 
         public MoveType Type { get; }
     }
 
+    /// <summary>
+    /// The orientation of a wall. Can be Horizontal or vertical
+    /// </summary>
     public enum Orientation
     {
         Horizontal, Vertical
     };
 
+    /// <summary>
+    /// The type of a move. Can either be a placement of the wall
+    /// or a movement of the player
+    /// </summary>
     public enum MoveType
     {
         WallPlacement, PlayerMovement
