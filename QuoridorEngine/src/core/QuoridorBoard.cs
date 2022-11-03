@@ -8,17 +8,14 @@ namespace QuoridorEngine.Core
     internal class QuoridorBoard
     {
         List<(int, int)> usedWalls;
-        private int width;
-        private int height;
+        private int dimention;
 
-        public int Width { get { return width; } }
-        public int Height { get { return height; } }
+        public int Dimention { get { return dimention; } }
 
-        QuoridorBoard(int width, int height)
+        QuoridorBoard(int dimention)
         {
             usedWalls = new List<(int, int)>();
-            this.width = width;
-            this.height = height;
+            this.dimention = dimention;
         }
 
         public void AddWall(QuoridorPlayer player, int x, int y)
