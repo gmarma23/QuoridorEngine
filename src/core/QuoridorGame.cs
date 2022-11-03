@@ -113,10 +113,38 @@ namespace QuoridorEngine.Core
         private void placeWall(QuoridorMove move)
         {
             // Checking if values are inside bounds
-            if (move.Column < 0 || move.Column >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
-            if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+            if (move.Column < 0 || move.Column >= dimension - 1) throw new InvalidMoveException("Coordinates out of bounds");
+            if (move.Row < 1 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+
+            // Check if player has enough walls left
+            QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
+            if (targetPlayer.AvailableWalls <= 0) throw new InvalidMoveException("Player has no walls left");
+
+            if (move.Orientation == Orientation.Horizontal)
+            {
+                // Check if any walls occupy the space needed by the new wall
+                if (board.CheckWallHorizontal(move.Column, move.Row - 1, move.Row) ||
+                    board.CheckWallHorizontal(move.Column + 1, move.Row - 1, move.Row))
+                    throw new InvalidMoveException("Wall position occupied");
+            }
+            else if (move.Orientation == Orientation.Vertical)
+            {              
+                // Check if any walls occupy the space needed by the new wall
+                if (board.CheckWallVertical(move.Row, move.Column, move.Column + 1) ||
+                    board.CheckWallVertical(move.Row - 1, move.Column, move.Column + 1))
+                    throw new InvalidMoveException("Wall position occupied");
+            }
+            else throw new InvalidMoveException("Unknown orientation specification");
+
+            board.AddWall(move.Row, move.Column);
+            targetPlayer.DecreaseAvailableWalls();
         }
 
+        /// <summary>
+        /// Returns the reference to the request player object
+        /// </summary>
+        /// <param name="isWhite">True if we need the white player, false if we need the black</param>
+        /// <returns>The reference to the white or black player</returns>
         private QuoridorPlayer getTargetPlayer(bool isWhite)
         {
             return isWhite ? white : black;
