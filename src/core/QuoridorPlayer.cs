@@ -5,26 +5,20 @@
     /// </summary>
     internal class QuoridorPlayer
     {
-        private readonly int totalWalls = 10;
         private int availableWalls;
-        private int victories = 0;
-        private int defeats = 0;
-        private int draws = 0;
-        private bool isWhite;
-        private int x;
-        private int y;
+
+        private readonly bool isWhite;
+        private int row;
+        private int column;
 
         public int AvailableWalls { get; }
         public bool IsWhite { get; }
-        public int Victories { get; }
-        public int Defeats { get; }
-        public int Draws { get; }
-        public int X { set; get; }
-        public int Y { set; get; }
+        public int Row { set; get; }
+        public int Column { set; get; }
 
-        QuoridorPlayer(bool isWhite)
+        public QuoridorPlayer(bool isWhite, int startingAmountOfWalls)
         {
-            availableWalls = totalWalls;
+            availableWalls = startingAmountOfWalls;
             this.isWhite = isWhite;
         }
 
