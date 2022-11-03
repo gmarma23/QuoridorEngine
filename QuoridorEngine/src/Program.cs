@@ -1,3 +1,5 @@
+using QuoridorEngine.UI;
+
 namespace QuoridorEngine
 {
     internal static class Program
@@ -11,7 +13,7 @@ namespace QuoridorEngine
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new ui());
+            Application.Run(new GUI());
         }
     }
 }
