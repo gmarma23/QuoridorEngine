@@ -86,61 +86,40 @@ namespace QuoridorEngine.Core
             if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
 
             // Check if any walls make the move impossible
-            int currentRow = 0, currentColumn = 0;
-            getPlayerCoordinates(move.IsWhitePlayer, ref currentRow, ref currentColumn);
 
-            int deltaRow = move.Row - currentRow;
-            int deltaColumn = move.Column - currentColumn;
+            QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
+            int deltaRow = move.Row - targetPlayer.Row;
+            int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaRow == 0 && board.CheckWallHorizontal(currentRow, currentColumn, move.Column)) 
+            if (deltaRow == 0 && board.CheckWallHorizontal(targetPlayer.Row, targetPlayer.Column, move.Column)) 
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn == 0 && board.CheckWallVertical(currentColumn, currentRow, move.Row))
+            if (deltaColumn == 0 && board.CheckWallVertical(targetPlayer.Column, targetPlayer.Row, move.Row))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // Checking if another player is already located on destination coordinates
             if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
             if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
 
-
-        }
-
-        private void changePlayerCoordinates(bool whitePlayer, int newRow, int newColumn)
-        {
-            if (whitePlayer)
-            {
-                white.Row = newRow;
-                white.Column = newColumn;
-            }
-            else
-            {
-                black.Row = newRow;
-                black.Column = newColumn;
-            }
-        }
-
-        
+            // Finally execute the move
+            targetPlayer.Row = move.Row;
+            targetPlayer.Column = move.Column;
+        } 
 
         /// <summary>
-        /// Executes a given move in this state
+        /// Places a wall according to the parameters desribed by the given move
+        /// If the wall placement is invalid throws an InvalidMoveException
         /// </summary>
-        /// <param name="move">The move to be executed</param>
+        /// <param name="move">The move describing the wall placement</param>
         private void placeWall(QuoridorMove move)
         {
-
+            // Checking if values are inside bounds
+            if (move.Column < 0 || move.Column >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+            if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
         }
-        
-        private void getPlayerCoordinates(bool isWhite, ref int row, ref int column)
+
+        private QuoridorPlayer getTargetPlayer(bool isWhite)
         {
-            if (isWhite)
-            {
-                row = white.Row;
-                column = white.Column;
-            }
-            else
-            {
-                row = black.Row;
-                column = black.Column;
-            }
+            return isWhite ? white : black;
         }
     }
 }
