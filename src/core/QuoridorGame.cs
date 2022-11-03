@@ -18,6 +18,7 @@ namespace QuoridorEngine.Core
         private readonly QuoridorBoard board;
         private readonly QuoridorPlayer white;
         private readonly QuoridorPlayer black;
+        private readonly List<QuoridorMove> gameHistory;
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -35,6 +36,8 @@ namespace QuoridorEngine.Core
             int startingColumn = dimension / 2 + 1;
             white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
+
+            gameHistory = new List<QuoridorMove>(); 
         }
 
         /// <summary>
@@ -43,6 +46,9 @@ namespace QuoridorEngine.Core
         /// <returns>True if the state is terminal (i.e. game is over)</returns>
         public bool IsTerminalState()
         {
+            Debug.Assert(white is not null);
+            Debug.Assert(black is not null);
+
             return white.IsInTargetBaseline() || black.IsInTargetBaseline();
         }
 
@@ -95,7 +101,7 @@ namespace QuoridorEngine.Core
         /// Executes a given player movement in this state. If the move has invalid parameters, throws an
         /// InvalidMoveException.
         /// </summary>
-        /// <param name="move">The move to be executed</param>
+        /// <param name="move">The move desribing the player movement</param>
         private void movePlayer(QuoridorMove move)
         {
             // Checking if values are inside bounds
@@ -104,6 +110,8 @@ namespace QuoridorEngine.Core
 
             // Check if any walls make the move impossible
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
+            Debug.Assert(targetPlayer is not null);
+
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
@@ -119,6 +127,8 @@ namespace QuoridorEngine.Core
             // Finally execute the move
             targetPlayer.Row = move.Row;
             targetPlayer.Column = move.Column;
+
+            gameHistory.Add(move);
         } 
 
         /// <summary>
@@ -134,6 +144,8 @@ namespace QuoridorEngine.Core
 
             // Check if player has enough walls left
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
+            Debug.Assert(targetPlayer != null);
+
             if (targetPlayer.AvailableWalls <= 0) throw new InvalidMoveException("Player has no walls left");
 
             if (move.Orientation == Orientation.Horizontal)
@@ -154,6 +166,7 @@ namespace QuoridorEngine.Core
 
             board.AddWall(move.Row, move.Column);
             targetPlayer.DecreaseAvailableWalls();
+            gameHistory.Add(move);
         }
 
         /// <summary>
