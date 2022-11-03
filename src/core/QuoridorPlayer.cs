@@ -1,4 +1,4 @@
-﻿namespace QuoridorEngine.src.quoridor
+﻿namespace QuoridorEngine.src.core
 {
     /// <summary>
     /// Class representing quoridor player

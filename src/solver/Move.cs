@@ -1,4 +1,4 @@
-﻿namespace QuoridorEngine.src.solver
+﻿namespace QuoridorEngine.solver
 {
     /// <summary>
     /// Common class to represent a move in any given game.
