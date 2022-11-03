@@ -1,6 +1,6 @@
-﻿using QuoridorEngine.solver;
+﻿using QuoridorEngine.Solver;
 
-namespace QuoridorEngine.src.core
+namespace QuoridorEngine.Core
 {
     internal class QuoridorGame : IGameState
     {
