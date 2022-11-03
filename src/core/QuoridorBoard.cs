@@ -11,23 +11,14 @@ namespace QuoridorEngine.src.core
         private int width;
         private int height;
 
-        public int Width
-        {
-            set { if (value is int and > 0) { width = value; } }
-            get { return width; }
-        }
-
-        public int Height
-        {
-            set { if (value is int and > 0) { height = value; } }
-            get { return height; }
-        }
+        public int Width { get { return width; } }
+        public int Height { get { return height; } }
 
         QuoridorBoard(int width, int height)
         {
             usedWalls = new List<(int, int)>();
-            Width = width;
-            Height = height;
+            this.width = width;
+            this.height = height;
         }
 
         public void AddWall(QuoridorPlayer player, int x, int y)
