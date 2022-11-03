@@ -1,8 +1,17 @@
 ﻿using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
+using System.Diagnostics;
 
 namespace QuoridorEngine.Core
 {
+    /// <summary>
+    /// Implementation of the IGameState interface specific to
+    /// a Quoridor state. Is responsible for managing all the 
+    /// information and operations related to a Quoridor Game
+    /// including but not limited to the board, the players,
+    /// the walls, the moves etc. It's only possible to interact
+    /// with a Quoridor Game State using this class' public interface
+    /// </summary>
     internal class QuoridorGame : IGameState
     {
         private readonly int dimension = 9;
@@ -10,13 +19,22 @@ namespace QuoridorEngine.Core
         private readonly QuoridorPlayer white;
         private readonly QuoridorPlayer black;
 
+        /// <summary>
+        /// Initializes a new Quoridor Game with the specified parameters
+        /// </summary>
+        /// <param name="dimension">The dimension of the board.
+        /// Needs to be odd an greater than 2</param>
         public QuoridorGame(int dimension)
         {
-            this.dimension = dimension;
-            board = new QuoridorBoard();
+            Debug.Assert(dimension > 2);
+            Debug.Assert(dimension % 2 == 1);
 
-            white = new QuoridorPlayer(true, 10);
-            black = new QuoridorPlayer(false, 10);
+            this.dimension = dimension;
+            board = new QuoridorBoard(dimension);
+
+            int startingColumn = dimension / 2 + 1;
+            white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
+            black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
         }
 
         /// <summary>
@@ -25,7 +43,7 @@ namespace QuoridorEngine.Core
         /// <returns>True if the state is terminal (i.e. game is over)</returns>
         public bool IsTerminalState()
         {
-            return false;
+            return white.IsInTargetBaseline() || black.IsInTargetBaseline();
         }
 
         /// <summary>
@@ -35,8 +53,7 @@ namespace QuoridorEngine.Core
         /// <returns>A list of all the possible moves from this state for given player</returns>
         public List<Move> GetPossibleMoves(bool playerIsWhite)
         {
-            List<Move> possibleMoves = new List<Move>();
-            return possibleMoves;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -51,7 +68,7 @@ namespace QuoridorEngine.Core
             QuoridorMove newMove = (QuoridorMove)(move);
             if (newMove.Type == MoveType.WallPlacement) placeWall(newMove);
             else if (newMove.Type == MoveType.PlayerMovement) movePlayer(newMove);
-            else throw new InvalidMoveException();
+            else throw new InvalidMoveException("Unknown move type");
         }
 
         /// <summary>
@@ -61,7 +78,7 @@ namespace QuoridorEngine.Core
         /// <param name="move">The move to be undone</param>
         public void UndoMove(Move move)
         {
-
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -71,7 +88,7 @@ namespace QuoridorEngine.Core
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
         public float EvaluateState(bool playerIsWhite)
         {
-            return 0;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -86,7 +103,6 @@ namespace QuoridorEngine.Core
             if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
 
             // Check if any walls make the move impossible
-
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
@@ -141,7 +157,7 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
-        /// Returns the reference to the request player object
+        /// Returns the reference to the requested player object
         /// </summary>
         /// <param name="isWhite">True if we need the white player, false if we need the black</param>
         /// <returns>The reference to the white or black player</returns>
