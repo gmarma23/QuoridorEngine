@@ -41,9 +41,13 @@ namespace QuoridorEngine.Core
         public void IncreaseAvailableWalls() { availableWalls++; }
 
         /// <summary>
-        /// Decreases the available walls of the player by one
+        /// Decreases the available walls of the player by one.
+        /// Assumes the player has at least 1 wall before decreasing
         /// </summary>
-        public void DecreaseAvailableWalls() { availableWalls--; }
+        public void DecreaseAvailableWalls() { 
+            Debug.Assert(availableWalls >= 1);
+            availableWalls--; 
+        }
 
         /// <summary>
         /// Returns whether the player has reached the target row
