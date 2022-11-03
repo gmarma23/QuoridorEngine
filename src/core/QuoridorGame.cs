@@ -12,7 +12,7 @@ namespace QuoridorEngine.Core
     /// the walls, the moves etc. It's only possible to interact
     /// with a Quoridor Game State using this class' public interface
     /// </summary>
-    internal class QuoridorGame : IGameState
+    public class QuoridorGame : IGameState
     {
         private readonly int dimension = 9;
         private readonly QuoridorBoard board;

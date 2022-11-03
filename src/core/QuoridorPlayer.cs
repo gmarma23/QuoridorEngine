@@ -6,7 +6,7 @@ namespace QuoridorEngine.Core
     /// This class holds all the information and operations related
     /// to a Quoridor Player.
     /// </summary>
-    internal class QuoridorPlayer
+    public class QuoridorPlayer
     {
         private int availableWalls, row, column;
 

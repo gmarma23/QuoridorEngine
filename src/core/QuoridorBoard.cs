@@ -5,7 +5,7 @@ namespace QuoridorEngine.Core
     /// <summary>
     /// Class representing quoridor board
     /// </summary>
-    internal class QuoridorBoard
+    public class QuoridorBoard
     {
         List<(int, int)> usedWalls;
         private int dimention;
