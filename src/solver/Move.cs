@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GameSolver
+﻿namespace QuoridorEngine.Solver
 {
     /// <summary>
     /// Common class to represent a move in any given game.
@@ -9,5 +7,7 @@ namespace GameSolver
     /// details related to the given game.
     /// </summary>
     public class Move
-    {}
+    {
+
+    }
 }
