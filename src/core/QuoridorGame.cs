@@ -1,9 +1,24 @@
 ﻿using QuoridorEngine.Solver;
+using QuoridorEngine.Utils;
 
 namespace QuoridorEngine.Core
 {
     internal class QuoridorGame : IGameState
     {
+        private readonly int dimension = 9;
+        private readonly QuoridorBoard board;
+        private readonly QuoridorPlayer white;
+        private readonly QuoridorPlayer black;
+
+        public QuoridorGame(int dimension)
+        {
+            this.dimension = dimension;
+            board = new QuoridorBoard();
+
+            white = new QuoridorPlayer(true, 10);
+            black = new QuoridorPlayer(false, 10);
+        }
+
         /// <summary>
         /// Returns true if the state is terminal (i.e. game is over)
         /// </summary>
@@ -27,10 +42,16 @@ namespace QuoridorEngine.Core
         /// <summary>
         /// Executes a given move in this state
         /// </summary>
-        /// <param name="move">The move to be executed</param>
+        /// <param name="move">The move to be executed. Only accepts PlayerMovement or WallPlacement
+        /// type of moves. If this is not the case throws an ArgumentException</param>
         public void ExecuteMove(Move move)
         {
+            if(move is not QuoridorMove) throw new ArgumentException("Unsupported move type provided in ExecuteMove");
 
+            QuoridorMove newMove = (QuoridorMove)(move);
+            if (newMove.Type == MoveType.WallPlacement) placeWall(newMove);
+            else if (newMove.Type == MoveType.PlayerMovement) movePlayer(newMove);
+            else throw new InvalidMoveException();
         }
 
         /// <summary>
@@ -51,6 +72,68 @@ namespace QuoridorEngine.Core
         public float EvaluateState(bool playerIsWhite)
         {
             return 0;
+        }
+
+        /// <summary>
+        /// Executes a given player movement in this state. If the move has invalid parameters, throws an
+        /// InvalidMoveException.
+        /// </summary>
+        /// <param name="move">The move to be executed</param>
+        private void movePlayer(QuoridorMove move)
+        {
+            // Checking if values are inside bounds
+            if (move.Column < 0 || move.Column >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+            if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+
+            // Check if any walls make the move impossible
+            int currentRow, currentColumn;
+            if (move.IsWhitePlayer)
+            {
+                currentRow = white.Row;
+                currentColumn = white.Column;
+            }
+            else
+            {
+                currentRow = black.Row; 
+                currentColumn = black.Column;
+            }
+
+            int dRow = move.Row - currentRow;
+            int dColumn = move.Column - currentColumn;
+
+            if (dRow == 0 && board.CheckWallHorizontal(currentRow, currentColumn, move.Column)) 
+                throw new InvalidMoveException("Wall is blocking player move");
+            if (dColumn == 0 && board.CheckWallVertical(currentColumn, currentRow, move.Row))
+                throw new InvalidMoveException("Wall is blocking player move");
+
+            // Checking if another player is already located on destination coordinates
+            if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+            if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+
+
+        }
+
+        private void changePlayerCoordinates(bool whitePlayer, int newRow, int newColumn)
+        {
+            if (whitePlayer)
+            {
+                white.Row = newRow;
+                white.Column = newColumn;
+            }
+            else
+            {
+                black.Row = newRow;
+                black.Column = newColumn;
+            }
+        }
+
+        /// <summary>
+        /// Executes a given move in this state
+        /// </summary>
+        /// <param name="move">The move to be executed</param>
+        private void placeWall(QuoridorMove move)
+        {
+
         }
     }
 }
