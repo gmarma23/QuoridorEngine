@@ -1,4 +1,4 @@
-﻿namespace QuoridorEngine.solver
+﻿namespace QuoridorEngine.Solver
 {
     /// <summary>
     /// Common interface to be abided by any Solver class
