@@ -1,4 +1,5 @@
 ﻿using QuoridorEngine.Solver;
+using System.Diagnostics;
 
 namespace QuoridorEngine.Core
 {
@@ -25,6 +26,10 @@ namespace QuoridorEngine.Core
         /// <param name="orientation">The orientation of wall (Horizontal/Vertical)</param>
         public QuoridorMove(int row, int column, bool isWhitePlayer, Orientation orientation)
         {
+            Debug.Assert(row >= 0);
+            Debug.Assert(column >= 0);
+            Debug.Assert(orientation == Orientation.Horizontal || orientation == Orientation.Vertical);
+
             this.row = row;
             this.column = column;
             this.isWhitePlayer = isWhitePlayer;
@@ -40,6 +45,9 @@ namespace QuoridorEngine.Core
         /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
         public QuoridorMove(int row, int column, bool isWhitePlayer)
         {
+            Debug.Assert(row >= 0);
+            Debug.Assert(column >= 0);
+
             this.row = row;
             this.column = column;
             this.isWhitePlayer = isWhitePlayer;
