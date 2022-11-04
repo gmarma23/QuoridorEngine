@@ -37,7 +37,7 @@ namespace QuoridorEngine.Core
             white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
-            gameHistory = new List<QuoridorMove>(); 
+            gameHistory = new List<QuoridorMove>();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace QuoridorEngine.Core
         /// type of moves. If this is not the case throws an ArgumentException</param>
         public void ExecuteMove(Move move)
         {
-            if(move is not QuoridorMove) throw new ArgumentException("Unsupported move type provided in ExecuteMove");
+            if (move is not QuoridorMove) throw new ArgumentException("Unsupported move type provided in ExecuteMove");
 
             QuoridorMove newMove = (QuoridorMove)(move);
             if (newMove.Type == MoveType.WallPlacement) placeWall(newMove);
@@ -96,6 +96,20 @@ namespace QuoridorEngine.Core
         {
             throw new NotImplementedException();
         }
+
+        public void GetWhiteCoordinates(ref int row, ref int column)
+        {
+            row = white.Row;
+            column = white.Column;
+        }
+
+        public void GetBlackCoordinates(ref int row, ref int column)
+        {
+            row = black.Row;
+            column= black.Column;
+        }
+
+        public int Dimension { get; }
 
         /// <summary>
         /// Executes a given player movement in this state. If the move has invalid parameters, throws an
