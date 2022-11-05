@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
-using System.Reflection.Metadata;
 
 namespace QuoridorEngine.Core
 {
@@ -32,10 +30,7 @@ namespace QuoridorEngine.Core
         /// <returns>True if square is valid else false</returns>
         public bool IsGridSquare(int row, int col)
         {
-            if (row >= 2 && col >= 2 && row < dimension && col < dimension && row != col)
-                return true;
-            else
-                return false;
+            return row >= 2 && col >= 2 && row < dimension && col < dimension && row != col;
         } 
 
         /// <summary>
@@ -48,10 +43,7 @@ namespace QuoridorEngine.Core
         /// <returns>True if player's square else false</returns>
         public bool IsPlayerSquare(int row, int col)
         {
-            if (row % 2 == 0 && col % 2 == 0)
-                return true;
-            else
-                return false;
+            return row % 2 == 0 && col % 2 == 0;
         }
 
         /// <summary>
