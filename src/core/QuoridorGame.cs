@@ -14,6 +14,8 @@ namespace QuoridorEngine.Core
     /// </summary>
     public class QuoridorGame : IGameState
     {
+        // TODO: maybe this variable should only be handled by Board
+        // class in the future
         private readonly int dimension = 9;
         private readonly QuoridorBoard board;
         private readonly QuoridorPlayer white;
