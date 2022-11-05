@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
+using System.Reflection.Metadata;
 
 namespace QuoridorEngine.Core
 {
@@ -9,21 +11,16 @@ namespace QuoridorEngine.Core
     {
         List<(int, int)> usedWalls;
 
-        // The number of squares the player can move to per row/column
-        private readonly int dimention;
-
         // The complete number of squares per row/column
         // including the ones destined for walls
-        private readonly int extendedDimention;
+        private readonly int dimension;
 
-        public int Dimention { get { return dimention; } }
-        public int ExtendedDimention { get { return extendedDimention; } }
+        public int Dimension { get { return dimension; } }
 
-        public QuoridorBoard(int dimention)
+        public QuoridorBoard(int dimension)
         {
             usedWalls = new List<(int, int)>();
-            this.dimention = dimention;
-            extendedDimention = 2*dimention-1;
+            this.dimension = dimension;
         }
 
         /// <summary>
@@ -35,11 +32,11 @@ namespace QuoridorEngine.Core
         /// <returns>True if square is valid else false</returns>
         public bool IsGridSquare(int row, int col)
         {
-            if (row >= 0 && col >= 0 && row < extendedDimention && col < extendedDimention)
+            if (row >= 2 && col >= 2 && row < dimension && col < dimension && row != col)
                 return true;
             else
                 return false;
-        }
+        } 
 
         /// <summary>
         /// Utility function to check whether provided square coords 
@@ -57,63 +54,145 @@ namespace QuoridorEngine.Core
                 return false;
         }
 
+        /// <summary>
+        /// Function to get the second part of the wall
+        /// </summary>
+        /// <param name="row">First part row</param>
+        /// <param name="col">First part column</param>
+        /// <returns>Tuple of second part coords</returns>
         private (int, int) ExpandWall(int row, int col)
         {
-            Debug.Assert(IsGridSquare(row, col));    
+            Debug.Assert(IsGridSquare(row, col));
             Debug.Assert(!IsPlayerSquare(row, col));
+
+            int expRow = row;
+            int expCol = col;
 
             // Wall is horizontal
             if (row % 2 != 0 && col % 2 == 0)
-                return (row, col + 2);
+                expCol = col + 2;
             // Wall is vertical
             else if (row % 2 == 0 && col % 2 != 0)
-                return (row + 2, col);
-            else
-                Debug.Assert(false);
-                return (row, col); 
+                expRow = row - 2;
+
+            Debug.Assert(IsGridSquare(expRow, expCol));
+            return (expRow, expCol);
         }
 
+        /// <summary>
+        /// Check if horizontal wall exists between two player squares 
+        /// </summary>
+        /// <param name="row">Player squares row</param>
+        /// <param name="col">Player square one column</param>
+        /// <param name="newCol">Player square two column</param>
+        /// <returns>True if wall exists</returns>
         public bool CheckWallHorizontal(int row, int col, int newCol)
         {
+            Debug.Assert(col != newCol);
             int dx = Math.Sign(newCol - col);
             return usedWalls.Contains((row, col+dx));
         }
 
+        /// <summary>
+        /// Check if vertical wall exists between two player squares 
+        /// </summary>
+        /// <param name="row">Player squares one row</param>
+        /// <param name="col">Player squares column</param>
+        /// <param name="newRow">Player square two row</param>
+        /// <returns>True if wall exists</returns>
         public bool CheckWallVertical(int row, int col, int newRow)
         {
-            int dx = Math.Sign(newRow - row);
-            return usedWalls.Contains((row+dx, col));
+            Debug.Assert(row != newRow);
+            int dy = Math.Sign(newRow - row);
+            return usedWalls.Contains((row+dy, col));
         }
 
-        public void AddWall(int row, int col)
+        /// <summary>
+        /// Check if provided wall forms a 
+        /// cross with an already existing one 
+        /// </summary>
+        /// <param name="row">First Wall Part Row</param>
+        /// <param name="col">First Wall Part Column</param>
+        /// <param name="expRow">Second Wall Part Row</param>
+        /// <param name="expCol">Second Wall Part Column</param>
+        /// <returns></returns>
+        public bool FormsWallCross(int row, int col, int expRow, int expCol)
         {
+            Debug.Assert(IsGridSquare(row, col));
+            Debug.Assert(!IsPlayerSquare(row, col));
+            Debug.Assert(IsGridSquare(expRow, expCol));
+            Debug.Assert(!IsPlayerSquare(expRow, expCol));
+
+            return usedWalls.Contains((col, row)) && usedWalls.Contains((expCol, expRow));
+        }
+
+        /// <summary>
+        /// Add wall part to used walls
+        /// </summary>
+        /// <param name="row">Wall part row</param>
+        /// <param name="col">Wall part column</param>
+        public void AddWallPart(int row, int col)
+        {
+            Debug.Assert(IsGridSquare(row, col));
             Debug.Assert(!IsPlayerSquare(row, col));
 
-            (int expandedRow, int expandedCol) = ExpandWall(row, col);
-
-            // Add wall to used
-            usedWalls.Add((row, col));
-            usedWalls.Add((expandedRow, expandedCol));
-        }
-        public void AddWall(int row, int col, bool isHorizontal)
-        {
-            //body
+            if (!usedWalls.Contains((row, col)))
+                usedWalls.Add((row, col));
+            else
+                Debug.Assert(false);
         }
 
-        public void RemoveWall(int row, int col)
+        /// <summary>
+        /// Remove wall part to used walls
+        /// </summary>
+        /// <param name="row">Wall part row</param>
+        /// <param name="col">Wall part column</param>
+        public void RemoveWallPart(int row, int col)
         {
+            Debug.Assert(IsGridSquare(row, col));
             Debug.Assert(!IsPlayerSquare(row, col));
 
-            (int expandedRow, int expandedCol) = ExpandWall(row, col);
-            if (usedWalls.Contains((row, col)) && usedWalls.Contains((expandedRow, expandedCol)))
-            {
+            if (usedWalls.Contains((row, col)))
                 usedWalls.Remove((row, col));
-                usedWalls.Remove((expandedRow, expandedCol));
-            }
+            else
+                Debug.Assert(false);
         }
-        public void RemoveWall(int row, int col, bool isHorizontal)
+
+        /// <summary>
+        /// Function to get all neighbour squares that 
+        /// a player could move from current square 
+        /// </summary>
+        /// <param name="row">Current player square row</param>
+        /// <param name="col">Current player square col</param>
+        /// <returns>List of all linked neighbour squares</returns>
+        public List<(int, int)> GetLinkedPlayerSquareNeighbours(int row, int col)
         {
-            //body
+            Debug.Assert(IsGridSquare(row, col));
+            Debug.Assert(IsPlayerSquare(row, col));
+
+            // Add all possible neighbours
+            List<(int, int)> neighbours = new()
+            {
+                (row + 2, col),
+                (row, col + 2),
+                (row - 2, col),
+                (row, col - 2)
+            };
+
+            foreach((int r, int c) in neighbours)
+            {
+                // Neighbour square out of range 
+                if (!IsGridSquare(r, c))    
+                    neighbours.Remove((r, c));
+
+                // Neighbour square blocked by wall
+                if (row == r && CheckWallVertical(row, col, r))
+                    neighbours.Remove((r, c));
+                else if (col == c && CheckWallHorizontal(row, col, r))
+                    neighbours.Remove((r, c));
+            }
+
+            return neighbours;
         }
     }
 }
