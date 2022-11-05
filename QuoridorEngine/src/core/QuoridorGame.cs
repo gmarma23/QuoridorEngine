@@ -24,11 +24,10 @@ namespace QuoridorEngine.Core
         /// Initializes a new Quoridor Game with the specified parameters
         /// </summary>
         /// <param name="dimension">The dimension of the board.
-        /// Needs to be odd an greater than 2</param>
+        /// Needs to be odd and greater than 2. Throws an ArgumentException if not</param>
         public QuoridorGame(int dimension)
         {
-            Debug.Assert(dimension > 2);
-            Debug.Assert(dimension % 2 == 1);
+            if (dimension < 2 || dimension % 2 == 1) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
             board = new QuoridorBoard(dimension);
