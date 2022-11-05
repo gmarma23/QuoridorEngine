@@ -179,7 +179,10 @@ namespace QuoridorEngine.Core
             }
             else throw new InvalidMoveException("Unknown orientation specification");
 
-            board.AddWall(move.Row, move.Column);
+            // TODO: Check whether new wall blocks and player's path to the goal
+            // TODO: Check whether new wall forms a cross with any of the existing walls
+
+            board.AddWall(move.Row, move.Column, move.Orientation);
             targetPlayer.DecreaseAvailableWalls();
             gameHistory.Add(move);
         }
