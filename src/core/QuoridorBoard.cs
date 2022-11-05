@@ -127,11 +127,9 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(IsGridSquare(row, col));
             Debug.Assert(!IsPlayerSquare(row, col));
+            Debug.Assert(!usedWalls.Contains((row, col)));
 
-            if (!usedWalls.Contains((row, col)))
-                usedWalls.Add((row, col));
-            else
-                Debug.Assert(false);
+            usedWalls.Add((row, col));
         }
 
         /// <summary>
@@ -143,11 +141,9 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(IsGridSquare(row, col));
             Debug.Assert(!IsPlayerSquare(row, col));
+            Debug.Assert(usedWalls.Contains((row, col)));
 
-            if (usedWalls.Contains((row, col)))
-                usedWalls.Remove((row, col));
-            else
-                Debug.Assert(false);
+            usedWalls.Remove((row, col));
         }
 
         /// <summary>
