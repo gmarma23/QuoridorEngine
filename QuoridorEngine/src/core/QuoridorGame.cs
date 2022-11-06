@@ -29,7 +29,7 @@ namespace QuoridorEngine.Core
         /// Needs to be odd and greater than 2. Throws an ArgumentException if not</param>
         public QuoridorGame(int dimension)
         {
-            if (dimension < 2 || dimension % 2 == 1) throw new ArgumentException("Invalid Board Size");
+            if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
             board = new QuoridorBoard(dimension);
