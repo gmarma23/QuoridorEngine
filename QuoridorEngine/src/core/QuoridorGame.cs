@@ -214,11 +214,9 @@ namespace QuoridorEngine.Core
             QuoridorPlayer currentPlayer = getTargetPlayer(isWhite);
             Debug.Assert(currentPlayer != null);
 
-            // Temporarily save player's current row
-            int initialRow = currentPlayer.Row;
-
             // Add player's current square in frontier as first square to be explored
             frontierSquares.Push((currentPlayer.Row, currentPlayer.Column));
+
             while (frontierSquares.Count != 0)
             {
                 // Get a square (and remove it) from frontier
@@ -231,16 +229,9 @@ namespace QuoridorEngine.Core
                 // Store current square as visited
                 visitedSquares.Add((currentSquareRow, currentSquareCol));
 
-                // Temporarily update player's current row 
-                currentPlayer.Row = currentSquareRow;
-
                 // Check if player has reached goal
-                if (currentPlayer.IsInTargetBaseline())
-                {
-                    // Restore player's initial row
-                    currentPlayer.Row = initialRow;
+                if (currentPlayer.RowIsTargetBaseline(currentSquareRow))
                     return true;
-                }
 
                 // Get current square's legal neighbours
                 List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol);
@@ -252,12 +243,11 @@ namespace QuoridorEngine.Core
 
                 // Store current square's legal neighbours in frontier to be explored later
                 foreach ((int, int) neighbourSquare in legalNeighbours)
-                    frontierSquares.Push(neighbourSquare);
+                    if (!visitedSquares.Contains(neighbourSquare)) 
+                        frontierSquares.Push(neighbourSquare);
             }
 
             // No path found
-            // Restore player's initial row
-            currentPlayer.Row = initialRow;
             return false;
         }
 
