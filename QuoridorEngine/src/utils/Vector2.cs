@@ -28,7 +28,7 @@ namespace QuoridorEngine.Utils
         /// </summary>
         /// <param name="a">The vector to make the comparison with</param>
         /// <returns>Whether this vector and vector a are equal</returns>
-        public bool Equals(Vector2 a)
+        public bool EqualTo(Vector2 a)
         {
             Debug.Assert(a != null);
             return (row == a.row && column == a.column);
