@@ -1,7 +1,9 @@
 ﻿using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace QuoridorEngine.Core
 {
@@ -242,9 +244,17 @@ namespace QuoridorEngine.Core
                     currentPlayer.Row = initialRow;
                     return true;
                 }
-                
+
+                // Get current square's legal neighbours
+                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol);
+
+                // Sort neighbours by descending row if current
+                // player is black to reach his baseline faster 
+                if (!isWhite)
+                    legalNeighbours = legalNeighbours.OrderByDescending(x => x.Item1).ToList();
+
                 // Store current square's legal neighbours in frontier to be explored later
-                foreach ((int, int) neighbourSquare in getLegalNeighbourSquares(currentSquareRow, currentSquareCol))
+                foreach ((int, int) neighbourSquare in legalNeighbours)
                     frontierSquares.Push(neighbourSquare);
             }
 
@@ -254,6 +264,18 @@ namespace QuoridorEngine.Core
             return false;
         }
 
+        /// <summary>
+        /// Check for neighbour squares a player can move to 
+        /// without encountering a wall or the other player.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns>List of tuples with coordinates of legal neighbours</returns>
+        /// <exception cref="ArgumentException">When provided current
+        /// square's coordinates are invalid</exception>
+        /// 
+        /// [TODO] 
+        /// Handle corner case: other player in neighbour square
         private List<(int, int)> getLegalNeighbourSquares(int row, int col)
         {
             if (!board.IsValidPlayerSquare(row, col))
@@ -261,18 +283,21 @@ namespace QuoridorEngine.Core
 
             List<(int, int)> legalNeighbours = new();
 
-            for (int i = -1; i < 2; i++)
-            {
-                if (i == 0) continue;
+            if (board.IsValidPlayerSquare(row - 1, col) &&
+                board.CheckWallPartHorizontal(row, col))
+                legalNeighbours.Add((row - 1, col));
 
-                if (board.IsValidPlayerSquare(row + i, col) && 
-                    board.CheckWallPartHorizontal(row + i, col))
-                    legalNeighbours.Add((row + i, col));
+            if (board.IsValidPlayerSquare(row, col - 1) &&
+                board.CheckWallPartVertical(row, col-1))
+                legalNeighbours.Add((row, col - 1));
 
-                if (board.IsValidPlayerSquare(row, col + i) &&
-                    board.CheckWallPartVertical(row, col + i))
-                    legalNeighbours.Add((row, col + i));
-            }
+            if (board.IsValidPlayerSquare(row, col + 1) &&
+                board.CheckWallPartVertical(row, col))
+                legalNeighbours.Add((row, col + 1));
+
+            if (board.IsValidPlayerSquare(row + 1, col) &&
+                board.CheckWallPartHorizontal(row + 1, col))
+                legalNeighbours.Add((row + 1, col));
 
             return legalNeighbours;
         }
