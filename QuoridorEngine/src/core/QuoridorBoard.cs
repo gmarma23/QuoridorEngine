@@ -89,8 +89,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row < horizontalWallParts.GetLength(0));
+            Debug.Assert(col < verticalWallParts.GetLength(1));
             return verticalWallParts[row, col];
         }
 
@@ -121,8 +121,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row < horizontalWallParts.GetLength(0));
+            Debug.Assert(col < verticalWallParts.GetLength(1));
             verticalWallParts[row, col] = true;
         }
 
@@ -153,8 +153,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row < horizontalWallParts.GetLength(0));
+            Debug.Assert(col < verticalWallParts.GetLength(1));
             verticalWallParts[row, col] = false;
         }
 
