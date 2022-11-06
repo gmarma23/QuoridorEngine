@@ -51,6 +51,18 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
+        /// Check if given coordinates represent a square 
+        /// a player can move within board limits
+        /// </summary>
+        /// <param name="row">Square row</param>
+        /// <param name="col">Square col</param>
+        /// <returns>True if square is valid</returns>
+        public bool IsValidPlayerSquare(int row, int col)
+        {
+            return col > 0 && col < dimension && row > 0 && row < dimension;
+        }
+
+        /// <summary>
         /// Check if specified horizontal wall part exists
         /// after necessary coords transformation.
         /// </summary>
