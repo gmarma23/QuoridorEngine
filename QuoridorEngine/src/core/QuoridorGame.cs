@@ -1,5 +1,6 @@
 ﻿using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace QuoridorEngine.Core
@@ -196,7 +197,62 @@ namespace QuoridorEngine.Core
             gameHistory.Add(move);
         }
 
-        
+        /// <summary>
+        /// Check whether a path connecting current player's square
+        /// and his target baseline exists using DFS algorithm.
+        /// </summary>
+        /// <param name="isWhite">Current player is White</param>
+        /// <returns>True if path exists</returns>
+        private bool playerCanReachBaseline(bool isWhite)
+        {
+            // Pending squares to be explored
+            Stack<(int, int)> frontierSquares = new();
+
+            // Already visited squares
+            HashSet<(int, int)> visitedSquares = new();
+
+            // Get current player object
+            QuoridorPlayer currentPlayer = getTargetPlayer(isWhite);
+            Debug.Assert(currentPlayer != null);
+
+            // Temporarily save player's current row
+            int initialRow = currentPlayer.Row;
+
+            // Add player's current square in frontier as first square to be explored
+            frontierSquares.Push((currentPlayer.Row, currentPlayer.Column));
+            while (frontierSquares.Count != 0)
+            {
+                // Get a square (and remove it) from frontier
+                (int currentSquareRow, int currentSquareCol) = frontierSquares.Pop();
+
+                // Skip this square if it has already been visited
+                if (visitedSquares.Contains((currentSquareRow, currentSquareCol))) 
+                    continue;
+
+                // Store current square as visited
+                visitedSquares.Add((currentSquareRow, currentSquareCol));
+
+                // Temporarily update player's current row 
+                currentPlayer.Row = currentSquareRow;
+
+                // Check if player has reached goal
+                if (currentPlayer.IsInTargetBaseline())
+                {
+                    // Restore player's initial row
+                    currentPlayer.Row = initialRow;
+                    return true;
+                }
+                
+                // Store current square's legal neighbours in frontier to be explored later
+                foreach ((int, int) neighbourSquare in getLegalNeighbourSquares(currentSquareRow, currentSquareCol))
+                    frontierSquares.Push(neighbourSquare);
+            }
+
+            // No path found
+            // Restore player's initial row
+            currentPlayer.Row = initialRow;
+            return false;
+        }
 
         private List<(int, int)> getLegalNeighbourSquares(int row, int col)
         {
