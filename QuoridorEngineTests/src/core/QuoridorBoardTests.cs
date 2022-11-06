@@ -22,6 +22,17 @@ namespace QuoridorEngine.Core.Tests
         }
 
         [TestMethod()]
+        [DataRow(-9)]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(1)]
+
+        public void QuoridorBoardConstructorInvalidArgs(int dimension)
+        {
+            Assert.ThrowsException<ArgumentException>(() => new QuoridorGame(dimension));
+        }
+
+        [TestMethod()]
         [DataRow(3, 1, 0)]
         [DataRow(3, 1, 1)]
         [DataRow(3, 1, 2)]
