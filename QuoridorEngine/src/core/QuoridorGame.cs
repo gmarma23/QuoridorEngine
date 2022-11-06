@@ -120,8 +120,8 @@ namespace QuoridorEngine.Core
         private void movePlayer(QuoridorMove move)
         {
             // Checking if values are inside bounds
-            if (move.Column < 0 || move.Column >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
-            if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+            if (!board.IsValidPlayerSquare(move.Row, move.Column)) 
+                throw new InvalidMoveException("Coordinates out of bounds");
 
             // Check if any walls make the move impossible
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
@@ -194,6 +194,31 @@ namespace QuoridorEngine.Core
 
             targetPlayer.DecreaseAvailableWalls();
             gameHistory.Add(move);
+        }
+
+        
+
+        private List<(int, int)> getLegalNeighbourSquares(int row, int col)
+        {
+            if (!board.IsValidPlayerSquare(row, col))
+                throw new ArgumentException("Current square coordinates out of bounds");
+
+            List<(int, int)> legalNeighbours = new();
+
+            for (int i = -1; i < 2; i++)
+            {
+                if (i == 0) continue;
+
+                if (board.IsValidPlayerSquare(row + i, col) && 
+                    board.CheckWallPartHorizontal(row + i, col))
+                    legalNeighbours.Add((row + i, col));
+
+                if (board.IsValidPlayerSquare(row, col + i) &&
+                    board.CheckWallPartVertical(row, col + i))
+                    legalNeighbours.Add((row, col + i));
+            }
+
+            return legalNeighbours;
         }
 
         /// <summary>
