@@ -29,7 +29,7 @@ namespace QuoridorEngine.Core
         /// Needs to be odd and greater than 2. Throws an ArgumentException if not</param>
         public QuoridorGame(int dimension)
         {
-            if (dimension < 2 || dimension % 2 == 1) throw new ArgumentException("Invalid Board Size");
+            if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
             board = new QuoridorBoard(dimension);
@@ -98,6 +98,24 @@ namespace QuoridorEngine.Core
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Checks if the board has a wall of the specified orientation (both wall parts) in
+        /// a given row and column. Returns true only if both wall parts are in place
+        /// </summary>
+        /// <param name="row">The row of the first part of the wall</param>
+        /// <param name="column">The column of the first part of the wall</param>
+        /// <param name="orientation">The orientation of the wall</param>
+        /// <exception cref="ArgumentException"></exception>
+        public bool HasWall(int row, int column, Orientation orientation)
+        {
+            //TODO: make the necessary assertions
+            if (orientation == Orientation.Horizontal)
+                return board.CheckWallPartHorizontal(row, column) && board.CheckWallPartHorizontal(row, column + 1);
+            else if (orientation == Orientation.Vertical)
+                return board.CheckWallPartVertical(row, column) && board.CheckWallPartVertical(row - 1, column);
+            throw new ArgumentException("Unknown orientation type");
+        }
+
         public void GetWhiteCoordinates(ref int row, ref int column)
         {
             row = white.Row;
@@ -110,7 +128,13 @@ namespace QuoridorEngine.Core
             column= black.Column;
         }
 
-        public int Dimension { get; }
+        public int GetPlayerWalls(bool isWhite)
+        {
+            QuoridorPlayer player = getTargetPlayer(isWhite);
+            return player.AvailableWalls;
+        }
+
+        public int Dimension { get => dimension; }
 
         /// <summary>
         /// Executes a given player movement in this state. If the move has invalid parameters, throws an
@@ -130,9 +154,9 @@ namespace QuoridorEngine.Core
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaRow == 0 && board.CheckWallPartHorizontal(targetPlayer.Row, targetPlayer.Column)) 
+            if (deltaColumn == 0 && board.CheckWallPartHorizontal(move.Row, move.Column)) 
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn == 0 && board.CheckWallPartVertical(targetPlayer.Row, targetPlayer.Column))
+            if (deltaRow == 0 && board.CheckWallPartVertical(move.Row, move.Column))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // Checking if another player is already located on destination coordinates
@@ -141,7 +165,7 @@ namespace QuoridorEngine.Core
 
             // Verify that player is not moving more than one square at a time
             // TODO: Player can jump his opponent when they are side by side
-            if (deltaRow + deltaColumn > 1) throw new InvalidMoveException("Player tried to move more than 2 cells at once");
+            // if (deltaRow + deltaColumn > 1) throw new InvalidMoveException("Player tried to move more than 2 cells at once");
 
             // Finally execute the move
             targetPlayer.Row = move.Row;
