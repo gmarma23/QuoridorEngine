@@ -1,7 +1,4 @@
-﻿using QuoridorEngine.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Drawing;
-using System.Security.Policy;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace QuoridorEngine.Core.Tests
 {
@@ -18,18 +15,8 @@ namespace QuoridorEngine.Core.Tests
         {
             QuoridorBoard board = new QuoridorBoard(dimension);
             Assert.IsNotNull(board);
+            Assert.AreEqual(dimension, board.Dimension);
 
-        }
-
-        [TestMethod()]
-        [DataRow(-9)]
-        [DataRow(-1)]
-        [DataRow(0)]
-        [DataRow(1)]
-
-        public void QuoridorBoardConstructorInvalidArgs(int dimension)
-        {
-            Assert.ThrowsException<ArgumentException>(() => new QuoridorGame(dimension));
         }
 
         [TestMethod()]
