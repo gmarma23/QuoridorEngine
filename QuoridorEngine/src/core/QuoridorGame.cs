@@ -130,14 +130,18 @@ namespace QuoridorEngine.Core
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaRow == 0 && board.CheckWallHorizontal(targetPlayer.Row, targetPlayer.Column, move.Column)) 
+            if (deltaRow == 0 && board.CheckWallPartHorizontal(targetPlayer.Row, targetPlayer.Column)) 
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn == 0 && board.CheckWallVertical(targetPlayer.Column, targetPlayer.Row, move.Row))
+            if (deltaColumn == 0 && board.CheckWallPartVertical(targetPlayer.Row, targetPlayer.Column))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // Checking if another player is already located on destination coordinates
             if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
             if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+
+            // Verify that player is not moving more than one square at a time
+            // TODO: Player can jump his opponent when they are side by side
+            if (deltaRow + deltaColumn > 1) throw new InvalidMoveException("Player tried to move more than 2 cells at once");
 
             // Finally execute the move
             targetPlayer.Row = move.Row;
@@ -166,23 +170,28 @@ namespace QuoridorEngine.Core
             if (move.Orientation == Orientation.Horizontal)
             {
                 // Check if any walls occupy the space needed by the new wall
-                if (board.CheckWallHorizontal(move.Column, move.Row - 1, move.Row) ||
-                    board.CheckWallHorizontal(move.Column + 1, move.Row - 1, move.Row))
+                if (board.CheckWallPartHorizontal(move.Row, move.Column) ||
+                    board.CheckWallPartHorizontal(move.Row, move.Column + 1))
                     throw new InvalidMoveException("Wall position occupied");
+
+                board.AddWallPartHorizontal(move.Row, move.Column);
+                board.AddWallPartHorizontal(move.Row, move.Column+1);
             }
             else if (move.Orientation == Orientation.Vertical)
             {              
                 // Check if any walls occupy the space needed by the new wall
-                if (board.CheckWallVertical(move.Row, move.Column, move.Column + 1) ||
-                    board.CheckWallVertical(move.Row - 1, move.Column, move.Column + 1))
+                if (board.CheckWallPartVertical(move.Row, move.Column) ||
+                    board.CheckWallPartVertical(move.Row - 1, move.Column))
                     throw new InvalidMoveException("Wall position occupied");
+
+                board.AddWallPartVertical(move.Row, move.Column);
+                board.AddWallPartVertical(move.Row - 1, move.Column);
             }
             else throw new InvalidMoveException("Unknown orientation specification");
 
             // TODO: Check whether new wall blocks and player's path to the goal
             // TODO: Check whether new wall forms a cross with any of the existing walls
 
-            board.AddWall(move.Row, move.Column, move.Orientation);
             targetPlayer.DecreaseAvailableWalls();
             gameHistory.Add(move);
         }
