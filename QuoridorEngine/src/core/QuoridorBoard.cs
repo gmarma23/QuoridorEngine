@@ -18,7 +18,7 @@ namespace QuoridorEngine.Core
         private bool[,] verticalWallParts;
         private bool[,] horizontalWallParts;
 
-        public int Dimension { get; }
+        public int Dimension { get => dimension; }
 
         public QuoridorBoard(int dimension)
         {
