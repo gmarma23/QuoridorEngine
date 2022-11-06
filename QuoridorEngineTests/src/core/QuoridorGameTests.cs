@@ -31,9 +31,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(50)]
         public void QuoridorGameConstructorFailTest(int size)
         {
-            QuoridorGame game = new QuoridorGame(size);
-            String? testStr = null;
-            Assert.ThrowsException<ArgumentException>(() => testStr.ToUpper());
+            Assert.ThrowsException<ArgumentException>(()=>new QuoridorGame(size));
         }
     }
 }
