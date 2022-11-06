@@ -58,6 +58,8 @@ namespace QuoridorEngine.Core
         /// <returns>True if wall part exists</returns>
         public bool CheckWallPartHorizontal(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col <= verticalWallParts.GetLength(1));
             return horizontalWallParts[row - 1, col];
@@ -72,13 +74,27 @@ namespace QuoridorEngine.Core
         /// <returns>True if wall part exists</returns>
         public bool CheckWallPartVertical(int row, int col)
         {
+            Debug.Assert(row > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             return verticalWallParts[row, col - 1];
-        }
 
-        /// <summary>
-        /// Consider horizontal wall part used by making the 
+            // Wall is horizontal
+            if (row % 2 != 0 && col % 2 == 0)
+                expCol = col + 2;
+            // Wall is vertical
+            else if (row % 2 == 0 && col % 2 != 0)
+                expRow = row - 2;
+
+            Debug.Assert(IsGridSquare(expRow, expCol));
+            return (expRow, expCol);
+        }
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col > 0);
+            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
+            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            horizontalWallParts[row - 1, col] = true;
         /// coresponding field true in horizontalWallParts 
         /// after necessary coords transformation.
         /// </summary>
@@ -86,13 +102,15 @@ namespace QuoridorEngine.Core
         /// <param name="col">Wall part column</param>
         public void AddWallPartHorizontal(int row, int col)
         {
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
-            horizontalWallParts[row - 1, col] = true;
+            Debug.Assert(col != newCol);
+            int dx = Math.Sign(newCol - col);
+            return usedWalls.Contains((row, col+dx));
         }
-
-        /// <summary>
-        /// Consider vertical wall part used by making the 
+            Debug.Assert(row > 0);
+            Debug.Assert(col - 1 > 0);
+            Debug.Assert(row <= horizontalWallParts.GetLength(0));
+            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
+            verticalWallParts[row, col-1] = true;
         /// coresponding field true in verticalWallParts 
         /// after necessary coords transformation.
         /// </summary>
@@ -100,65 +118,63 @@ namespace QuoridorEngine.Core
         /// <param name="col">Wall part column</param>
         public void AddWallPartVertical(int row, int col)
         {
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
-            verticalWallParts[row, col-1] = true;
+            Debug.Assert(row != newRow);
+            int dy = Math.Sign(newRow - row);
+            return usedWalls.Contains((row+dy, col));
         }
-
-        /// <summary>
-        /// Consider horizontal wall part unused by making the 
-        /// coresponding field false in horizontalWallParts 
-        /// after necessary coords transformation.
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col > 0);
+            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
+            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            horizontalWallParts[row - 1, col] = false;
         /// </summary>
         /// <param name="row">Wall part row</param>
         /// <param name="col">Wall part column</param>
         public void RemoveWallPartHorizontal(int row, int col)
         {
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
-            horizontalWallParts[row - 1, col] = false;
-        }
+            Debug.Assert(IsGridSquare(row, col));
+            Debug.Assert(!IsPlayerSquare(row, col));
+            Debug.Assert(IsGridSquare(expRow, expCol));
+            Debug.Assert(!IsPlayerSquare(expRow, expCol));
 
-        /// <summary>
-        /// Consider vertical wall part unused by making the 
-        /// coresponding field false in verticalWallParts 
+            return usedWalls.Contains((col, row)) && usedWalls.Contains((expCol, expRow));
+            Debug.Assert(row > 0);
+            Debug.Assert(col - 1 > 0);
+            Debug.Assert(row <= horizontalWallParts.GetLength(0));
+            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
+            verticalWallParts[row, col - 1] = false;
         /// after necessary coords transformation.
         /// </summary>
         /// <param name="row">Wall part row</param>
         /// <param name="col">Wall part column</param>
         public void RemoveWallPartVertical(int row, int col)
         {
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
-            verticalWallParts[row, col - 1] = false;
-        }
+            Debug.Assert(IsGridSquare(row, col));
+            Debug.Assert(!IsPlayerSquare(row, col));
+            Debug.Assert(!usedWalls.Contains((row, col)));
 
-        /// <summary>
-        /// Check if grid corner is already in use
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col - 1 > 0);
+            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
+            Debug.Assert(col -1 <= verticalWallParts.GetLength(1));
+            return corners[row - 1, col - 1];
         /// after necessary coords transformation.
         /// </summary>
         /// <param name="row">Corner row</param>
         /// <param name="col">Corner column</param>
         public bool CheckCorner(int row, int col)
         {
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col -1 <= verticalWallParts.GetLength(1));
-            return corners[row - 1, col - 1];
-        }
-
-        /// <summary>
-        /// Consider grid corner used after 
-        /// necessary coords transformation.
-        /// </summary>
         /// <param name="row">Corner row</param>
         /// <param name="col">Corner column</param>
         public void AddCorner(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             corners[row - 1, col - 1] = true;
         }
-
+        /// </summary>
         /// <summary>
         /// Consider grid corner unused after 
         /// necessary coords transformation.
@@ -167,9 +183,41 @@ namespace QuoridorEngine.Core
         /// <param name="col">Corner column</param>
         public void RemoveCorner(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             corners[row - 1, col - 1] = false;
+        /// <param name="col">Current player square col</param>
+        /// <returns>List of all linked neighbour squares</returns>
+        public List<(int, int)> GetLinkedPlayerSquareNeighbours(int row, int col)
+        {
+            Debug.Assert(IsGridSquare(row, col));
+            Debug.Assert(IsPlayerSquare(row, col));
+
+            // Add all possible neighbours
+            List<(int, int)> neighbours = new()
+            {
+                (row + 2, col),
+                (row, col + 2),
+                (row - 2, col),
+                (row, col - 2)
+            };
+
+            foreach((int r, int c) in neighbours)
+            {
+                // Neighbour square out of range 
+                if (!IsGridSquare(r, c))    
+                    neighbours.Remove((r, c));
+
+                // Neighbour square blocked by wall
+                if (row == r && CheckWallVertical(row, col, r))
+                    neighbours.Remove((r, c));
+                else if (col == c && CheckWallHorizontal(row, col, r))
+                    neighbours.Remove((r, c));
+            }
+
+            return neighbours;
         }
     }
 }
