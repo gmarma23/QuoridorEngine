@@ -56,7 +56,7 @@ namespace QuoridorEngine.Core
         /// <param name="row">Wall part row</param>
         /// <param name="col">Wall part column</param>
         /// <returns>True if wall part exists</returns>
-        public bool ChechWallPartHorizontal(int row, int col)
+        public bool CheckWallPartHorizontal(int row, int col)
         {
             return horizontalWallParts[row - 1, col];
         }
@@ -68,7 +68,7 @@ namespace QuoridorEngine.Core
         /// <param name="row">Wall part row</param>
         /// <param name="col">Wall part column</param>
         /// <returns>True if wall part exists</returns>
-        public bool ChechWallPartVertical(int row, int col)
+        public bool CheckWallPartVertical(int row, int col)
         {
             return verticalWallParts[row, col - 1];
         }
