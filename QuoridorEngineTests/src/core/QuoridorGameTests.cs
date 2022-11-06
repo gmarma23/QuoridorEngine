@@ -49,16 +49,14 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(8, 1, 0, 1, 9, true)]
         [DataRow(6, 1, 0, 1, 9, true)]
         [DataRow(0, 1, 2, 1, 3, false)]
-        [DataRow(2, 1, 0, 1, 5, false)]
-        [DataRow(2, 1, 0, 1, 9, false)]
+        [DataRow(0, 1, 2, 1, 5, false)]
+        [DataRow(0, 1, 2, 1, 9, false)]
 
         public void IsTerminalStateTest(int whiteRow, int whiteColumn, int blackRow, int blackColumn, int dimension, bool expected)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            QuoridorMove whiteMove = new QuoridorMove(whiteRow, whiteColumn, true);
-            QuoridorMove blackMove = new QuoridorMove(blackRow, blackColumn, false);
-            game.ExecuteMove(whiteMove);
-            game.ExecuteMove(blackMove);
+            game.ForcePlayerMovement(whiteRow, whiteColumn, true);
+            game.ForcePlayerMovement(blackRow, blackColumn, false);
 
             bool actual = game.IsTerminalState();
 

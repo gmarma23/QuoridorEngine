@@ -116,6 +116,28 @@ namespace QuoridorEngine.Core
             throw new ArgumentException("Unknown orientation type");
         }
 
+        /// <summary>
+        /// Moves the specified player to the requested coordinates
+        /// 
+        /// CAUTION: this function bypasses almost all of the move
+        /// legality checks. Therefore it should only be used for
+        /// testing and/or debugging purposes. DO NOT USE IT ANYWHERE
+        /// ELSE!!!
+        /// </summary>
+        /// <param name="row">The new row for the player</param>
+        /// <param name="column">The new column for the player</param>
+        /// <param name="isWhite">True if this is a move for white, false for black</param>
+        public void ForcePlayerMovement(int row, int column, bool isWhite)
+        {
+            Debug.Assert(board.IsValidPlayerSquare(row, column));
+            
+            QuoridorPlayer targetPlayer = getTargetPlayer(isWhite);
+            Debug.Assert(targetPlayer != null);
+
+            targetPlayer.Row = row;
+            targetPlayer.Column = column;
+        }
+
         public void GetWhiteCoordinates(ref int row, ref int column)
         {
             row = white.Row;
