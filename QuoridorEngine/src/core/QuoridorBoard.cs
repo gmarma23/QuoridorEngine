@@ -59,7 +59,7 @@ namespace QuoridorEngine.Core
         /// <returns>True if square is valid</returns>
         public bool IsValidPlayerSquare(int row, int col)
         {
-            return col > 0 && col < dimension && row > 0 && row < dimension;
+            return col >= 0 && col < dimension && row >= 0 && row < dimension;
         }
 
         /// <summary>
