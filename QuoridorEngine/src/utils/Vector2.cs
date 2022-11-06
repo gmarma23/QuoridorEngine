@@ -42,6 +42,8 @@ namespace QuoridorEngine.Utils
         /// <returns>Whether a and b are equal</returns>
         public static bool Equal(Vector2 a, Vector2 b)
         {
+            Debug.Assert(a != null);
+            Debug.Assert(b != null);
             return a.row == b.row && a.column == b.column;
         }
 
