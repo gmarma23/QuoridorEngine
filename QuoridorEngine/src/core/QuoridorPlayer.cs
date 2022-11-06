@@ -54,6 +54,7 @@ namespace QuoridorEngine.Core
         /// required to win.
         /// </summary>
         public bool IsInTargetBaseline() { return row == targetBaseline; }
+        public bool RowIsTargetBaseline(int row) { return row == targetBaseline; }
 
         public int AvailableWalls { get => availableWalls; }
         public bool IsWhite { get => isWhite; }

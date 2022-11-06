@@ -144,8 +144,8 @@ namespace QuoridorEngine.Core
         private void movePlayer(QuoridorMove move)
         {
             // Checking if values are inside bounds
-            if (move.Column < 0 || move.Column >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
-            if (move.Row < 0 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+            if (!board.IsValidPlayerSquare(move.Row, move.Column)) 
+                throw new InvalidMoveException("Coordinates out of bounds");
 
             // Check if any walls make the move impossible
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
@@ -218,6 +218,99 @@ namespace QuoridorEngine.Core
 
             targetPlayer.DecreaseAvailableWalls();
             gameHistory.Add(move);
+        }
+
+        /// <summary>
+        /// Check whether a path connecting current player's square
+        /// and his target baseline exists using DFS algorithm.
+        /// </summary>
+        /// <param name="isWhite">Current player is White</param>
+        /// <returns>True if path exists</returns>
+        private bool playerCanReachBaseline(bool isWhite)
+        {
+            // Pending squares to be explored
+            Stack<(int, int)> frontierSquares = new();
+
+            // Already visited squares
+            HashSet<(int, int)> visitedSquares = new();
+
+            // Get current player object
+            QuoridorPlayer currentPlayer = getTargetPlayer(isWhite);
+            Debug.Assert(currentPlayer != null);
+
+            // Add player's current square in frontier as first square to be explored
+            frontierSquares.Push((currentPlayer.Row, currentPlayer.Column));
+
+            while (frontierSquares.Count != 0)
+            {
+                // Get a square (and remove it) from frontier
+                (int currentSquareRow, int currentSquareCol) = frontierSquares.Pop();
+
+                // Skip this square if it has already been visited
+                if (visitedSquares.Contains((currentSquareRow, currentSquareCol))) 
+                    continue;
+
+                // Store current square as visited
+                visitedSquares.Add((currentSquareRow, currentSquareCol));
+
+                // Check if player has reached goal
+                if (currentPlayer.RowIsTargetBaseline(currentSquareRow))
+                    return true;
+
+                // Get current square's legal neighbours
+                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol);
+
+                // Sort neighbours by descending row if current
+                // player is black to reach his baseline faster 
+                if (!isWhite)
+                    legalNeighbours = legalNeighbours.OrderByDescending(x => x.Item1).ToList();
+
+                // Store current square's legal neighbours in frontier to be explored later
+                foreach ((int, int) neighbourSquare in legalNeighbours)
+                    if (!visitedSquares.Contains(neighbourSquare)) 
+                        frontierSquares.Push(neighbourSquare);
+            }
+
+            // No path found
+            return false;
+        }
+
+        /// <summary>
+        /// Check for neighbour squares a player can move to 
+        /// without encountering a wall or the other player.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns>List of tuples with coordinates of legal neighbours</returns>
+        /// <exception cref="ArgumentException">When provided current
+        /// square's coordinates are invalid</exception>
+        /// 
+        /// [TODO] 
+        /// Handle corner case: other player in neighbour square
+        private List<(int, int)> getLegalNeighbourSquares(int row, int col)
+        {
+            if (!board.IsValidPlayerSquare(row, col))
+                throw new ArgumentException("Current square coordinates out of bounds");
+
+            List<(int, int)> legalNeighbours = new();
+
+            if (board.IsValidPlayerSquare(row - 1, col) &&
+                board.CheckWallPartHorizontal(row, col))
+                legalNeighbours.Add((row - 1, col));
+
+            if (board.IsValidPlayerSquare(row, col - 1) &&
+                board.CheckWallPartVertical(row, col-1))
+                legalNeighbours.Add((row, col - 1));
+
+            if (board.IsValidPlayerSquare(row, col + 1) &&
+                board.CheckWallPartVertical(row, col))
+                legalNeighbours.Add((row, col + 1));
+
+            if (board.IsValidPlayerSquare(row + 1, col) &&
+                board.CheckWallPartHorizontal(row + 1, col))
+                legalNeighbours.Add((row + 1, col));
+
+            return legalNeighbours;
         }
 
         /// <summary>
