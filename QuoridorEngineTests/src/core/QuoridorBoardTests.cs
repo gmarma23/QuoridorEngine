@@ -331,7 +331,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(5, 2, 1)]
         [DataRow(5, 3, 2)]
         [DataRow(5, 3, 3)]
-        [DataRow(5, 4, 4)]
+        [DataRow(5, 4, 3)]
 
         [DataRow(6, 1, 1)]
         [DataRow(6, 3, 4)]
