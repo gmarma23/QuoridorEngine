@@ -1,9 +1,6 @@
 ﻿using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 
 namespace QuoridorEngine.Core
 {
