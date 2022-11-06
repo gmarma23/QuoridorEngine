@@ -130,9 +130,9 @@ namespace QuoridorEngine.Core
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaRow == 0 && board.CheckWallHorizontal(targetPlayer.Row, targetPlayer.Column)) 
+            if (deltaRow == 0 && board.CheckWallPartHorizontal(targetPlayer.Row, targetPlayer.Column)) 
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn == 0 && board.CheckWallVertical(targetPlayer.Row, targetPlayer.Column))
+            if (deltaColumn == 0 && board.CheckWallPartVertical(targetPlayer.Row, targetPlayer.Column))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // Checking if another player is already located on destination coordinates
@@ -170,8 +170,8 @@ namespace QuoridorEngine.Core
             if (move.Orientation == Orientation.Horizontal)
             {
                 // Check if any walls occupy the space needed by the new wall
-                if (board.CheckWallHorizontal(move.Row, move.Column) ||
-                    board.CheckWallHorizontal(move.Row, move.Column + 1))
+                if (board.CheckWallPartHorizontal(move.Row, move.Column) ||
+                    board.CheckWallPartHorizontal(move.Row, move.Column + 1))
                     throw new InvalidMoveException("Wall position occupied");
 
                 board.AddWallPartHorizontal(move.Row, move.Column);
@@ -180,8 +180,8 @@ namespace QuoridorEngine.Core
             else if (move.Orientation == Orientation.Vertical)
             {              
                 // Check if any walls occupy the space needed by the new wall
-                if (board.CheckWallVertical(move.Row, move.Column) ||
-                    board.CheckWallVertical(move.Row - 1, move.Column))
+                if (board.CheckWallPartVertical(move.Row, move.Column) ||
+                    board.CheckWallPartVertical(move.Row - 1, move.Column))
                     throw new InvalidMoveException("Wall position occupied");
 
                 board.AddWallPartVertical(move.Row, move.Column);
