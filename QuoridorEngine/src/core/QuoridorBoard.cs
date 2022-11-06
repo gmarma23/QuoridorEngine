@@ -58,6 +58,8 @@ namespace QuoridorEngine.Core
         /// <returns>True if wall part exists</returns>
         public bool CheckWallPartHorizontal(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col <= verticalWallParts.GetLength(1));
             return horizontalWallParts[row - 1, col];
@@ -72,6 +74,8 @@ namespace QuoridorEngine.Core
         /// <returns>True if wall part exists</returns>
         public bool CheckWallPartVertical(int row, int col)
         {
+            Debug.Assert(row > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             return verticalWallParts[row, col - 1];
@@ -86,6 +90,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Wall part column</param>
         public void AddWallPartHorizontal(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col <= verticalWallParts.GetLength(1));
             horizontalWallParts[row - 1, col] = true;
@@ -100,6 +106,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Wall part column</param>
         public void AddWallPartVertical(int row, int col)
         {
+            Debug.Assert(row > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             verticalWallParts[row, col-1] = true;
@@ -114,6 +122,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Wall part column</param>
         public void RemoveWallPartHorizontal(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col <= verticalWallParts.GetLength(1));
             horizontalWallParts[row - 1, col] = false;
@@ -128,6 +138,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Wall part column</param>
         public void RemoveWallPartVertical(int row, int col)
         {
+            Debug.Assert(row > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             verticalWallParts[row, col - 1] = false;
@@ -141,6 +153,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Corner column</param>
         public bool CheckCorner(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col -1 <= verticalWallParts.GetLength(1));
             return corners[row - 1, col - 1];
@@ -154,6 +168,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Corner column</param>
         public void AddCorner(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             corners[row - 1, col - 1] = true;
@@ -167,6 +183,8 @@ namespace QuoridorEngine.Core
         /// <param name="col">Corner column</param>
         public void RemoveCorner(int row, int col)
         {
+            Debug.Assert(row - 1 > 0);
+            Debug.Assert(col - 1 > 0);
             Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
             Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
             corners[row - 1, col - 1] = false;
