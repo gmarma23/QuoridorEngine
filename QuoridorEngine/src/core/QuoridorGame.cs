@@ -110,9 +110,11 @@ namespace QuoridorEngine.Core
         {
             //TODO: make the necessary assertions
             if (orientation == Orientation.Horizontal)
-                return board.CheckWallPartHorizontal(row, column) && board.CheckWallPartHorizontal(row, column + 1);
+                return board.CheckWallPartHorizontal(row, column) && board.CheckWallPartHorizontal(row, column + 1)
+                    && board.CheckCorner(row, column + 1);
             else if (orientation == Orientation.Vertical)
-                return board.CheckWallPartVertical(row, column) && board.CheckWallPartVertical(row - 1, column);
+                return board.CheckWallPartVertical(row, column) && board.CheckWallPartVertical(row - 1, column)
+                    && board.CheckCorner(row, column + 1);
             throw new ArgumentException("Unknown orientation type");
         }
 
