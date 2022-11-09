@@ -52,16 +52,14 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(8, 1, 0, 1, 9, true)]
         [DataRow(6, 1, 0, 1, 9, true)]
         [DataRow(0, 1, 2, 1, 3, false)]
-        [DataRow(2, 1, 0, 1, 5, false)]
-        [DataRow(2, 1, 0, 1, 9, false)]
+        [DataRow(0, 1, 2, 1, 5, false)]
+        [DataRow(0, 1, 2, 1, 9, false)]
 
         public void IsTerminalStateTest(int whiteRow, int whiteColumn, int blackRow, int blackColumn, int dimension, bool expected)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            QuoridorMove whiteMove = new QuoridorMove(whiteRow, whiteColumn, true);
-            QuoridorMove blackMove = new QuoridorMove(blackRow, blackColumn, false);
-            game.ExecuteMove(whiteMove);
-            game.ExecuteMove(blackMove);
+            game.ForcePlayerMovement(whiteRow, whiteColumn, true);
+            game.ForcePlayerMovement(blackRow, blackColumn, false);
 
             bool actual = game.IsTerminalState();
 
@@ -69,33 +67,42 @@ namespace QuoridorEngine.Core.Tests
         }
 
         [TestMethod()]
-        [DataRow(0, 0, 3, true)]
-        [DataRow(2, 2, 3, true)]
-        [DataRow(0, 2, 3, true)]
-        [DataRow(2, 0, 3, true)]
-        [DataRow(1, 1, 3, true)]
-        [DataRow(2, 20, 3, true)]
-        [DataRow(0, 0, 9, true)]
-        [DataRow(8, 1, 9, true)]
-        [DataRow(0, 8, 9, true)]
-        [DataRow(8, 8, 9, true)]
-        [DataRow(5, 6, 9, true)]
-
-        [DataRow(0, 0, 3, false)]
-        [DataRow(2, 2, 3, false)]
-        [DataRow(0, 2, 3, false)]
-        [DataRow(2, 0, 3, false)]
-        [DataRow(1, 1, 3, false)]
-        [DataRow(2, 20, 3, false)]
-        [DataRow(0, 0, 9, false)]
-        [DataRow(8, 1, 9, false)]
-        [DataRow(0, 8, 9, false)]
-        [DataRow(8, 8, 9, false)]
-        [DataRow(5, 6, 9, false)]
-        public void ExecutePlayerMoveNoWallsTest(int row, int col, int dimension, bool white)
+        [DataRow(1, 0, 0, 0, 3, true)]
+        [DataRow(2, 1, 2, 2, 3, true)]
+        [DataRow(1, 0, 0, 2, 3, true)]
+        [DataRow(2, 1, 2, 0, 3, true)]
+        [DataRow(0, 1, 1, 1, 3, true)]
+        [DataRow(2, 19, 2, 20, 21, true)]
+        [DataRow(1, 0, 0, 0, 9, true)]
+        [DataRow(7, 1, 8, 1, 9, true)]
+        [DataRow(0, 7, 0, 8, 9, true)]
+        [DataRow(7, 8, 8, 8, 9, true)]
+        [DataRow(5, 7, 5, 6, 9, true)]
+        [DataRow(6, 3, 5, 3, 7, true)]
+        [DataRow(6, 4, 6, 3, 7, true)]
+        [DataRow(1, 4, 0, 4, 7, true)]
+        [DataRow(1, 5, 1, 4, 7, true)]
+        
+        [DataRow(1, 0, 0, 0, 3, false)]
+        [DataRow(2, 1, 2, 2, 3, false)]
+        [DataRow(1, 0, 1, 1, 3, false)]
+        [DataRow(2, 1, 2, 0, 3, false)]
+        [DataRow(0, 1, 1, 1, 3, false)]
+        [DataRow(2, 19, 2, 20, 21, false)]
+        [DataRow(1, 0, 0, 0, 9, false)]
+        [DataRow(7, 1, 8, 1, 9, false)]
+        [DataRow(0, 7, 0, 8, 9, false)]
+        [DataRow(7, 8, 8, 8, 9, false)]
+        [DataRow(5, 7, 5, 6, 9, false)]
+        [DataRow(6, 3, 5, 3, 7, false)]
+        [DataRow(6, 4, 6, 3, 7, false)]
+        [DataRow(1, 4, 0, 4, 7, false)]
+        [DataRow(1, 5, 1, 4, 7, false)]
+        public void ExecutePlayerMoveNoWallsTest(int startR, int startCol, int row, int col, int dimension, bool white)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             QuoridorMove move = new QuoridorMove(row, col, white);
+            game.ForcePlayerMovement(startR, startCol, white);
 
             game.ExecuteMove(move);
             int newRow = 0, newCol = 0;
@@ -128,6 +135,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(9, 9, 9, false)]
         [DataRow(-1, -1, 9, false)]
         [DataRow(8, 9, 9, false)]
+        [DataRow(-1, 9, 9, false)]
         public void ExecutePlayerMoveNoWallsFailTest(int row, int col, int dimension, bool white)
         {
             QuoridorGame game = new QuoridorGame(dimension);

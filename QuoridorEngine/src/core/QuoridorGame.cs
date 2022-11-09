@@ -116,6 +116,28 @@ namespace QuoridorEngine.Core
             throw new ArgumentException("Unknown orientation type");
         }
 
+        /// <summary>
+        /// Moves the specified player to the requested coordinates
+        /// 
+        /// CAUTION: this function bypasses almost all of the move
+        /// legality checks. Therefore it should only be used for
+        /// testing and/or debugging purposes. DO NOT USE IT ANYWHERE
+        /// ELSE!!!
+        /// </summary>
+        /// <param name="row">The new row for the player</param>
+        /// <param name="column">The new column for the player</param>
+        /// <param name="isWhite">True if this is a move for white, false for black</param>
+        public void ForcePlayerMovement(int row, int column, bool isWhite)
+        {
+            Debug.Assert(board.IsValidPlayerSquare(row, column));
+            
+            QuoridorPlayer targetPlayer = getTargetPlayer(isWhite);
+            Debug.Assert(targetPlayer != null);
+
+            targetPlayer.Row = row;
+            targetPlayer.Column = column;
+        }
+
         public void GetWhiteCoordinates(ref int row, ref int column)
         {
             row = white.Row;
@@ -158,14 +180,22 @@ namespace QuoridorEngine.Core
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaColumn == 0 && board.CheckWallPartHorizontal(move.Row, move.Column)) 
+            if (deltaRow + deltaColumn > 1) 
+                throw new InvalidMoveException("Player tried to move more than one square at a time");
+
+            if (deltaRow > 0 && board.CheckWallPartHorizontal(move.Row, move.Column)) 
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaRow == 0 && board.CheckWallPartVertical(move.Row, move.Column))
+            if (deltaRow < 0 && board.CheckWallPartHorizontal(move.Row + 1, move.Column))
+                throw new InvalidMoveException("Wall is blocking player move");
+            if (deltaColumn > 0 && board.CheckWallPartVertical(move.Row, move.Column-1))
+                throw new InvalidMoveException("Wall is blocking player move");
+            if (deltaColumn < 0 && board.CheckWallPartVertical(move.Row, move.Column+1))
                 throw new InvalidMoveException("Wall is blocking player move");
 
+            // TODO: Check rewrite this to use the Vector2 class
             // Checking if another player is already located on destination coordinates
-            if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
-            if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+            //if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+            //if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
 
             // Verify that player is not moving more than one square at a time
             // TODO: Player can jump his opponent when they are side by side
