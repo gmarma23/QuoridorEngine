@@ -134,6 +134,11 @@ namespace QuoridorEngine.Core
             return player.AvailableWalls;
         }
 
+        public void SetPlayerWalls(bool isWhite, int numOfWalls)
+        {
+            getTargetPlayer(isWhite).AvailableWalls = numOfWalls;
+        }
+
         public int Dimension { get => dimension; }
 
         /// <summary>
@@ -195,7 +200,7 @@ namespace QuoridorEngine.Core
             {
                 // Check if any walls occupy the space needed by the new wall
                 if (board.CheckWallPartHorizontal(move.Row, move.Column) ||
-                    board.CheckWallPartHorizontal(move.Row, move.Column + 1) &&
+                    board.CheckWallPartHorizontal(move.Row, move.Column + 1) ||
                     board.CheckCorner(move.Row, move.Column + 1))
                     throw new InvalidMoveException("Wall position occupied");
 
@@ -207,8 +212,8 @@ namespace QuoridorEngine.Core
             {              
                 // Check if any walls occupy the space needed by the new wall
                 if (board.CheckWallPartVertical(move.Row, move.Column) ||
-                    board.CheckWallPartVertical(move.Row - 1, move.Column) &&
-                    board.CheckCorner(move.Row - 1, move.Column))
+                    board.CheckWallPartVertical(move.Row - 1, move.Column) ||
+                    board.CheckCorner(move.Row, move.Column + 1))
                     throw new InvalidMoveException("Wall position occupied");
 
                 board.AddWallPartVertical(move.Row, move.Column);
@@ -222,16 +227,6 @@ namespace QuoridorEngine.Core
 
             targetPlayer.DecreaseAvailableWalls();
             gameHistory.Add(move);
-        }
-
-        /// <summary>
-        /// Player's total available walls setter
-        /// </summary>
-        /// <param name="isWhite">True if player is white</param>
-        /// <param name="numOfWalls">Total available walls</param>
-        public void SetPlayerWalls(bool isWhite, int numOfWalls)
-        {
-           getTargetPlayer(isWhite).AvailableWalls = numOfWalls;
         }
 
         /// <summary>
