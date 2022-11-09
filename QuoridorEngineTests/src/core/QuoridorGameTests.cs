@@ -1,6 +1,8 @@
 ﻿using QuoridorEngine.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuoridorEngine.Utils;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace QuoridorEngine.Core.Tests
 {
@@ -207,13 +209,80 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(10, 9, Orientation.Vertical, 9)]
         [DataRow(16, 19, Orientation.Vertical, 9)]
 
-
         public void ExecuteWallMoveSimpleFailTest(int row, int col, Orientation orientation, int dimension)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             QuoridorMove move = new QuoridorMove(row, col, true, orientation);
 
             Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move));
+        }
+
+        [TestMethod]
+        [DataRow(1, 0, true, Orientation.Vertical, 9)]
+        [DataRow(1, 7, false, Orientation.Horizontal, 9)]
+        [DataRow(4, 6, true, Orientation.Horizontal, 9)]
+        [DataRow(6, 0, false, Orientation.Vertical, 9)]
+
+        public void ExecuteWallMoveSimplePlayerHasNoWalls(int row, int col, bool isWhite, Orientation orientation, int dimension)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            QuoridorMove move = new QuoridorMove(row, col, isWhite, orientation);
+
+            game.SetPlayerWalls(isWhite, 0);
+            int initialWalls = game.GetPlayerWalls(isWhite);
+
+            Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move));
+            Assert.IsFalse(game.HasWall(row, col, orientation));
+            Assert.AreEqual(initialWalls, 0);
+        }
+
+        [TestMethod]
+        [DataRow(1, 0, Orientation.Horizontal, false, 9)]
+        [DataRow(3, 5, Orientation.Vertical, true, 9)]
+        [DataRow(6, 6, Orientation.Horizontal, false, 9)]
+        [DataRow(8, 7, Orientation.Vertical, true, 9)]
+
+        public void ExecuteWallMoveSimpleFromsIllegalCross(int row, int col, Orientation orientation, bool isWhite, int dimension)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            QuoridorMove move1 = new QuoridorMove(row, col, isWhite, orientation);
+
+            Orientation oppositeOrientation = orientation == Orientation.Horizontal ? Orientation.Vertical : Orientation.Horizontal;
+            QuoridorMove move2 = new QuoridorMove(row, col, !isWhite, oppositeOrientation);
+
+            game.ExecuteMove(move1);
+            Assert.IsTrue(game.HasWall(row, col, orientation));
+
+            Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move2));
+            Assert.IsFalse(game.HasWall(row, col, oppositeOrientation));
+            
+        }
+
+        [TestMethod]
+        [DataRow(2, 0, Orientation.Horizontal, 3, 0, Orientation.Vertical, 1, 0, 9)]
+        [DataRow(7, 7, Orientation.Horizontal, 8, 7, Orientation.Vertical, 6, 7, 9)]
+        [DataRow(1, 1, Orientation.Vertical, 1, 0, Orientation.Horizontal, 1, 2, 9)]
+        [DataRow(8, 6, Orientation.Vertical, 8, 5, Orientation.Horizontal, 8, 7, 9)]
+
+        public void ExecuteWallMoveSimpleFromsLegalCross(
+            int row1, int col1, Orientation orientation1, 
+            int row2, int col2, Orientation orientation2,
+            int row3, int col3, int dimension
+            )
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            QuoridorMove move1 = new QuoridorMove(row1, col1, true, orientation1);
+            QuoridorMove move2 = new QuoridorMove(row2, col2, false, orientation2);
+            QuoridorMove move3 = new QuoridorMove(row3, col3, true, orientation2);
+
+            game.ExecuteMove(move1);
+            Assert.IsTrue(game.HasWall(row1, col1, orientation1));
+
+            game.ExecuteMove(move2);
+            Assert.IsTrue(game.HasWall(row2, col2, orientation2));
+
+            game.ExecuteMove(move3);
+            Assert.IsTrue(game.HasWall(row3, col3, orientation2));
         }
 
         // TODO: test when wall forms illegal cross or is placed on an occupied position
