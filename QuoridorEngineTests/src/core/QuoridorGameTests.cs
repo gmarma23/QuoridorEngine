@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuoridorEngine.Utils;
 using System.ComponentModel;
 using System.Windows.Forms;
+using QuoridorEngine.Solver;
 
 namespace QuoridorEngine.Core.Tests
 {
@@ -285,8 +286,24 @@ namespace QuoridorEngine.Core.Tests
             Assert.IsTrue(game.HasWall(row3, col3, orientation2));
         }
 
-        // TODO: test when wall forms illegal cross or is placed on an occupied position
+        [TestMethod]
+        [DataRow(1, 0, Orientation.Horizontal, 9)]
+        [DataRow(3, 2, Orientation.Horizontal, 9)]
+        [DataRow(5, 6, Orientation.Vertical, 9)]
+        [DataRow(8, 7, Orientation.Vertical, 9)]
+
+        public void ExecuteWallMoveSimpleWallExists(int row, int col, Orientation orientation, int dimension)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            QuoridorMove move = new QuoridorMove(row, col, true, orientation);
+
+            game.ExecuteMove(move);
+            Assert.IsTrue(game.HasWall(row, col, orientation));
+
+            Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move));
+            Assert.IsTrue(game.HasWall(row, col, orientation));
+        }
+
         // TODO: test when wall blocks player path to goal
-        // TODO: test when walls form a cross that is legal
     }
 }
