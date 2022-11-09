@@ -130,8 +130,7 @@ namespace QuoridorEngine.Core
 
         public int GetPlayerWalls(bool isWhite)
         {
-            QuoridorPlayer player = getTargetPlayer(isWhite);
-            return player.AvailableWalls;
+            return getTargetPlayer(isWhite).AvailableWalls;
         }
 
         public void SetPlayerWalls(bool isWhite, int numOfWalls)
