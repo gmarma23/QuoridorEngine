@@ -137,8 +137,40 @@ namespace QuoridorEngine.Core.Tests
         // TODO: Test player move with jumping
         // TODO: Test player move with jumping and walls special case
 
-        // TODO: write tests values
         [TestMethod]
+        [DataRow(1, 0, true, Orientation.Horizontal, 9)]
+        [DataRow(1, 7, true, Orientation.Horizontal, 9)]
+        [DataRow(4, 6, true, Orientation.Horizontal, 9)]
+        [DataRow(6, 0, true, Orientation.Horizontal, 9)]
+        [DataRow(7, 7, true, Orientation.Horizontal, 9)]
+        [DataRow(8, 0, true, Orientation.Horizontal, 9)]
+        [DataRow(8, 7, true, Orientation.Horizontal, 9)]
+
+        [DataRow(1, 0, false, Orientation.Horizontal, 9)]
+        [DataRow(1, 7, false, Orientation.Horizontal, 9)]
+        [DataRow(4, 6, false, Orientation.Horizontal, 9)]
+        [DataRow(6, 0, false, Orientation.Horizontal, 9)]
+        [DataRow(7, 7, false, Orientation.Horizontal, 9)]
+        [DataRow(8, 0, false, Orientation.Horizontal, 9)]
+        [DataRow(8, 7, false, Orientation.Horizontal, 9)]
+
+        [DataRow(1, 0, true, Orientation.Vertical, 9)]
+        [DataRow(1, 7, true, Orientation.Vertical, 9)]
+        [DataRow(4, 6, true, Orientation.Vertical, 9)]
+        [DataRow(6, 0, true, Orientation.Vertical, 9)]
+        [DataRow(7, 7, true, Orientation.Vertical, 9)]
+        [DataRow(8, 0, true, Orientation.Vertical, 9)]
+        [DataRow(8, 7, true, Orientation.Vertical, 9)]
+
+        [DataRow(1, 0, false, Orientation.Vertical, 9)]
+        [DataRow(1, 7, false, Orientation.Vertical, 9)]
+        [DataRow(4, 6, false, Orientation.Vertical, 9)]
+        [DataRow(6, 0, false, Orientation.Vertical, 9)]
+        [DataRow(7, 7, false, Orientation.Vertical, 9)]
+        [DataRow(8, 0, false, Orientation.Vertical, 9)]
+        [DataRow(8, 7, false, Orientation.Vertical, 9)]
+
+
         public void ExecuteWallMoveSimpleTest(int row, int col, bool isWhite, Orientation orientation, int dimension)
         {
             QuoridorGame game = new QuoridorGame(dimension);
@@ -151,8 +183,31 @@ namespace QuoridorEngine.Core.Tests
             Assert.AreEqual(initialWalls - 1, game.GetPlayerWalls(isWhite));
         }
 
-        // TODO: write test values
         [TestMethod]
+        [DataRow(-5, -7, Orientation.Horizontal, 9)]
+        [DataRow(-2, 0, Orientation.Horizontal, 9)]
+        [DataRow(3, -4, Orientation.Horizontal, 9)]
+        [DataRow(0, 0, Orientation.Horizontal, 9)]
+        [DataRow(8, 8, Orientation.Horizontal, 9)]
+        [DataRow(9, 0, Orientation.Horizontal, 9)]
+        [DataRow(9, 0, Orientation.Horizontal, 9)]
+        [DataRow(9, 7, Orientation.Horizontal, 9)]
+        [DataRow(9, 9, Orientation.Horizontal, 9)]
+        [DataRow(10, 0, Orientation.Horizontal, 9)]
+        [DataRow(10, 10, Orientation.Horizontal, 9)]
+        [DataRow(17, 14, Orientation.Horizontal, 9)]
+
+        [DataRow(0, 0, Orientation.Vertical, 9)]
+        [DataRow(0, 7, Orientation.Vertical, 9)]
+        [DataRow(1, 8, Orientation.Vertical, 9)]
+        [DataRow(8, 8, Orientation.Vertical, 9)]
+        [DataRow(9, 0, Orientation.Vertical, 9)]
+        [DataRow(9, 9, Orientation.Vertical, 9)]
+        [DataRow(9, 10, Orientation.Vertical, 9)]
+        [DataRow(10, 9, Orientation.Vertical, 9)]
+        [DataRow(16, 19, Orientation.Vertical, 9)]
+
+
         public void ExecuteWallMoveSimpleFailTest(int row, int col, Orientation orientation, int dimension)
         {
             QuoridorGame game = new QuoridorGame(dimension);

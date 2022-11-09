@@ -200,8 +200,8 @@ namespace QuoridorEngine.Core
                     throw new InvalidMoveException("Wall position occupied");
 
                 board.AddWallPartHorizontal(move.Row, move.Column);
-                board.AddWallPartHorizontal(move.Row, move.Column+1);
-                board.AddCorner(move.Row, move.Column+1);
+                board.AddWallPartHorizontal(move.Row, move.Column + 1);
+                board.AddCorner(move.Row, move.Column + 1);
             }
             else if (move.Orientation == Orientation.Vertical)
             {              
@@ -213,7 +213,7 @@ namespace QuoridorEngine.Core
 
                 board.AddWallPartVertical(move.Row, move.Column);
                 board.AddWallPartVertical(move.Row - 1, move.Column);
-                board.AddCorner(move.Row - 1, move.Column);
+                board.AddCorner(move.Row, move.Column + 1);
             }
             else throw new InvalidMoveException("Unknown orientation specification");
 
