@@ -73,8 +73,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row - 1 >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row - 1 < horizontalWallParts.GetLength(0));
+            Debug.Assert(col < horizontalWallParts.GetLength(1));
             return horizontalWallParts[row - 1, col];
         }
 
@@ -89,8 +89,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row < verticalWallParts.GetLength(0));
+            Debug.Assert(col < verticalWallParts.GetLength(1));
             return verticalWallParts[row, col];
         }
 
@@ -105,8 +105,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row - 1 >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row - 1 < horizontalWallParts.GetLength(0));
+            Debug.Assert(col < horizontalWallParts.GetLength(1));
             horizontalWallParts[row - 1, col] = true;
         }
 
@@ -121,8 +121,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row < verticalWallParts.GetLength(0));
+            Debug.Assert(col < verticalWallParts.GetLength(1));
             verticalWallParts[row, col] = true;
         }
 
@@ -137,8 +137,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row - 1 >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row - 1 < horizontalWallParts.GetLength(0));
+            Debug.Assert(col < horizontalWallParts.GetLength(1));
             horizontalWallParts[row - 1, col] = false;
         }
 
@@ -153,8 +153,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row >= 0);
             Debug.Assert(col >= 0);
-            Debug.Assert(row <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col <= verticalWallParts.GetLength(1));
+            Debug.Assert(row < verticalWallParts.GetLength(0));
+            Debug.Assert(col < verticalWallParts.GetLength(1));
             verticalWallParts[row, col] = false;
         }
 
@@ -168,8 +168,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row - 1 >= 0);
             Debug.Assert(col - 1 >= 0);
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
+            Debug.Assert(row - 1 < corners.GetLength(0));
+            Debug.Assert(col - 1 < corners.GetLength(1));
             return corners[row - 1, col - 1];
         }
 
@@ -183,8 +183,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row - 1 >= 0);
             Debug.Assert(col - 1 >= 0);
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
+            Debug.Assert(row - 1 < corners.GetLength(0));
+            Debug.Assert(col - 1 < corners.GetLength(1));
             corners[row - 1, col - 1] = true;
         }
 
@@ -198,8 +198,8 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(row - 1 >= 0);
             Debug.Assert(col - 1 >= 0);
-            Debug.Assert(row - 1 <= horizontalWallParts.GetLength(0));
-            Debug.Assert(col - 1 <= verticalWallParts.GetLength(1));
+            Debug.Assert(row - 1 < corners.GetLength(0));
+            Debug.Assert(col - 1 < corners.GetLength(1));
             corners[row - 1, col - 1] = false;
         }
     }
