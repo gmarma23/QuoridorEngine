@@ -75,6 +75,10 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(0, 7, 0, 8, 9, true)]
         [DataRow(7, 8, 8, 8, 9, true)]
         [DataRow(5, 7, 5, 6, 9, true)]
+        [DataRow(6, 3, 5, 3, 7, true)]
+        [DataRow(6, 4, 6, 3, 7, true)]
+        [DataRow(1, 4, 0, 4, 7, true)]
+        [DataRow(1, 5, 1, 4, 7, true)]
         
         [DataRow(1, 0, 0, 0, 3, false)]
         [DataRow(2, 1, 2, 2, 3, false)]
@@ -87,6 +91,10 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(0, 7, 0, 8, 9, false)]
         [DataRow(7, 8, 8, 8, 9, false)]
         [DataRow(5, 7, 5, 6, 9, false)]
+        [DataRow(6, 3, 5, 3, 7, false)]
+        [DataRow(6, 4, 6, 3, 7, false)]
+        [DataRow(1, 4, 0, 4, 7, false)]
+        [DataRow(1, 5, 1, 4, 7, false)]
         public void ExecutePlayerMoveNoWallsTest(int startR, int startCol, int row, int col, int dimension, bool white)
         {
             QuoridorGame game = new QuoridorGame(dimension);
@@ -124,6 +132,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(9, 9, 9, false)]
         [DataRow(-1, -1, 9, false)]
         [DataRow(8, 9, 9, false)]
+        [DataRow(-1, 9, 9, false)]
         public void ExecutePlayerMoveNoWallsFailTest(int row, int col, int dimension, bool white)
         {
             QuoridorGame game = new QuoridorGame(dimension);
