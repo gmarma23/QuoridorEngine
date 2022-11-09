@@ -225,6 +225,16 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
+        /// Player's total available walls setter
+        /// </summary>
+        /// <param name="isWhite">True if player is white</param>
+        /// <param name="numOfWalls">Total available walls</param>
+        public void SetPlayerWalls(bool isWhite, int numOfWalls)
+        {
+           getTargetPlayer(isWhite).AvailableWalls = numOfWalls;
+        }
+
+        /// <summary>
         /// Check whether a path connecting current player's square
         /// and his target baseline exists using DFS algorithm.
         /// </summary>
