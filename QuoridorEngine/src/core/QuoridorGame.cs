@@ -20,7 +20,7 @@ namespace QuoridorEngine.Core
         private QuoridorBoard board;
         private QuoridorPlayer white;
         private QuoridorPlayer black;
-        private List<QuoridorMove> gameHistory;
+        private Stack<QuoridorMove> gameHistory;
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -146,7 +146,7 @@ namespace QuoridorEngine.Core
             white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
-            gameHistory = new List<QuoridorMove>();
+            gameHistory = new Stack<QuoridorMove>();
         }
 
         public void GetWhiteCoordinates(ref int row, ref int column)
@@ -181,6 +181,20 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(IsTerminalState());
             return white.IsInTargetBaseline();
+        }
+
+        /// <summary>
+        /// Undoes the last x moves of the game history.
+        /// </summary>
+        /// <param name="x">The amount of moves to undo</param>
+        /// <exception cref="ArgumentException">Thrown if x is negative/zero or greater 
+        /// than the number of moves played</exception>
+        public void UndoMoves(int x)
+        {
+            if(x <+ 0 || x > gameHistory.Count) throw new ArgumentException();
+
+            for(int i = 0; i < x; i++)
+                UndoMove(gameHistory.Pop());
         }
 
         public int Dimension { get => dimension; }
@@ -228,7 +242,7 @@ namespace QuoridorEngine.Core
             targetPlayer.Row = move.Row;
             targetPlayer.Column = move.Column;
 
-            gameHistory.Add(move);
+            gameHistory.Push(move);
         } 
 
         /// <summary>
@@ -278,7 +292,7 @@ namespace QuoridorEngine.Core
             // TODO: Check whether new wall forms a cross with any of the existing walls
 
             targetPlayer.DecreaseAvailableWalls();
-            gameHistory.Add(move);
+            gameHistory.Push(move);
         }
 
         /// <summary>

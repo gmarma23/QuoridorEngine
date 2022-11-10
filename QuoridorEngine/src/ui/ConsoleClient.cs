@@ -10,7 +10,7 @@ namespace QuoridorEngine.UI
         private static QuoridorGame game;
         private static List<String> knownCommands = new List<string>
         {
-            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "winner", "showboard"
+            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "undo", "winner", "showboard"
         };
 
         /// <summary>
@@ -130,6 +130,31 @@ namespace QuoridorEngine.UI
                 catch (ArgumentException)
                 {
                     OutputUtility.PrintFailureMessage("unacceptable number of walls");
+                    return false;
+                }
+            }
+            else if (commandBody.Equals("undo"))
+            {
+                if (tokens.Length < 2)
+                {
+                    OutputUtility.PrintFailureMessage("syntax error");
+                    return false;
+                }
+
+                try
+                {
+                    int moves = Int32.Parse(tokens[1]);
+                    game.UndoMoves(moves);
+                    OutputUtility.PrintSuccessMessage("");
+                }
+                catch (FormatException)
+                {
+                    OutputUtility.PrintFailureMessage("syntax error");
+                    return false;
+                }
+                catch (ArgumentException)
+                {
+                    OutputUtility.PrintFailureMessage("cannot undo");
                     return false;
                 }
             }
