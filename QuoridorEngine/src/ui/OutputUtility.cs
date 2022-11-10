@@ -26,6 +26,7 @@ namespace QuoridorEngine.UI
                 printCellRow(state, row);
             }
 
+            printBorderRow(state, -1);
             printLetterRow(state.Dimension);
         }
 
@@ -55,18 +56,23 @@ namespace QuoridorEngine.UI
                 }
 
                 printHorizontalBorder();
-                if(row == state.Dimension - 1)
+                Console.Write('+');
+                continue;
+
+                if (row == state.Dimension - 1)
                 {
                     Console.Write("+");
                     continue;
                 }
             }
+
+            Console.WriteLine();
         }
 
         private static void printCellRow(QuoridorGame state, int row)
         {
             Console.Write(row + 1);
-            printSpaces(1);
+            printSpaces(2);
 
             for(int i = 0; i < state.Dimension; i++)
             {
