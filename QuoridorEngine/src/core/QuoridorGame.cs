@@ -112,6 +112,17 @@ namespace QuoridorEngine.Core
             throw new ArgumentException("Unknown orientation type");
         }
 
+        public bool HasWallPiece(int row, int column, Orientation orientation)
+        {
+            //TODO: make the necessary assertions
+            if (orientation == Orientation.Horizontal)
+                return board.CheckWallPartHorizontal(row, column);
+            else if (orientation == Orientation.Vertical)
+                return board.CheckWallPartVertical(row, column);
+                    
+            throw new ArgumentException("Unknown orientation type");
+        }
+
         /// <summary>
         /// Moves the specified player to the requested coordinates
         /// 
