@@ -10,7 +10,7 @@ namespace QuoridorEngine.UI
         private static QuoridorGame game;
         private static List<String> knownCommands = new List<string>
         {
-            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "undo", "winner", "showboard"
+            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "playmove", "undo", "winner", "showboard"
         };
 
         /// <summary>
@@ -133,6 +133,30 @@ namespace QuoridorEngine.UI
                     return false;
                 }
             }
+            else if (commandBody.Equals("playmove"))
+            {
+                int row = 0, col = 0;
+                bool isWhite = false;
+
+                if (!parsePosition(ref row, ref col, tokens, 2) || !parsePlayer(ref isWhite, tokens, 1))
+                {
+                    OutputUtility.PrintFailureMessage("syntax error");
+                    return false;
+                }
+
+                QuoridorMove move = new QuoridorMove(row, col, isWhite);
+                try
+                {
+                    game.ExecuteMove(move);
+                }
+                catch (InvalidMoveException)
+                {
+                    OutputUtility.PrintFailureMessage("illegal move");
+                    return false;
+                }
+
+                OutputUtility.PrintSuccessMessage("");
+            }
             else if (commandBody.Equals("undo"))
             {
                 if (tokens.Length < 2)
@@ -178,6 +202,50 @@ namespace QuoridorEngine.UI
                 OutputUtility.PrintFailureMessage("unknown command");
 
             return false;
+        }
+
+        private static bool parsePlayer(ref bool isWhite, String[] arguments, int indexOfArgument)
+        {
+            String player = arguments[indexOfArgument];
+            player.Trim();
+
+            if(player.Equals("w") || player.Equals("white"))
+            {
+                isWhite = true;
+                return true;
+            }
+            else if (player.Equals("b") || player.Equals("black"))
+            {
+                isWhite = false;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool parsePosition(ref int row, ref int column, String[] arguments, int indexOfArgument)
+        {
+            if (indexOfArgument >= arguments.Length)
+                return false;
+
+            char columnLetter = arguments[indexOfArgument][0];
+
+            if (!Char.IsLetter(columnLetter))
+                return false;
+
+            column = columnLetter - 'a';
+            String rawRow = arguments[indexOfArgument].Substring(1);
+
+            try
+            {
+                row = Int32.Parse(rawRow) - 1;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

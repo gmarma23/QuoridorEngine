@@ -217,7 +217,7 @@ namespace QuoridorEngine.Core
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaRow + deltaColumn > 1) 
+            if (Math.Abs(deltaRow) + Math.Abs(deltaColumn) > 1) 
                 throw new InvalidMoveException("Player tried to move more than one square at a time");
 
             if (deltaRow > 0 && board.CheckWallPartHorizontal(move.Row, move.Column)) 
@@ -231,12 +231,8 @@ namespace QuoridorEngine.Core
 
             // TODO: Check rewrite this to use the Vector2 class
             // Checking if another player is already located on destination coordinates
-            //if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
-            //if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
-
-            // Verify that player is not moving more than one square at a time
-            // TODO: Player can jump his opponent when they are side by side
-            // if (deltaRow + deltaColumn > 1) throw new InvalidMoveException("Player tried to move more than 2 cells at once");
+            if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+            if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");     
 
             // Finally execute the move
             targetPlayer.Row = move.Row;
