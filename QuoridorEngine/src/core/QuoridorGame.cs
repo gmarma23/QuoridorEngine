@@ -58,9 +58,20 @@ namespace QuoridorEngine.Core
         /// </summary>
 		/// <param name="playerIsWhite">True if we want moves for white player, false otherwise</param>
         /// <returns>A list of all the possible moves from this state for given player</returns>
-        public List<Move> GetPossibleMoves(bool playerIsWhite)
+        public IEnumerable<Move> GetPossibleMoves(bool playerIsWhite)
         {
-            throw new NotImplementedException();
+            List<QuoridorMove> possibleMoves = new List<QuoridorMove>();
+            QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
+
+            foreach((int row, int col) in getLegalNeighbourSquares(currentPlayer.Row, currentPlayer.Column, playerIsWhite))
+                possibleMoves.Add(new QuoridorMove(row, col, playerIsWhite));
+
+            if (currentPlayer.AvailableWalls > 0)
+            {
+                // Handle wall placement 
+            }
+
+            return possibleMoves;
         }
 
         /// <summary>
