@@ -279,6 +279,9 @@ namespace QuoridorEngine.UI
 
         private static bool parseOrientation(ref Orientation orientation, String[] arguments, int indexOfArgument)
         {
+            if (indexOfArgument >= arguments.Length)
+                return false;
+
             String rawOrientation = arguments[indexOfArgument];
             rawOrientation.Trim();
 
