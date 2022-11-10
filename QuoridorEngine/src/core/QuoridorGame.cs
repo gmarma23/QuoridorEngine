@@ -17,10 +17,10 @@ namespace QuoridorEngine.Core
         // TODO: maybe this variable should only be handled by Board
         // class in the future
         private readonly int dimension = 9;
-        private readonly QuoridorBoard board;
-        private readonly QuoridorPlayer white;
-        private readonly QuoridorPlayer black;
-        private readonly List<QuoridorMove> gameHistory;
+        private QuoridorBoard board;
+        private QuoridorPlayer white;
+        private QuoridorPlayer black;
+        private List<QuoridorMove> gameHistory;
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -32,13 +32,7 @@ namespace QuoridorEngine.Core
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
-            board = new QuoridorBoard(dimension);
-
-            int startingColumn = dimension / 2 + 1;
-            white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
-            black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
-
-            gameHistory = new List<QuoridorMove>();
+            ClearBoard();
         }
 
         /// <summary>
@@ -140,6 +134,21 @@ namespace QuoridorEngine.Core
             targetPlayer.Column = column;
         }
 
+        /// <summary>
+        /// The board is reset and cleared, the pawns are set to their starting positions,
+        /// the number of walls is reset to default value and the move history is cleared
+        /// </summary>
+        public void ClearBoard()
+        {
+            board = new QuoridorBoard(dimension);
+
+            int startingColumn = dimension / 2 + 1;
+            white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
+            black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
+
+            gameHistory = new List<QuoridorMove>();
+        }
+
         public void GetWhiteCoordinates(ref int row, ref int column)
         {
             row = white.Row;
@@ -159,6 +168,7 @@ namespace QuoridorEngine.Core
 
         public void SetPlayerWalls(bool isWhite, int numOfWalls)
         {
+            if (numOfWalls < 0) throw new ArgumentException("Negative number of walls given to player");
             getTargetPlayer(isWhite).AvailableWalls = numOfWalls;
         }
 
