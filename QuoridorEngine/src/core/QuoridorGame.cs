@@ -322,9 +322,6 @@ namespace QuoridorEngine.Core
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns>List of tuples with coordinates of legal neighbours</returns>
-        /// 
-        /// [TODO] 
-        /// Handle corner case: other player in neighbour square
         private List<(int, int)> getLegalNeighbourSquares(int row, int col, bool currentPlayerIsWhite)
         {
             Debug.Assert(board.IsValidPlayerSquare(row, col));
