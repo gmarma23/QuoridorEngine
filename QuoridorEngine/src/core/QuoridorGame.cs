@@ -298,7 +298,7 @@ namespace QuoridorEngine.Core
                     return true;
 
                 // Get current square's legal neighbours
-                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol);
+                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol, isWhite);
 
                 // Sort neighbours by descending row if current
                 // player is black to reach his baseline faster 
@@ -322,33 +322,107 @@ namespace QuoridorEngine.Core
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns>List of tuples with coordinates of legal neighbours</returns>
-        /// <exception cref="ArgumentException">When provided current
-        /// square's coordinates are invalid</exception>
         /// 
         /// [TODO] 
         /// Handle corner case: other player in neighbour square
         private List<(int, int)> getLegalNeighbourSquares(int row, int col, bool currentPlayerIsWhite)
         {
-            if (!board.IsValidPlayerSquare(row, col))
-                throw new ArgumentException("Current square coordinates out of bounds");
+            Debug.Assert(board.IsValidPlayerSquare(row, col));
 
             List<(int, int)> legalNeighbours = new();
 
-            if (board.IsValidPlayerSquare(row - 1, col) &&
-                board.CheckWallPartHorizontal(row, col))
-                legalNeighbours.Add((row - 1, col));
+            // Square 'DOWN' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row - 1, col) && !board.CheckWallPartHorizontal(row, col))
+                // Opponent is in square 'DOWN'
+                if (opponentOccupiesSquare(row - 1, col, !currentPlayerIsWhite))
+                {
+                    // Square 'DOWN-DOWN' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row - 2, col) && !board.CheckWallPartHorizontal(row - 1, col))
+                        legalNeighbours.Add((row - 2, col));
+                    else
+                    {
+                        // Square 'DOWN-LEFT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col - 1) && !board.CheckWallPartVertical(row - 1, col - 1))
+                            legalNeighbours.Add((row - 1, col - 1));
 
-            if (board.IsValidPlayerSquare(row, col - 1) &&
-                board.CheckWallPartVertical(row, col-1))
-                legalNeighbours.Add((row, col - 1));
+                        // Square 'DOWN-RIGHT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col + 1) && !board.CheckWallPartVertical(row - 1, col))
+                            legalNeighbours.Add((row - 1, col + 1));
+                    }   
+                }
+                // Square 'DOWN' is not occupied
+                else
+                    legalNeighbours.Add((row - 1, col));
 
-            if (board.IsValidPlayerSquare(row, col + 1) &&
-                board.CheckWallPartVertical(row, col))
-                legalNeighbours.Add((row, col + 1));
 
-            if (board.IsValidPlayerSquare(row + 1, col) &&
-                board.CheckWallPartHorizontal(row + 1, col))
-                legalNeighbours.Add((row + 1, col));
+            // Square 'LEFT' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row, col - 1) && !board.CheckWallPartVertical(row, col - 1))
+                // Opponent is in square 'LEFT'
+                if (opponentOccupiesSquare(row, col - 1, !currentPlayerIsWhite))
+                {
+                    // Square 'LEFT-LEFT' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row, col - 2) && !board.CheckWallPartVertical(row, col - 2))
+                        legalNeighbours.Add((row, col - 2));
+                    else
+                    {
+                        // Square 'LEFT-UP' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col - 1) && !board.CheckWallPartHorizontal(row + 1, col - 1))
+                            legalNeighbours.Add((row + 1, col - 1));
+
+                        // Square 'LEFT-DOWN' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col - 1) && !board.CheckWallPartHorizontal(row, col - 1))
+                            legalNeighbours.Add((row - 1, col - 1));
+                    }
+                }
+                // Square 'LEFT' is not occupied
+                else
+                    legalNeighbours.Add((row, col - 1));
+
+            // Square 'RIGHT' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row, col + 1) && !board.CheckWallPartVertical(row, col))
+                // Opponent is in square 'RIGHT'
+                if (opponentOccupiesSquare(row, col - 1, !currentPlayerIsWhite))
+                {
+                    // Square 'RIGHT-RIGHT' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row, col + 2) && !board.CheckWallPartVertical(row, col + 1))
+                        legalNeighbours.Add((row, col + 2));
+                    else
+                    {
+                        // Square 'RIGHT-UP' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col + 1) && !board.CheckWallPartHorizontal(row + 1, col + 1))
+                            legalNeighbours.Add((row + 1, col + 1));
+
+                        // Square 'RIGHT-DOWN' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col + 1) && !board.CheckWallPartHorizontal(row, col + 1))
+                            legalNeighbours.Add((row - 1, col + 1));
+                    }
+                }
+                // Square 'RIGHT' is not occupied
+                else
+                    legalNeighbours.Add((row, col + 1));
+
+            // Square 'UP' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row + 1, col) && !board.CheckWallPartHorizontal(row + 1, col))
+                // Opponent is in square 'UP'
+                if (opponentOccupiesSquare(row + 1, col, !currentPlayerIsWhite))
+                {
+                    // Square 'UP-UP' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row + 2, col) && !board.CheckWallPartVertical(row + 2, col))
+                        legalNeighbours.Add((row + 2, col));
+                    else
+                    {
+                        // Square 'UP-LEFT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col - 1) && !board.CheckWallPartVertical(row + 1, col - 1))
+                            legalNeighbours.Add((row + 1, col - 1));
+
+                        // Square 'UP-RIGHT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col + 1) && !board.CheckWallPartVertical(row + 1, col))
+                            legalNeighbours.Add((row + 1, col + 1));
+                    }
+                }
+                // Square 'UP' is not occupied
+                else
+                    legalNeighbours.Add((row + 1, col));
 
             return legalNeighbours;
         }
