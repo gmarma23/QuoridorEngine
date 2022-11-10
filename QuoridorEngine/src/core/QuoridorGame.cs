@@ -237,7 +237,7 @@ namespace QuoridorEngine.Core
                 throw new InvalidMoveException("Wall is blocking player move");
             if (deltaColumn > 0 && board.CheckWallPartVertical(move.Row, move.Column-1))
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn < 0 && board.CheckWallPartVertical(move.Row, move.Column+1))
+            if (deltaColumn < 0 && board.CheckWallPartVertical(move.Row, move.Column))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // TODO: Check rewrite this to use the Vector2 class

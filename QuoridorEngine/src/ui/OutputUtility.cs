@@ -87,12 +87,6 @@ namespace QuoridorEngine.UI
 
                 Console.Write('+');
                 continue;
-
-                if (row == state.Dimension - 1)
-                {
-                    Console.Write("+");
-                    continue;
-                }
             }
 
             Console.WriteLine();           
@@ -105,7 +99,7 @@ namespace QuoridorEngine.UI
 
             for(int i = 0; i < state.Dimension; i++)
             {
-                if(i < state.Dimension - 1 && state.HasWallPiece(row, i, Orientation.Vertical))
+                if(i > 0 && state.HasWallPiece(row, i-1, Orientation.Vertical))
                     Console.Write('H');
                 else
                     Console.Write("|");
