@@ -327,7 +327,7 @@ namespace QuoridorEngine.Core
         /// 
         /// [TODO] 
         /// Handle corner case: other player in neighbour square
-        private List<(int, int)> getLegalNeighbourSquares(int row, int col)
+        private List<(int, int)> getLegalNeighbourSquares(int row, int col, bool currentPlayerIsWhite)
         {
             if (!board.IsValidPlayerSquare(row, col))
                 throw new ArgumentException("Current square coordinates out of bounds");
@@ -351,6 +351,12 @@ namespace QuoridorEngine.Core
                 legalNeighbours.Add((row + 1, col));
 
             return legalNeighbours;
+        }
+
+        private bool opponentOccupiesSquare(int squareRow, int squareCol, bool opponentIsWhite)
+        {
+            QuoridorPlayer opponent = getTargetPlayer(opponentIsWhite);
+            return squareRow == opponent.Row && squareCol == opponent.Column;
         }
 
         /// <summary>
