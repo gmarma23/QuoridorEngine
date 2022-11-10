@@ -1,5 +1,6 @@
 ﻿using QuoridorEngine.Core;
 using QuoridorEngine.Utils;
+using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.UI
 {
@@ -10,7 +11,9 @@ namespace QuoridorEngine.UI
         private static QuoridorGame game;
         private static List<String> knownCommands = new List<string>
         {
-            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "playmove", "undo", "winner", "showboard"
+            "name", "known_command", "list_commands", "quit", "boardsize", 
+            "clear_board", "walls", "playmove", "playwall", "undo", "winner", 
+            "showboard"
         };
 
         /// <summary>
@@ -42,11 +45,11 @@ namespace QuoridorEngine.UI
         /// <summary>
         /// Handles a given quoridor command
         /// </summary>
-        /// <param name="cmd">The command to handle</param>
+        /// <param name="rawCommand">The command to handle</param>
         /// <returns>Returns true if the exit command was given</returns>
-        private static bool handleCommand(String cmd)
+        private static bool handleCommand(String rawCommand)
         {
-            String[] tokens = cmd.Split(' ');
+            String[] tokens = rawCommand.Split(' ');
             if (tokens.Length == 0) return false;
 
             String commandBody = tokens[0];
@@ -157,6 +160,32 @@ namespace QuoridorEngine.UI
 
                 OutputUtility.PrintSuccessMessage("");
             }
+            else if (commandBody.Equals("playwall"))
+            {
+                int row = 0, col = 0;
+                bool isWhite = false;
+                Orientation orientation = Orientation.Horizontal;
+
+                if (!parsePosition(ref row, ref col, tokens, 2) || !parsePlayer(ref isWhite, tokens, 1) ||
+                    !parseOrientation(ref orientation, tokens, 3))
+                {
+                    OutputUtility.PrintFailureMessage("syntax error");
+                    return false;
+                }
+
+                QuoridorMove move = new QuoridorMove(row, col, isWhite, orientation);
+                try
+                {
+                    game.ExecuteMove(move);
+                }
+                catch (InvalidMoveException)
+                {
+                    OutputUtility.PrintFailureMessage("illegal move");
+                    return false;
+                }
+
+                OutputUtility.PrintSuccessMessage("");
+            }
             else if (commandBody.Equals("undo"))
             {
                 if (tokens.Length < 2)
@@ -246,6 +275,25 @@ namespace QuoridorEngine.UI
             }
 
             return true;
+        }
+
+        private static bool parseOrientation(ref Orientation orientation, String[] arguments, int indexOfArgument)
+        {
+            String rawOrientation = arguments[indexOfArgument];
+            rawOrientation.Trim();
+
+            if (rawOrientation.Equals("h") || rawOrientation.Equals("horizontal"))
+            {
+                orientation = Orientation.Horizontal;
+                return true;
+            }
+            else if (rawOrientation.Equals("v") || rawOrientation.Equals("vertical"))
+            {
+                orientation = Orientation.Vertical;
+                return true;
+            }
+
+            return false;
         }
     }
 }
