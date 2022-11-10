@@ -142,7 +142,7 @@ namespace QuoridorEngine.Core
         {
             board = new QuoridorBoard(dimension);
 
-            int startingColumn = dimension / 2 + 1;
+            int startingColumn = dimension / 2;
             white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
