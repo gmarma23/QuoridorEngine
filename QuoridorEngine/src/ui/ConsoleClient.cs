@@ -29,6 +29,12 @@ namespace QuoridorEngine.UI
 
                 line.Trim();
                 line.ToLower();
+
+                // Ignore blank and comment lines
+                if (String.IsNullOrEmpty(line)) continue;
+                if (line.StartsWith("#")) continue;
+
+                // If the command was the exit one we exit the loop
                 if(handleCommand(line)) break;
             } while (true);
         }
@@ -46,7 +52,7 @@ namespace QuoridorEngine.UI
             String commandBody = tokens[0];
             if (String.Equals(commandBody, "quit"))
             {
-                Console.WriteLine("=\n");
+                OutputUtility.PrintSuccessMessage("");
                 return true;
             }
             else if (String.Equals(commandBody, "name"))
@@ -55,14 +61,14 @@ namespace QuoridorEngine.UI
             {
                 if(tokens.Length < 2)
                 {
-                    Console.WriteLine("? syntax_error");
+                    OutputUtility.PrintFailureMessage("syntax error");
                     return false;
                 }
 
                 if (knownCommands.Contains(tokens[1]))
-                    Console.WriteLine("=true\n");
+                    OutputUtility.PrintSuccessMessage("true");
                 else
-                    Console.WriteLine("=false\n");
+                    OutputUtility.PrintSuccessMessage("false");
             }
             else if (commandBody.Equals("list_commands"))
             {
@@ -75,7 +81,7 @@ namespace QuoridorEngine.UI
             {
                 if (tokens.Length < 2)
                 {
-                    Console.WriteLine("? syntax error\n");
+                    OutputUtility.PrintFailureMessage("syntax error");
                     return false;
                 }
 
@@ -83,29 +89,29 @@ namespace QuoridorEngine.UI
                 {
                     int boardSize = Int32.Parse(tokens[1]);
                     game = new QuoridorGame(boardSize);
-                    Console.WriteLine("=\n");
+                    OutputUtility.PrintSuccessMessage("");
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("? syntax error");
+                    OutputUtility.PrintFailureMessage("syntax error");
                     return false;
                 }
                 catch (ArgumentException)
                 {
-                    Console.WriteLine("? unacceptable size");
+                    OutputUtility.PrintFailureMessage("unacceptable size");
                     return false;
                 }
             }
             else if (commandBody.Equals("clear_board"))
             {
                 game.ClearBoard();
-                Console.WriteLine("\n");
+                OutputUtility.PrintSuccessMessage("");
             }
             else if (commandBody.Equals("walls"))
             {
                 if (tokens.Length < 2)
                 {
-                    Console.WriteLine("? syntax error\n");
+                    OutputUtility.PrintFailureMessage("syntax error");
                     return false;
                 }
 
@@ -114,25 +120,27 @@ namespace QuoridorEngine.UI
                     int walls = Int32.Parse(tokens[1]);
                     game.SetPlayerWalls(true, walls);
                     game.SetPlayerWalls(false, walls);
-                    Console.WriteLine("=\n");
+                    OutputUtility.PrintSuccessMessage("");
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("? syntax error");
+                    OutputUtility.PrintFailureMessage("syntax error");
                     return false;
                 }
                 catch (ArgumentException)
                 {
-                    Console.WriteLine("? unacceptable walls number");
+                    OutputUtility.PrintFailureMessage("unacceptable number of walls");
                     return false;
                 }
             }
             else if (commandBody.Equals("showboard"))
             {
+                Console.WriteLine("=");
                 OutputUtility.PrintState(game);
+                Console.WriteLine("\n");
             }
             else
-                Console.WriteLine("? unknown command\n");
+                OutputUtility.PrintFailureMessage("unknown command");
 
             return false;
         }

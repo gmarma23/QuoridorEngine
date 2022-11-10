@@ -8,6 +8,26 @@ namespace QuoridorEngine.UI
         private const int cellSize = 3;
 
         /// <summary>
+        /// Prints a message with the success format defined in the Quoridor
+        /// Text Protocol.
+        /// </summary>
+        /// <param name="message">The message to print</param>
+        public static void PrintSuccessMessage(String message)
+        {
+            Console.Write("=" + message + "\n\n");
+        }
+
+        /// <summary>
+        /// Prints a message with the fail format defined in the Quoridor
+        /// Text Protocol.
+        /// </summary>
+        /// <param name="message">The message to print</param>
+        public static void PrintFailureMessage(String message)
+        {
+            Console.Write("? " + message + "\n\n");
+        }
+
+        /// <summary>
         /// Prints a quoridor state to the console with
         /// a nice formatting
         /// </summary>
