@@ -1,4 +1,5 @@
 ﻿using QuoridorEngine.Core;
+using QuoridorEngine.Utils;
 
 namespace QuoridorEngine.UI
 {
@@ -9,7 +10,7 @@ namespace QuoridorEngine.UI
         private static QuoridorGame game;
         private static List<String> knownCommands = new List<string>
         {
-            "name", "known_command", "list_commands", "quit"
+            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "showboard"
         };
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace QuoridorEngine.UI
             do
             {
                 String line = Console.ReadLine();
-                if (line == null) continue;
+                if (line == null) break;
 
                 line.Trim();
                 line.ToLower();
@@ -52,6 +53,12 @@ namespace QuoridorEngine.UI
                 Console.WriteLine("=" + engineName + "\n");
             else if (commandBody.Equals("known_command"))
             {
+                if(tokens.Length < 2)
+                {
+                    Console.WriteLine("? syntax_error");
+                    return false;
+                }
+
                 if (knownCommands.Contains(tokens[1]))
                     Console.WriteLine("=true\n");
                 else
@@ -63,6 +70,66 @@ namespace QuoridorEngine.UI
                 foreach (String command in knownCommands)
                     Console.WriteLine(command);
                 Console.WriteLine();
+            }
+            else if (commandBody.Equals("boardsize"))
+            {
+                if (tokens.Length < 2)
+                {
+                    Console.WriteLine("? syntax error\n");
+                    return false;
+                }
+
+                try
+                {
+                    int boardSize = Int32.Parse(tokens[1]);
+                    game = new QuoridorGame(boardSize);
+                    Console.WriteLine("=\n");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("? syntax error");
+                    return false;
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("? unacceptable size");
+                    return false;
+                }
+            }
+            else if (commandBody.Equals("clear_board"))
+            {
+                game.ClearBoard();
+                Console.WriteLine("\n");
+            }
+            else if (commandBody.Equals("walls"))
+            {
+                if (tokens.Length < 2)
+                {
+                    Console.WriteLine("? syntax error\n");
+                    return false;
+                }
+
+                try
+                {
+                    int walls = Int32.Parse(tokens[1]);
+                    game.SetPlayerWalls(true, walls);
+                    game.SetPlayerWalls(false, walls);
+                    Console.WriteLine("=\n");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("? syntax error");
+                    return false;
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("? unacceptable walls number");
+                    return false;
+                }
+            }
+            else if (commandBody.Equals("showboard"))
+            {
+                OutputUtility.PrintState(game);
             }
             else
                 Console.WriteLine("? unknown command\n");
