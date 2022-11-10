@@ -172,6 +172,17 @@ namespace QuoridorEngine.Core
             getTargetPlayer(isWhite).AvailableWalls = numOfWalls;
         }
 
+        /// <summary>
+        /// Returns true if white won the game, or false if black won
+        /// Always assumes that the game is over. DO NOT CALL if 
+        /// IsTerminalState() is not true.
+        /// </summary>
+        public bool WinnerIsWhite()
+        {
+            Debug.Assert(IsTerminalState());
+            return white.IsInTargetBaseline();
+        }
+
         public int Dimension { get => dimension; }
 
         /// <summary>

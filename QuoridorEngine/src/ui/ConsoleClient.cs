@@ -10,7 +10,7 @@ namespace QuoridorEngine.UI
         private static QuoridorGame game;
         private static List<String> knownCommands = new List<string>
         {
-            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "showboard"
+            "name", "known_command", "list_commands", "quit", "boardsize", "clear_board", "walls", "winner", "showboard"
         };
 
         /// <summary>
@@ -131,6 +131,16 @@ namespace QuoridorEngine.UI
                 {
                     OutputUtility.PrintFailureMessage("unacceptable number of walls");
                     return false;
+                }
+            }
+            else if (commandBody.Equals("winner"))
+            {
+                if (!game.IsTerminalState())
+                    OutputUtility.PrintSuccessMessage("false");
+                else
+                {
+                    String winnerName = game.WinnerIsWhite() ? "white" : "black";
+                    OutputUtility.PrintSuccessMessage("true " + winnerName);
                 }
             }
             else if (commandBody.Equals("showboard"))
