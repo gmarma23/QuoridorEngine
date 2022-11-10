@@ -1,5 +1,6 @@
 ﻿using QuoridorEngine.Core;
 using System.Diagnostics;
+using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.UI
 {
@@ -48,6 +49,10 @@ namespace QuoridorEngine.UI
 
             printBorderRow(state, -1);
             printLetterRow(state.Dimension);
+
+            Console.WriteLine();
+            Console.WriteLine("White walls: " + state.GetPlayerWalls(true));
+            Console.WriteLine("Black walls: " + state.GetPlayerWalls(false));
         }
 
         private static void printLetterRow(int dimension)
@@ -68,14 +73,18 @@ namespace QuoridorEngine.UI
 
             for(int i = 0; i < state.Dimension; i++)
             {
-                if(row >= state.Dimension || row < 1)
+                if(row >= state.Dimension-1 || row < 0)
                 {
                     printHorizontalBorder();
                     Console.Write('+');
                     continue;
                 }
 
-                printHorizontalBorder();
+                if (state.HasWallPiece(row+1, i, Orientation.Horizontal))
+                    printHorizontalWall();
+                else
+                    printHorizontalBorder();
+
                 Console.Write('+');
                 continue;
 
@@ -86,7 +95,7 @@ namespace QuoridorEngine.UI
                 }
             }
 
-            Console.WriteLine();
+            Console.WriteLine();           
         }
 
         private static void printCellRow(QuoridorGame state, int row)
@@ -96,7 +105,10 @@ namespace QuoridorEngine.UI
 
             for(int i = 0; i < state.Dimension; i++)
             {
-                Console.Write("|");
+                if(i < state.Dimension - 1 && state.HasWallPiece(row, i, Orientation.Vertical))
+                    Console.Write('H');
+                else
+                    Console.Write("|");
 
                 int whiteRow = 0, whiteCol = 0, blackRow = 0, blackCol = 0;
                 state.GetWhiteCoordinates(ref whiteRow, ref whiteCol);
@@ -111,7 +123,7 @@ namespace QuoridorEngine.UI
                     printSpaces(cellSize);
             }
 
-            Console.WriteLine("| "+ row);
+            Console.WriteLine("| " + row);
         }
 
         private static void printSpaces(int amountOfSpaces)
