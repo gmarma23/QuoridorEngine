@@ -32,7 +32,7 @@ namespace QuoridorEngine.Core
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
-            ClearBoard();
+            ResetGame();
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace QuoridorEngine.Core
         /// The board is reset and cleared, the pawns are set to their starting positions,
         /// the number of walls is reset to default value and the move history is cleared
         /// </summary>
-        public void ClearBoard()
+        public void ResetGame()
         {
             board = new QuoridorBoard(dimension);
 

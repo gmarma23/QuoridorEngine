@@ -107,7 +107,7 @@ namespace QuoridorEngine.UI
             }
             else if (commandBody.Equals("clear_board"))
             {
-                game.ClearBoard();
+                game.ResetGame();
                 OutputUtility.PrintSuccessMessage("");
             }
             else if (commandBody.Equals("walls"))
