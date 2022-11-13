@@ -68,7 +68,7 @@ namespace QuoridorEngine.Core
 
             if (currentPlayer.AvailableWalls > 0)
                 for (int row = 1; row < dimension; row++)
-                    for (int col = 0; col < dimention - 1; col++)
+                    for (int col = 0; col < dimension - 1; col++)
                     {
                         QuoridorMove hWallMove = new(row, col, playerIsWhite, Orientation.Horizontal);
                         if (CanPlaceWall(hWallMove))
