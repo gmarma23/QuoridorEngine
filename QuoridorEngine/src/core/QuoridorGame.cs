@@ -72,7 +72,9 @@ namespace QuoridorEngine.Core
 
             if (currentPlayer.AvailableWalls > 0)
             {
-                
+                foreach(QuoridorMove move in possibleWallPlacementMoves)
+                    if (CanPlaceWall(move))
+                        possibleMoves.Add(move);
             }
 
             return possibleMoves;
