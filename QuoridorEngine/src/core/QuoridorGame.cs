@@ -20,7 +20,7 @@ namespace QuoridorEngine.Core
         private readonly QuoridorBoard board;
         private readonly QuoridorPlayer white;
         private readonly QuoridorPlayer black;
-        private readonly List<QuoridorMove> gameHistory;
+        private readonly Stack<QuoridorMove> gameHistory;
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -38,7 +38,7 @@ namespace QuoridorEngine.Core
             white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
-            gameHistory = new List<QuoridorMove>();
+            gameHistory = new Stack<QuoridorMove>();
         }
 
         /// <summary>
@@ -98,13 +98,31 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
-        /// Undoes a given move returning the state to its previous configuration. Assumes the move to be
-        /// undone was legal at the moment it was executed.
+        /// Undoes last given move returning the state to its previous configuration. 
+        /// Assumes the move to be undone was legal at the moment it was executed.
         /// </summary>
-        /// <param name="move">The move to be undone</param>
         public void UndoMove(Move move)
         {
-            throw new NotImplementedException();
+            QuoridorMove lastMove = (QuoridorMove)(move);
+            if (lastMove.Type == MoveType.PlayerMovement)
+            {
+                // Handle player movement undo
+            }
+            else if(lastMove.Type == MoveType.WallPlacement)
+            {
+                if (lastMove.Orientation == Orientation.Horizontal)
+                {
+                    board.RemoveWallPartHorizontal(lastMove.Row, lastMove.Column);
+                    board.RemoveWallPartHorizontal(lastMove.Row, lastMove.Column + 1);
+                    board.RemoveCorner(lastMove.Row, lastMove.Column + 1);
+                }
+                else if (lastMove.Orientation == Orientation.Vertical)
+                {
+                    board.RemoveWallPartVertical(lastMove.Row, lastMove.Column);
+                    board.RemoveWallPartVertical(lastMove.Row - 1, lastMove.Column);
+                    board.RemoveCorner(lastMove.Row, lastMove.Column + 1);
+                }
+            }
         }
 
         /// <summary>
@@ -286,7 +304,7 @@ namespace QuoridorEngine.Core
             targetPlayer.Row = move.Row;
             targetPlayer.Column = move.Column;
 
-            gameHistory.Add(move);
+            gameHistory.Push(move);
         } 
 
         /// <summary>
@@ -336,7 +354,7 @@ namespace QuoridorEngine.Core
             // TODO: Check whether new wall forms a cross with any of the existing walls
 
             targetPlayer.DecreaseAvailableWalls();
-            gameHistory.Add(move);
+            gameHistory.Push(move);
         }
 
         /// <summary>
