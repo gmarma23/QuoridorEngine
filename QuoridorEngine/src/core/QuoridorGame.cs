@@ -20,6 +20,7 @@ namespace QuoridorEngine.Core
         private readonly QuoridorBoard board;
         private readonly QuoridorPlayer white;
         private readonly QuoridorPlayer black;
+        private readonly List<QuoridorMove> possibleWallPlacementMoves;
         private readonly List<QuoridorMove> gameHistory;
 
         /// <summary>
@@ -39,6 +40,9 @@ namespace QuoridorEngine.Core
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
             gameHistory = new List<QuoridorMove>();
+
+            possibleWallPlacementMoves = new List<QuoridorMove>();
+            GeneratePossibleWallPlacementMoves();
         }
 
         /// <summary>
@@ -68,7 +72,7 @@ namespace QuoridorEngine.Core
 
             if (currentPlayer.AvailableWalls > 0)
             {
-                // Handle wall placement 
+                
             }
 
             return possibleMoves;
@@ -499,6 +503,19 @@ namespace QuoridorEngine.Core
         {
             QuoridorPlayer opponent = getTargetPlayer(opponentIsWhite);
             return squareRow == opponent.Row && squareCol == opponent.Column;
+        }
+
+        /// <summary>
+        /// Utility to generate all possible wall placement moves after board creation
+        /// </summary>
+        private void GeneratePossibleWallPlacementMoves()
+        {
+            for (int row = 1; row < dimension; row++)
+                for (int col = 0; col < dimention - 1; col++)
+                {
+                    possibleWallPlacementMoves.Add(new QuoridorMove(row, col, Orientation.Horizontal))
+                    possibleWallPlacementMoves.Add(new QuoridorMove(row, col, Orientation.Vertical))
+                }         
         }
 
         /// <summary>
