@@ -60,7 +60,7 @@ namespace QuoridorEngine.Core
         /// <returns>A list of all the possible moves from this state for given player</returns>
         public IEnumerable<Move> GetPossibleMoves(bool playerIsWhite)
         {
-            List<QuoridorMove> possibleMoves = new List<QuoridorMove>();
+            List<QuoridorMove> possibleMoves = new();
             QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
 
             foreach((int row, int col) in getLegalNeighbourSquares(currentPlayer.Row, currentPlayer.Column, playerIsWhite))
@@ -127,6 +127,66 @@ namespace QuoridorEngine.Core
                 return board.CheckWallPartVertical(row, column) && board.CheckWallPartVertical(row - 1, column)
                     && board.CheckCorner(row, column + 1);
             throw new ArgumentException("Unknown orientation type");
+        }
+
+        /// <summary>
+        /// Check whether provided wall placement move is valid
+        /// </summary>
+        /// <param name="move">Wall placement move</param>
+        /// <returns>True if valid</returns>
+        public bool CanPlaceWall(QuoridorMove move)
+        {
+            // Check if coordinates are inside bounds
+            if ((move.Column < 0 || move.Column >= dimension - 1) ||
+                (move.Row < 1 || move.Row >= dimension))
+                return false;
+
+            // Check if player has enough walls left
+            if (getTargetPlayer(move.IsWhitePlayer).AvailableWalls <= 0)
+                return false;
+
+            if (move.Orientation == Orientation.Horizontal)
+            {
+                // Check if any walls occupy the space needed by the new
+                // wall or new call forms illegal cross when placed
+                if (board.CheckWallPartHorizontal(move.Row, move.Column) ||
+                    board.CheckWallPartHorizontal(move.Row, move.Column + 1) ||
+                    board.CheckCorner(move.Row, move.Column + 1))
+                    return false;
+            }
+            else if (move.Orientation == Orientation.Vertical)
+            {
+                // Check if any walls occupy the space needed by the new
+                // wall or new call forms illegal cross when placed
+                if (board.CheckWallPartVertical(move.Row, move.Column) ||
+                    board.CheckWallPartVertical(move.Row - 1, move.Column) ||
+                    board.CheckCorner(move.Row, move.Column + 1))
+                    return false;
+            }
+            else
+                // Unknown orientation
+                return false;
+
+            bool whiteTarget = false;
+            bool blackTarget = false;
+
+            Thread white = new(() =>
+            {
+                whiteTarget = playerCanReachBaseline(isWhite: true);
+            });
+            Thread black = new(() =>
+            {
+                blackTarget = playerCanReachBaseline(isWhite: false);
+            });
+
+            white.Start();
+            black.Start();
+
+            // Check if both players can reach their target
+            if (!whiteTarget || !blackTarget)
+                return false;
+
+            return true;
         }
 
         /// <summary>
