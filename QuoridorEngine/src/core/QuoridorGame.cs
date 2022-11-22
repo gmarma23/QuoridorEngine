@@ -73,11 +73,11 @@ namespace QuoridorEngine.Core
                 for (int col = 0; col < dimension - 1; col++)
                 {
                     QuoridorMove hWallMove = new(row, col, playerIsWhite, Orientation.Horizontal);
-                    if (CanPlaceWall(hWallMove))
+                    if (canPlaceWall(hWallMove))
                         possibleMoves.Add(hWallMove);
 
                     QuoridorMove vWallMove = new(row, col, playerIsWhite, Orientation.Vertical);
-                    if (CanPlaceWall(vWallMove))
+                    if (canPlaceWall(vWallMove))
                         possibleMoves.Add(vWallMove);
                 }
 
@@ -306,7 +306,7 @@ namespace QuoridorEngine.Core
         /// </summary>
         /// <param name="move">Wall placement move</param>
         /// <returns>True if valid</returns>
-        private bool CanPlaceWall(QuoridorMove move)
+        private bool canPlaceWall(QuoridorMove move)
         {
             // Check if coordinates are inside bounds
             if ((move.Column < 0 || move.Column >= dimension - 1) ||
