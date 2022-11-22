@@ -17,10 +17,11 @@ namespace QuoridorEngine.Core
         // TODO: maybe this variable should only be handled by Board
         // class in the future
         private readonly int dimension = 9;
-        private readonly QuoridorBoard board;
-        private readonly QuoridorPlayer white;
-        private readonly QuoridorPlayer black;
-        private readonly Stack<QuoridorMove> gameHistory;
+
+        private QuoridorBoard board;
+        private QuoridorPlayer white;
+        private QuoridorPlayer black;
+        private Stack<QuoridorMove> gameHistory;
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -32,13 +33,7 @@ namespace QuoridorEngine.Core
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
-            board = new QuoridorBoard(dimension);
-
-            int startingColumn = dimension / 2 + 1;
-            white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
-            black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
-
-            gameHistory = new Stack<QuoridorMove>();
+            ResetGame();
         }
 
         /// <summary>
@@ -159,6 +154,17 @@ namespace QuoridorEngine.Core
             throw new ArgumentException("Unknown orientation type");
         }
 
+        public bool HasWallPiece(int row, int column, Orientation orientation)
+        {
+            //TODO: make the necessary assertions
+            if (orientation == Orientation.Horizontal)
+                return board.CheckWallPartHorizontal(row, column);
+            else if (orientation == Orientation.Vertical)
+                return board.CheckWallPartVertical(row, column);
+                    
+            throw new ArgumentException("Unknown orientation type");
+        }
+
         /// <summary>
         /// Moves the specified player to the requested coordinates
         /// 
@@ -181,6 +187,21 @@ namespace QuoridorEngine.Core
             targetPlayer.Column = column;
         }
 
+        /// <summary>
+        /// The board is reset and cleared, the pawns are set to their starting positions,
+        /// the number of walls is reset to default value and the move history is cleared
+        /// </summary>
+        public void ResetGame()
+        {
+            board = new QuoridorBoard(dimension);
+
+            int startingColumn = dimension / 2;
+            white = new QuoridorPlayer(true, 0, startingColumn, 10, dimension - 1);
+            black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
+
+            gameHistory = new Stack<QuoridorMove>();
+        }
+
         public void GetWhiteCoordinates(ref int row, ref int column)
         {
             row = white.Row;
@@ -200,7 +221,33 @@ namespace QuoridorEngine.Core
 
         public void SetPlayerWalls(bool isWhite, int numOfWalls)
         {
+            if (numOfWalls < 0) throw new ArgumentException("Negative number of walls given to player");
             getTargetPlayer(isWhite).AvailableWalls = numOfWalls;
+        }
+
+        /// <summary>
+        /// Returns true if white won the game, or false if black won
+        /// Always assumes that the game is over. DO NOT CALL if 
+        /// IsTerminalState() is not true.
+        /// </summary>
+        public bool WinnerIsWhite()
+        {
+            Debug.Assert(IsTerminalState());
+            return white.IsInTargetBaseline();
+        }
+
+        /// <summary>
+        /// Undoes the last x moves of the game history.
+        /// </summary>
+        /// <param name="x">The amount of moves to undo</param>
+        /// <exception cref="ArgumentException">Thrown if x is negative/zero or greater 
+        /// than the number of moves played</exception>
+        public void UndoMoves(int x)
+        {
+            if(x <+ 0 || x > gameHistory.Count) throw new ArgumentException();
+
+            for(int i = 0; i < x; i++)
+                UndoMove(gameHistory.Pop());
         }
 
         public int Dimension { get => dimension; }
@@ -223,7 +270,7 @@ namespace QuoridorEngine.Core
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
-            if (deltaRow + deltaColumn > 1) 
+            if (Math.Abs(deltaRow) + Math.Abs(deltaColumn) > 1) 
                 throw new InvalidMoveException("Player tried to move more than one square at a time");
 
             if (deltaRow > 0 && board.CheckWallPartHorizontal(move.Row, move.Column)) 
@@ -232,17 +279,13 @@ namespace QuoridorEngine.Core
                 throw new InvalidMoveException("Wall is blocking player move");
             if (deltaColumn > 0 && board.CheckWallPartVertical(move.Row, move.Column-1))
                 throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn < 0 && board.CheckWallPartVertical(move.Row, move.Column+1))
+            if (deltaColumn < 0 && board.CheckWallPartVertical(move.Row, move.Column))
                 throw new InvalidMoveException("Wall is blocking player move");
 
             // TODO: Check rewrite this to use the Vector2 class
             // Checking if another player is already located on destination coordinates
-            //if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
-            //if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");
-
-            // Verify that player is not moving more than one square at a time
-            // TODO: Player can jump his opponent when they are side by side
-            // if (deltaRow + deltaColumn > 1) throw new InvalidMoveException("Player tried to move more than 2 cells at once");
+            if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
+            if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");     
 
             // Finally execute the move
             targetPlayer.Row = move.Row;
@@ -365,6 +408,7 @@ namespace QuoridorEngine.Core
                 return false;
 
             return true;
+
         }
 
         /// <summary>

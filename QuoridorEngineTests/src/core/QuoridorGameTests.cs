@@ -25,9 +25,9 @@ namespace QuoridorEngine.Core.Tests
             Assert.IsNotNull(game);
             Assert.AreEqual(dimension, game.Dimension);
             Assert.AreEqual(dimension - 1, blackRow);
-            Assert.AreEqual(dimension / 2 + 1, blackColumn);
+            Assert.AreEqual(dimension / 2, blackColumn);
             Assert.AreEqual(0, whiteRow);
-            Assert.AreEqual(dimension / 2 + 1, whiteColumn);
+            Assert.AreEqual(dimension / 2, whiteColumn);
 
             // TODO: assert game history is initialized
         }
@@ -69,7 +69,7 @@ namespace QuoridorEngine.Core.Tests
         [TestMethod()]
         [DataRow(1, 0, 0, 0, 3, true)]
         [DataRow(2, 1, 2, 2, 3, true)]
-        [DataRow(1, 0, 0, 2, 3, true)]
+        [DataRow(1, 0, 2, 0, 3, true)]
         [DataRow(2, 1, 2, 0, 3, true)]
         [DataRow(0, 1, 1, 1, 3, true)]
         [DataRow(2, 19, 2, 20, 21, true)]
@@ -79,7 +79,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(7, 8, 8, 8, 9, true)]
         [DataRow(5, 7, 5, 6, 9, true)]
         [DataRow(6, 3, 5, 3, 7, true)]
-        [DataRow(6, 4, 6, 3, 7, true)]
+        [DataRow(6, 5, 6, 4, 7, true)]
         [DataRow(1, 4, 0, 4, 7, true)]
         [DataRow(1, 5, 1, 4, 7, true)]
         
