@@ -117,7 +117,7 @@ namespace QuoridorEngine.UI
                     printSpaces(cellSize);
             }
 
-            Console.WriteLine("| " + row);
+            Console.WriteLine("| " + row+1);
         }
 
         private static void printSpaces(int amountOfSpaces)

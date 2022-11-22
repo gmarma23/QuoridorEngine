@@ -18,7 +18,7 @@
         /// </summary>
 		/// <param name="playerIsWhite">True if we want moves for white player, false otherwise</param>
         /// <returns>A list of all the possible moves from this state for given player</returns>
-        public List<Move> GetPossibleMoves(bool playerIsWhite);
+        public IEnumerable<Move> GetPossibleMoves(bool playerIsWhite);
 
         /// <summary>
         /// Executes a given move in this state

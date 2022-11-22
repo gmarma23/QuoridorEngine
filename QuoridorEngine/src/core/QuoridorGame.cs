@@ -17,6 +17,7 @@ namespace QuoridorEngine.Core
         // TODO: maybe this variable should only be handled by Board
         // class in the future
         private readonly int dimension = 9;
+
         private QuoridorBoard board;
         private QuoridorPlayer white;
         private QuoridorPlayer black;
@@ -52,9 +53,30 @@ namespace QuoridorEngine.Core
         /// </summary>
 		/// <param name="playerIsWhite">True if we want moves for white player, false otherwise</param>
         /// <returns>A list of all the possible moves from this state for given player</returns>
-        public List<Move> GetPossibleMoves(bool playerIsWhite)
+        public IEnumerable<Move> GetPossibleMoves(bool playerIsWhite)
         {
-            throw new NotImplementedException();
+            List<QuoridorMove> possibleMoves = new();
+            QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
+
+            foreach((int row, int col) in getLegalNeighbourSquares(currentPlayer.Row, currentPlayer.Column, playerIsWhite))
+                possibleMoves.Add(new QuoridorMove(row, col, playerIsWhite));
+
+            if (currentPlayer.AvailableWalls <= 0)
+                return possibleMoves;
+            
+            for (int row = 1; row < dimension; row++)
+                for (int col = 0; col < dimension - 1; col++)
+                {
+                    QuoridorMove hWallMove = new(row, col, playerIsWhite, Orientation.Horizontal);
+                    if (canPlaceWall(hWallMove))
+                        possibleMoves.Add(hWallMove);
+
+                    QuoridorMove vWallMove = new(row, col, playerIsWhite, Orientation.Vertical);
+                    if (canPlaceWall(vWallMove))
+                        possibleMoves.Add(vWallMove);
+                }
+
+            return possibleMoves;
         }
 
         /// <summary>
@@ -73,13 +95,33 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
-        /// Undoes a given move returning the state to its previous configuration. Assumes the move to be
-        /// undone was legal at the moment it was executed.
+        /// Undoes last given move returning the state to its previous configuration. 
+        /// Assumes the move to be undone was legal at the moment it was executed.
         /// </summary>
-        /// <param name="move">The move to be undone</param>
+        /// 
+        /// TODO: Add some assertions to make sure values are inside array bounds
         public void UndoMove(Move move)
         {
-            throw new NotImplementedException();
+            QuoridorMove lastMove = (QuoridorMove)(move);
+            if (lastMove.Type == MoveType.PlayerMovement)
+            {
+                // Handle player movement undo
+            }
+            else if(lastMove.Type == MoveType.WallPlacement)
+            {
+                if (lastMove.Orientation == Orientation.Horizontal)
+                {
+                    board.RemoveWallPartHorizontal(lastMove.Row, lastMove.Column);
+                    board.RemoveWallPartHorizontal(lastMove.Row, lastMove.Column + 1);
+                    board.RemoveCorner(lastMove.Row, lastMove.Column + 1);
+                }
+                else if (lastMove.Orientation == Orientation.Vertical)
+                {
+                    board.RemoveWallPartVertical(lastMove.Row, lastMove.Column);
+                    board.RemoveWallPartVertical(lastMove.Row - 1, lastMove.Column);
+                    board.RemoveCorner(lastMove.Row, lastMove.Column + 1);
+                }
+            }
         }
 
         /// <summary>
@@ -303,6 +345,73 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
+        /// Check whether provided wall placement move is valid
+        /// </summary>
+        /// <param name="move">Wall placement move</param>
+        /// <returns>True if valid</returns>
+        private bool canPlaceWall(QuoridorMove move)
+        {
+            // Check if coordinates are inside bounds
+            if ((move.Column < 0 || move.Column >= dimension - 1) ||
+                (move.Row < 1 || move.Row >= dimension))
+                return false;
+
+            // Check if player has enough walls left
+            if (getTargetPlayer(move.IsWhitePlayer).AvailableWalls <= 0)
+                return false;
+
+            if (move.Orientation == Orientation.Horizontal)
+            {
+                // Check if any walls occupy the space needed by the new
+                // wall or new call forms illegal cross when placed
+                if (board.CheckWallPartHorizontal(move.Row, move.Column) ||
+                    board.CheckWallPartHorizontal(move.Row, move.Column + 1) ||
+                    board.CheckCorner(move.Row, move.Column + 1))
+                    return false;
+            }
+            else if (move.Orientation == Orientation.Vertical)
+            {
+                // Check if any walls occupy the space needed by the new
+                // wall or new call forms illegal cross when placed
+                if (board.CheckWallPartVertical(move.Row, move.Column) ||
+                    board.CheckWallPartVertical(move.Row - 1, move.Column) ||
+                    board.CheckCorner(move.Row, move.Column + 1))
+                    return false;
+            }
+            else
+                // Unknown orientation
+                return false;
+
+            /*
+            bool whiteTarget = false;
+            bool blackTarget = false;
+
+            Thread white = new(() =>
+            {
+                whiteTarget = playerCanReachBaseline(isWhite: true);
+            });
+            Thread black = new(() =>
+            {
+                blackTarget = playerCanReachBaseline(isWhite: false);
+            });
+
+            white.Start();
+            black.Start();
+
+            // Check if both players can reach their target
+            if (!whiteTarget || !blackTarget)
+                return false;
+            */
+
+            if (!playerCanReachBaseline(isWhite: true) ||
+                !playerCanReachBaseline(isWhite: false))
+                return false;
+
+            return true;
+
+        }
+
+        /// <summary>
         /// Check whether a path connecting current player's square
         /// and his target baseline exists using DFS algorithm.
         /// </summary>
@@ -340,7 +449,7 @@ namespace QuoridorEngine.Core
                     return true;
 
                 // Get current square's legal neighbours
-                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol);
+                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol, isWhite);
 
                 // Sort neighbours by descending row if current
                 // player is black to reach his baseline faster 
@@ -364,35 +473,114 @@ namespace QuoridorEngine.Core
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns>List of tuples with coordinates of legal neighbours</returns>
-        /// <exception cref="ArgumentException">When provided current
-        /// square's coordinates are invalid</exception>
         /// 
-        /// [TODO] 
-        /// Handle corner case: other player in neighbour square
-        private List<(int, int)> getLegalNeighbourSquares(int row, int col)
+        /// TODO: simplify this later using functions from the Vector2 class
+        private List<(int, int)> getLegalNeighbourSquares(int row, int col, bool currentPlayerIsWhite)
         {
-            if (!board.IsValidPlayerSquare(row, col))
-                throw new ArgumentException("Current square coordinates out of bounds");
+            Debug.Assert(board.IsValidPlayerSquare(row, col));
 
             List<(int, int)> legalNeighbours = new();
 
-            if (board.IsValidPlayerSquare(row - 1, col) &&
-                board.CheckWallPartHorizontal(row, col))
-                legalNeighbours.Add((row - 1, col));
+            // Square 'DOWN' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row - 1, col) && !board.CheckWallPartHorizontal(row, col))
+                // Opponent is in square 'DOWN'
+                if (opponentOccupiesSquare(row - 1, col, !currentPlayerIsWhite))
+                {
+                    // Square 'DOWN-DOWN' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row - 2, col) && !board.CheckWallPartHorizontal(row - 1, col))
+                        legalNeighbours.Add((row - 2, col));
+                    else
+                    {
+                        // Square 'DOWN-LEFT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col - 1) && !board.CheckWallPartVertical(row - 1, col - 1))
+                            legalNeighbours.Add((row - 1, col - 1));
 
-            if (board.IsValidPlayerSquare(row, col - 1) &&
-                board.CheckWallPartVertical(row, col-1))
-                legalNeighbours.Add((row, col - 1));
+                        // Square 'DOWN-RIGHT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col + 1) && !board.CheckWallPartVertical(row - 1, col))
+                            legalNeighbours.Add((row - 1, col + 1));
+                    }   
+                }
+                // Square 'DOWN' is not occupied
+                else
+                    legalNeighbours.Add((row - 1, col));
 
-            if (board.IsValidPlayerSquare(row, col + 1) &&
-                board.CheckWallPartVertical(row, col))
-                legalNeighbours.Add((row, col + 1));
 
-            if (board.IsValidPlayerSquare(row + 1, col) &&
-                board.CheckWallPartHorizontal(row + 1, col))
-                legalNeighbours.Add((row + 1, col));
+            // Square 'LEFT' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row, col - 1) && !board.CheckWallPartVertical(row, col - 1))
+                // Opponent is in square 'LEFT'
+                if (opponentOccupiesSquare(row, col - 1, !currentPlayerIsWhite))
+                {
+                    // Square 'LEFT-LEFT' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row, col - 2) && !board.CheckWallPartVertical(row, col - 2))
+                        legalNeighbours.Add((row, col - 2));
+                    else
+                    {
+                        // Square 'LEFT-UP' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col - 1) && !board.CheckWallPartHorizontal(row + 1, col - 1))
+                            legalNeighbours.Add((row + 1, col - 1));
+
+                        // Square 'LEFT-DOWN' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col - 1) && !board.CheckWallPartHorizontal(row, col - 1))
+                            legalNeighbours.Add((row - 1, col - 1));
+                    }
+                }
+                // Square 'LEFT' is not occupied
+                else
+                    legalNeighbours.Add((row, col - 1));
+
+            // Square 'RIGHT' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row, col + 1) && !board.CheckWallPartVertical(row, col))
+                // Opponent is in square 'RIGHT'
+                if (opponentOccupiesSquare(row, col - 1, !currentPlayerIsWhite))
+                {
+                    // Square 'RIGHT-RIGHT' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row, col + 2) && !board.CheckWallPartVertical(row, col + 1))
+                        legalNeighbours.Add((row, col + 2));
+                    else
+                    {
+                        // Square 'RIGHT-UP' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col + 1) && !board.CheckWallPartHorizontal(row + 1, col + 1))
+                            legalNeighbours.Add((row + 1, col + 1));
+
+                        // Square 'RIGHT-DOWN' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row - 1, col + 1) && !board.CheckWallPartHorizontal(row, col + 1))
+                            legalNeighbours.Add((row - 1, col + 1));
+                    }
+                }
+                // Square 'RIGHT' is not occupied
+                else
+                    legalNeighbours.Add((row, col + 1));
+
+            // Square 'UP' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row + 1, col) && !board.CheckWallPartHorizontal(row + 1, col))
+                // Opponent is in square 'UP'
+                if (opponentOccupiesSquare(row + 1, col, !currentPlayerIsWhite))
+                {
+                    // Square 'UP-UP' is valid and not blocked by wall
+                    if (board.IsValidPlayerSquare(row + 2, col) && !board.CheckWallPartVertical(row + 2, col))
+                        legalNeighbours.Add((row + 2, col));
+                    else
+                    {
+                        // Square 'UP-LEFT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col - 1) && !board.CheckWallPartVertical(row + 1, col - 1))
+                            legalNeighbours.Add((row + 1, col - 1));
+
+                        // Square 'UP-RIGHT' is valid and not blocked by wall
+                        if (board.IsValidPlayerSquare(row + 1, col + 1) && !board.CheckWallPartVertical(row + 1, col))
+                            legalNeighbours.Add((row + 1, col + 1));
+                    }
+                }
+                // Square 'UP' is not occupied
+                else
+                    legalNeighbours.Add((row + 1, col));
 
             return legalNeighbours;
+        }
+
+        private bool opponentOccupiesSquare(int squareRow, int squareCol, bool opponentIsWhite)
+        {
+            QuoridorPlayer opponent = getTargetPlayer(opponentIsWhite);
+            return squareRow == opponent.Row && squareCol == opponent.Column;
         }
 
         /// <summary>
