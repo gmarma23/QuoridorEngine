@@ -5,22 +5,32 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoridorEngine", "QuoridorEngine\QuoridorEngine.csproj", "{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuoridorEngineTests", "QuoridorEngineTests\QuoridorEngineTests.csproj", "{26A0E99E-119B-4F5C-BEBD-292329B4B806}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoridorEngineTests", "QuoridorEngineTests\QuoridorEngineTests.csproj", "{26A0E99E-119B-4F5C-BEBD-292329B4B806}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugUI|Any CPU = DebugUI|Any CPU
 		Release|Any CPU = Release|Any CPU
+		ReleaseUI|Any CPU = ReleaseUI|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.DebugUI|Any CPU.ActiveCfg = DebugUI|Any CPU
+		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.DebugUI|Any CPU.Build.0 = DebugUI|Any CPU
 		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.ReleaseUI|Any CPU.ActiveCfg = ReleaseUI|Any CPU
+		{77BEF9CE-595E-4B7A-BF0E-1D133BA79BAA}.ReleaseUI|Any CPU.Build.0 = ReleaseUI|Any CPU
 		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.DebugUI|Any CPU.ActiveCfg = DebugUI|Any CPU
+		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.DebugUI|Any CPU.Build.0 = DebugUI|Any CPU
 		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.ReleaseUI|Any CPU.ActiveCfg = ReleaseUI|Any CPU
+		{26A0E99E-119B-4F5C-BEBD-292329B4B806}.ReleaseUI|Any CPU.Build.0 = ReleaseUI|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

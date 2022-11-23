@@ -1,4 +1,5 @@
-﻿namespace QuoridorEngine.UI
+﻿#if !CONSOLE
+namespace QuoridorEngine.UI
 {
     partial class QuoridorUI
     {
@@ -37,3 +38,4 @@
         #endregion
     }
 }
+#endif
