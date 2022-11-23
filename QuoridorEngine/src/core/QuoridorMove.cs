@@ -12,7 +12,7 @@ namespace QuoridorEngine.Core
     /// </summary>
     public class QuoridorMove : Move
     {
-        private readonly int row, column;
+        private readonly int prevRow, prevColumn, row, column;
         private readonly bool isWhitePlayer;
         private readonly Orientation orientation;
         private readonly MoveType type;
@@ -38,19 +38,25 @@ namespace QuoridorEngine.Core
         /// <summary>
         /// Initializes a Player Movement move with the data provided
         /// </summary>
+        /// <param name="prevRow">The previous row of the player</param>
+        /// <param name="prevColumn">The previous column of the player</param>
         /// <param name="row">The new row of the player</param>
         /// <param name="column">The new column of the player</param>
         /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
-        public QuoridorMove(int row, int column, bool isWhitePlayer)
+        public QuoridorMove(int prevRow, int prevColumn, int row, int column, bool isWhitePlayer)
         {
             this.row = row;
             this.column = column;
+            this.prevRow = prevRow;
+            this.prevColumn = prevColumn;
             this.isWhitePlayer = isWhitePlayer;
             type = MoveType.PlayerMovement;
         }
 
         public int Row { get => row; }
         public int Column { get => column; }
+        public int PrevRow { get => prevRow; }
+        public int PrevCol { get => prevColumn; }
         public bool IsWhitePlayer { get => isWhitePlayer; } 
         public Orientation Orientation { get => orientation; } 
         public MoveType Type { get => type; }

@@ -59,7 +59,7 @@ namespace QuoridorEngine.Core
             QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
 
             foreach((int row, int col) in getLegalNeighbourSquares(currentPlayer.Row, currentPlayer.Column, playerIsWhite))
-                possibleMoves.Add(new QuoridorMove(row, col, playerIsWhite));
+                possibleMoves.Add(new QuoridorMove(currentPlayer.Row, currentPlayer.Column, row, col, playerIsWhite));
 
             if (currentPlayer.AvailableWalls <= 0)
                 return possibleMoves;
@@ -98,14 +98,15 @@ namespace QuoridorEngine.Core
         /// Undoes last given move returning the state to its previous configuration. 
         /// Assumes the move to be undone was legal at the moment it was executed.
         /// </summary>
-        /// 
-        /// TODO: Add some assertions to make sure values are inside array bounds
         public void UndoMove(Move move)
         {
             QuoridorMove lastMove = (QuoridorMove)(move);
             if (lastMove.Type == MoveType.PlayerMovement)
             {
-                // Handle player movement undo
+                QuoridorPlayer targetPlayer = getTargetPlayer(lastMove.IsWhitePlayer);
+                Debug.Assert(board.IsValidPlayerSquare(lastMove.PrevRow, lastMove.PrevCol));
+                targetPlayer.Row = lastMove.PrevRow;
+                targetPlayer.Column = lastMove.PrevCol;
             }
             else if(lastMove.Type == MoveType.WallPlacement)
             {
