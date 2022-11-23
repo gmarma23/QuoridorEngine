@@ -101,7 +101,14 @@ namespace QuoridorEngine.Core.Tests
         public void ExecutePlayerMoveNoWallsTest(int startR, int startCol, int row, int col, int dimension, bool white)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            QuoridorMove move = new QuoridorMove(row, col, white);
+
+            int prevRow = 0, prevCol = 0;
+            if (white)
+                game.GetWhiteCoordinates(ref prevRow, ref prevCol);
+            else
+                game.GetBlackCoordinates(ref prevRow, ref prevCol);
+
+            QuoridorMove move = new QuoridorMove(prevRow, prevCol, row, col, white);
             game.ForcePlayerMovement(startR, startCol, white);
 
             game.ExecuteMove(move);
@@ -139,7 +146,14 @@ namespace QuoridorEngine.Core.Tests
         public void ExecutePlayerMoveNoWallsFailTest(int row, int col, int dimension, bool white)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            QuoridorMove move = new QuoridorMove(row, col, white);
+
+            int prevRow = 0, prevCol = 0;
+            if (white)
+                game.GetWhiteCoordinates(ref prevRow, ref prevCol);
+            else
+                game.GetBlackCoordinates(ref prevRow, ref prevCol);
+
+            QuoridorMove move = new QuoridorMove(prevRow, prevCol, row, col, white);
 
             Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move));
         }

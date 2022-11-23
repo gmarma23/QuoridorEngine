@@ -147,7 +147,14 @@ namespace QuoridorEngine.UI
                     return false;
                 }
 
-                QuoridorMove move = new QuoridorMove(row, col, isWhite);
+                int prevRow = 0;
+                int prevColumn = 0;
+                if (isWhite)
+                    game.GetWhiteCoordinates(ref prevRow, ref prevColumn);
+                else
+                    game.GetBlackCoordinates(ref prevRow, ref prevColumn);
+
+                QuoridorMove move = new QuoridorMove(prevRow, prevColumn, row, col, isWhite);
                 try
                 {
                     game.ExecuteMove(move);

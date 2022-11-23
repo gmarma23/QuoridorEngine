@@ -12,7 +12,7 @@ namespace QuoridorEngine.Core
     /// </summary>
     public class QuoridorMove : Move
     {
-        private readonly int row, column;
+        private readonly int prevRow, prevColumn, row, column;
         private readonly bool isWhitePlayer;
         private readonly Orientation orientation;
         private readonly MoveType type;
@@ -41,10 +41,12 @@ namespace QuoridorEngine.Core
         /// <param name="row">The new row of the player</param>
         /// <param name="column">The new column of the player</param>
         /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
-        public QuoridorMove(int row, int column, bool isWhitePlayer)
+        public QuoridorMove(int prevRow, int prevColumn, int row, int column, bool isWhitePlayer)
         {
             this.row = row;
             this.column = column;
+            this.prevRow = prevRow;
+            this.prevColumn = prevColumn;
             this.isWhitePlayer = isWhitePlayer;
             type = MoveType.PlayerMovement;
         }

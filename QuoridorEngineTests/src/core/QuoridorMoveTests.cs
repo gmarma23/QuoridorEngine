@@ -21,7 +21,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(1, 1, false)]
         public void QuoridorPlayerMoveTest(int row, int column, bool isWhitePlayer)
         {
-            QuoridorMove move = new QuoridorMove(row, column, isWhitePlayer);
+            QuoridorMove move = new QuoridorMove(0, 0, row, column, isWhitePlayer);
             Assert.AreEqual(row, move.Row);
             Assert.AreEqual(column, move.Column);
             Assert.AreEqual(isWhitePlayer, move.IsWhitePlayer);
