@@ -38,6 +38,8 @@ namespace QuoridorEngine.Core
         /// <summary>
         /// Initializes a Player Movement move with the data provided
         /// </summary>
+        /// <param name="prevRow">The previous row of the player</param>
+        /// <param name="prevColumn">The previous column of the player</param>
         /// <param name="row">The new row of the player</param>
         /// <param name="column">The new column of the player</param>
         /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
