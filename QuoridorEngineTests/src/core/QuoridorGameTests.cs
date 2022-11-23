@@ -1,9 +1,5 @@
-﻿using QuoridorEngine.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuoridorEngine.Utils;
-using System.ComponentModel;
-using System.Windows.Forms;
-using QuoridorEngine.Solver;
 
 namespace QuoridorEngine.Core.Tests
 {
