@@ -27,7 +27,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseUI|AnyCPU'">
     <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
-	  <OutputType>΅΅΅΅΅΅WinExe</OutputType>
+	  <OutputType>WinExe</OutputType>
 	  <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
