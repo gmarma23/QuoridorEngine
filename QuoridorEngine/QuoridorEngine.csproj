@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -10,21 +9,25 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants)TRACE;CONSOLE</DefineConstants>
+	  <OutputType>Exe</OutputType>
 	  <UseWindowsForms>false</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants)TRACE;CONSOLE</DefineConstants>
+	  <OutputType>Exe</OutputType>
 	  <UseWindowsForms>false</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugUI|AnyCPU'">
     <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+	  <OutputType>WinExe</OutputType>
 	  <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseUI|AnyCPU'">
     <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+	  <OutputType>΅΅΅΅΅΅WinExe</OutputType>
 	  <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
