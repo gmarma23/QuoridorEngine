@@ -53,6 +53,8 @@ namespace QuoridorEngine.Core
 
         public int Row { get => row; }
         public int Column { get => column; }
+        public int PrevRow { get => prevRow; }
+        public int PrevCol { get => prevColumn; }
         public bool IsWhitePlayer { get => isWhitePlayer; } 
         public Orientation Orientation { get => orientation; } 
         public MoveType Type { get => type; }
