@@ -29,6 +29,7 @@
     <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
 	  <OutputType>WinExe</OutputType>
 	  <UseWindowsForms>true</UseWindowsForms>
+	  <Optimize>True</Optimize>
   </PropertyGroup>
 
 </Project>
