@@ -302,11 +302,8 @@ namespace QuoridorEngine.Core
         /// <param name="move">The move describing the wall placement</param>
         private void placeWall(QuoridorMove move)
         {
-            // Checking if values are inside bounds
-            if (move.Column < 0 || move.Column >= dimension - 1) throw new InvalidMoveException("Coordinates out of bounds");
-            if (move.Row < 1 || move.Row >= dimension) throw new InvalidMoveException("Coordinates out of bounds");
+            if (!canPlaceWall(move)) throw new InvalidMoveException();
 
-            // Check if player has enough walls left
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
             Debug.Assert(targetPlayer != null);
 
@@ -314,32 +311,16 @@ namespace QuoridorEngine.Core
 
             if (move.Orientation == Orientation.Horizontal)
             {
-                // Check if any walls occupy the space needed by the new wall
-                if (board.CheckWallPartHorizontal(move.Row, move.Column) ||
-                    board.CheckWallPartHorizontal(move.Row, move.Column + 1) ||
-                    board.CheckCorner(move.Row, move.Column + 1))
-                    throw new InvalidMoveException("Wall position occupied");
-
                 board.AddWallPartHorizontal(move.Row, move.Column);
                 board.AddWallPartHorizontal(move.Row, move.Column + 1);
                 board.AddCorner(move.Row, move.Column + 1);
             }
             else if (move.Orientation == Orientation.Vertical)
-            {              
-                // Check if any walls occupy the space needed by the new wall
-                if (board.CheckWallPartVertical(move.Row, move.Column) ||
-                    board.CheckWallPartVertical(move.Row - 1, move.Column) ||
-                    board.CheckCorner(move.Row, move.Column + 1))
-                    throw new InvalidMoveException("Wall position occupied");
-
+            {                    
                 board.AddWallPartVertical(move.Row, move.Column);
                 board.AddWallPartVertical(move.Row - 1, move.Column);
                 board.AddCorner(move.Row, move.Column + 1);
             }
-            else throw new InvalidMoveException("Unknown orientation specification");
-
-            // TODO: Check whether new wall blocks and player's path to the goal
-            // TODO: Check whether new wall forms a cross with any of the existing walls
 
             targetPlayer.DecreaseAvailableWalls();
             gameHistory.Push(move);
