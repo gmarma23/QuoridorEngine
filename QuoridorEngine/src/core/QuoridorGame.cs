@@ -245,7 +245,7 @@ namespace QuoridorEngine.Core
         /// than the number of moves played</exception>
         public void UndoMoves(int x)
         {
-            if(x <+ 0 || x > gameHistory.Count) throw new ArgumentException();
+            if(x <= 0 || x > gameHistory.Count) throw new ArgumentException();
 
             for(int i = 0; i < x; i++)
                 UndoMove(gameHistory.Pop());
@@ -364,29 +364,39 @@ namespace QuoridorEngine.Core
                 // Unknown orientation
                 return false;
 
-            /*
-            bool whiteTarget = false;
-            bool blackTarget = false;
-
-            Thread white = new(() =>
+            // Temporarly place requested wall
+            if (move.Orientation == Orientation.Horizontal)
             {
-                whiteTarget = playerCanReachBaseline(isWhite: true);
-            });
-            Thread black = new(() =>
+                board.AddWallPartHorizontal(move.Row, move.Column);
+                board.AddWallPartHorizontal(move.Row, move.Column + 1);
+                board.AddCorner(move.Row, move.Column + 1);
+            }
+            else if (move.Orientation == Orientation.Vertical)
             {
-                blackTarget = playerCanReachBaseline(isWhite: false);
-            });
+                board.AddWallPartVertical(move.Row, move.Column);
+                board.AddWallPartVertical(move.Row - 1, move.Column);
+                board.AddCorner(move.Row, move.Column + 1);
+            }
 
-            white.Start();
-            black.Start();
+            // Check if players have clear paths to their baselines
+            bool whitePath = playerCanReachBaseline(isWhite: true);
+            bool blackPath = playerCanReachBaseline(isWhite: false);
 
-            // Check if both players can reach their target
-            if (!whiteTarget || !blackTarget)
-                return false;
-            */
+            // Remove temporarly placed wall
+            if (move.Orientation == Orientation.Horizontal)
+            {
+                board.RemoveWallPartHorizontal(move.Row, move.Column);
+                board.RemoveWallPartHorizontal(move.Row, move.Column + 1);
+                board.RemoveCorner(move.Row, move.Column + 1);
+            }
+            else if (move.Orientation == Orientation.Vertical)
+            {
+                board.RemoveWallPartVertical(move.Row, move.Column);
+                board.RemoveWallPartVertical(move.Row - 1, move.Column);
+                board.RemoveCorner(move.Row, move.Column + 1);
+            }
 
-            if (!playerCanReachBaseline(isWhite: true) ||
-                !playerCanReachBaseline(isWhite: false))
+            if (!whitePath || !blackPath)
                 return false;
 
             return true;
