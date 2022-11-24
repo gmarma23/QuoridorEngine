@@ -364,27 +364,7 @@ namespace QuoridorEngine.Core
                 // Unknown orientation
                 return false;
 
-            /*
-            bool whiteTarget = false;
-            bool blackTarget = false;
-
-            Thread white = new(() =>
-            {
-                whiteTarget = playerCanReachBaseline(isWhite: true);
-            });
-            Thread black = new(() =>
-            {
-                blackTarget = playerCanReachBaseline(isWhite: false);
-            });
-
-            white.Start();
-            black.Start();
-
-            // Check if both players can reach their target
-            if (!whiteTarget || !blackTarget)
-                return false;
-            */
-
+            // Temporarly place requested wall
             if (move.Orientation == Orientation.Horizontal)
             {
                 board.AddWallPartHorizontal(move.Row, move.Column);
@@ -398,9 +378,11 @@ namespace QuoridorEngine.Core
                 board.AddCorner(move.Row, move.Column + 1);
             }
 
+            // Check if players have clear paths to their baselines
             bool whitePath = playerCanReachBaseline(isWhite: true);
             bool blackPath = playerCanReachBaseline(isWhite: false);
 
+            // Remove temporarly placed wall
             if (move.Orientation == Orientation.Horizontal)
             {
                 board.RemoveWallPartHorizontal(move.Row, move.Column);
