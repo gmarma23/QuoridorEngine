@@ -245,7 +245,7 @@ namespace QuoridorEngine.Core
         /// than the number of moves played</exception>
         public void UndoMoves(int x)
         {
-            if(x <+ 0 || x > gameHistory.Count) throw new ArgumentException();
+            if(x <= 0 || x > gameHistory.Count) throw new ArgumentException();
 
             for(int i = 0; i < x; i++)
                 UndoMove(gameHistory.Pop());
