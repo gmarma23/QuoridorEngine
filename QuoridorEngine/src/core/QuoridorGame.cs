@@ -385,8 +385,36 @@ namespace QuoridorEngine.Core
                 return false;
             */
 
-            if (!playerCanReachBaseline(isWhite: true) ||
-                !playerCanReachBaseline(isWhite: false))
+            if (move.Orientation == Orientation.Horizontal)
+            {
+                board.AddWallPartHorizontal(move.Row, move.Column);
+                board.AddWallPartHorizontal(move.Row, move.Column + 1);
+                board.AddCorner(move.Row, move.Column + 1);
+            }
+            else if (move.Orientation == Orientation.Vertical)
+            {
+                board.AddWallPartVertical(move.Row, move.Column);
+                board.AddWallPartVertical(move.Row - 1, move.Column);
+                board.AddCorner(move.Row, move.Column + 1);
+            }
+
+            bool whitePath = playerCanReachBaseline(isWhite: true);
+            bool blackPath = playerCanReachBaseline(isWhite: false);
+
+            if (move.Orientation == Orientation.Horizontal)
+            {
+                board.RemoveWallPartHorizontal(move.Row, move.Column);
+                board.RemoveWallPartHorizontal(move.Row, move.Column + 1);
+                board.RemoveCorner(move.Row, move.Column + 1);
+            }
+            else if (move.Orientation == Orientation.Vertical)
+            {
+                board.RemoveWallPartVertical(move.Row, move.Column);
+                board.RemoveWallPartVertical(move.Row - 1, move.Column);
+                board.RemoveCorner(move.Row, move.Column + 1);
+            }
+
+            if (!whitePath || !blackPath)
                 return false;
 
             return true;
