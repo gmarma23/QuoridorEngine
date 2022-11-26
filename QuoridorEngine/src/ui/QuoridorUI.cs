@@ -1,8 +1,5 @@
 using QuoridorEngine.Core;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Printing;
-using System.Runtime.CompilerServices;
 
 namespace QuoridorEngine.UI
 {
@@ -13,6 +10,7 @@ namespace QuoridorEngine.UI
         private QuoridorGame game;
 
         private Panel board;
+        private Label[,] boardCells;
         private Panel score;
         private Panel availableWalls;
 
@@ -22,10 +20,10 @@ namespace QuoridorEngine.UI
 
         public QuoridorUI()
         {
+            game = new QuoridorGame(defaultBoardSize);
+
             InitializeComponent();
             renderGUIComponents();
-
-            game = new QuoridorGame(defaultBoardSize);
         }
 
         private void renderGUIComponents()
@@ -39,34 +37,74 @@ namespace QuoridorEngine.UI
             board = new Panel();
             Controls.Add(board);
             board.BringToFront();
+
+            drawBoard();
+            
             board.Width = 3 * this.ClientRectangle.Width / 4;
             board.Height = 3 * this.ClientRectangle.Width / 4;
             board.Location = new Point(this.ClientRectangle.Width / 8, this.ClientRectangle.Width / 8);
-            board.BackColor = Color.Transparent;
-            board.Paint += new PaintEventHandler(drawBoard);
+            board.BackColor = Color.Transparent; 
+        }
+
+        private void drawBoard()
+        {
+            boardCells = new Label[2 * game.Dimension - 1, 2 * game.Dimension - 1];
+            int x = 0, y = 0;
             
+            for (int i = 0; i < boardCells.GetLength(0); i++)
+            {
+                for (int j = 0; j < boardCells.GetLength(1); j++)
+                {
+                    drawBoardCell(i, j, x, y);
+                    x += boardCells[i, j].Width;
+                }    
+                y += boardCells[i, 0].Height;
+                x = 0;
+            }
+                
         }
 
-        private void drawBoard(object sender, PaintEventArgs e)
+        private void drawBoardCell(int i, int j, int x, int y)
         {
-            for(int i = 0; i < game.Dimension; i++)
-                for(int j = 0; j < game.Dimension; j++)
-                    drawBoardCell(e, i, j);
+            boardCells[i, j] = new Label()
+            {
+                Width = (j % 2 == 0) ? 55 : 5,
+                Height = (i % 2 == 0) ? 55 : 5,
+                BackColor = (i % 2 == 0 && j % 2 == 0) ? Color.RoyalBlue : Color.White,
+            };
+
+            boardCells[i, j].Location = new Point(x, y);
+
+            if (!(i % 2 == 0 && j % 2 == 0))
+            {
+                boardCells[i, j].MouseEnter += new EventHandler(Wall_MouseEnter);
+                boardCells[i, j].MouseLeave += new EventHandler(Wall_MouseLeave);
+            }
+
+            Controls.Add(boardCells[i, j]);
+            boardCells[i, j].BringToFront();
+            boardCells[i, j].Parent = board;
         }
 
-        private void drawBoardCell(PaintEventArgs e, int i, int j)
+        private void Wall_MouseEnter(object sender, EventArgs e)
         {
-            int dim = (int)((float)board.Width / (float)game.Dimension);
-            Pen pen = new(Color.FromArgb(100, 255, 255, 255), 3);
+            Label lbl = (Label)sender;
+            lbl.Height += 6;
+            lbl.Top -= 3;
+            lbl.Width += 6;
+            lbl.Left -= 3;
+            lbl.BackColor = Color.Black;
+            lbl.BringToFront();
+        }
 
-            int x = i * dim;
-            int y = j * dim;
-            int width = dim;
-            int height = dim;
-
-            // Draw rectangle to screen.
-            e.Graphics.DrawRectangle(pen, x, y, width, height);
-            e.Graphics.FillRectangle(new SolidBrush(Color.RoyalBlue), x, y, width, height);
+        private void Wall_MouseLeave(object sender, EventArgs e)
+        {
+            Label lbl = (Label)sender;
+            lbl.Height -= 6;
+            lbl.Top += 3;
+            lbl.Width -= 6;
+            lbl.Left += 3;
+            lbl.BackColor = Color.White;
         }
 
         protected override void OnPaint(PaintEventArgs e)
