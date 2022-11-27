@@ -1,4 +1,5 @@
 using QuoridorEngine.Core;
+using QuoridorEngine.src.ui.gui;
 using System.Drawing.Drawing2D;
 
 namespace QuoridorEngine.UI
@@ -6,7 +7,7 @@ namespace QuoridorEngine.UI
 #if !CONSOLE 
     public partial class QuoridorUI : Form
     {
-        private const int defaultBoardSize = 9;
+        private const int defaultBoardDimention = 9;
         private QuoridorGame game;
 
         private Panel board;
@@ -14,13 +15,16 @@ namespace QuoridorEngine.UI
         private Panel score;
         private Panel availableWalls;
 
+        private int playerCellSize;
+        private int wallCellSize;
+
         private Color TopColor { get; set; }
         private Color BottomColor { get; set; }
         private float Angle { get; set; }
 
         public QuoridorUI()
         {
-            game = new QuoridorGame(defaultBoardSize);
+            game = new QuoridorGame(defaultBoardDimention);
 
             InitializeComponent();
             renderGUIComponents();
@@ -33,17 +37,19 @@ namespace QuoridorEngine.UI
             BottomColor = Color.FromArgb(255, 0, 38, 80);
             Angle = 45;
 
-            // Initialize and include Board panel to form
+            // Initialize and include board panel to form
             board = new Panel();
             Controls.Add(board);
             board.BringToFront();
 
-            drawBoard();
-            
+            // Draw board
             board.Width = 3 * this.ClientRectangle.Width / 4;
             board.Height = 3 * this.ClientRectangle.Width / 4;
             board.Location = new Point(this.ClientRectangle.Width / 8, this.ClientRectangle.Width / 8);
-            board.BackColor = Color.Transparent; 
+            board.BackColor = Color.Transparent;
+            calculateCellSizes();
+            drawBoard();
+
         }
 
         private void drawBoard()
@@ -51,60 +57,57 @@ namespace QuoridorEngine.UI
             boardCells = new Label[2 * game.Dimension - 1, 2 * game.Dimension - 1];
             int x = 0, y = 0;
             
-            for (int i = 0; i < boardCells.GetLength(0); i++)
+            for (int row = 0; row < boardCells.GetLength(0); row++)
             {
-                for (int j = 0; j < boardCells.GetLength(1); j++)
+                for (int column = 0; column < boardCells.GetLength(1); column++)
                 {
-                    drawBoardCell(i, j, x, y);
-                    x += boardCells[i, j].Width;
+                    drawBoardCell(row, column, x, y);
+                    x += boardCells[row, column].Width;
                 }    
-                y += boardCells[i, 0].Height;
+                y += boardCells[row, 0].Height;
                 x = 0;
             }
                 
         }
 
-        private void drawBoardCell(int i, int j, int x, int y)
+        private void drawBoardCell(int row, int column, int x, int y)
         {
-            boardCells[i, j] = new Label()
+            if(row % 2 == 0 && column % 2 == 0)
             {
-                Width = (j % 2 == 0) ? 55 : 5,
-                Height = (i % 2 == 0) ? 55 : 5,
-                BackColor = (i % 2 == 0 && j % 2 == 0) ? Color.RoyalBlue : Color.White,
-            };
-
-            boardCells[i, j].Location = new Point(x, y);
-
-            if (!(i % 2 == 0 && j % 2 == 0))
+                boardCells[row, column] = new PlayerCell(row, column) 
+                { 
+                    Width = playerCellSize,
+                    Height = playerCellSize
+                };
+            }
+            else if ((row % 2 == 0 && column % 2 == 1) || (row % 2 == 1 && column % 2 == 0))
             {
-                boardCells[i, j].MouseEnter += new EventHandler(Wall_MouseEnter);
-                boardCells[i, j].MouseLeave += new EventHandler(Wall_MouseLeave);
+                boardCells[row, column] = new WallPartCell(row, column)
+                {   
+                    Width = (column % 2 == 0) ? playerCellSize : wallCellSize,
+                    Height = (row % 2 == 0) ? playerCellSize : wallCellSize
+                };
+            }
+            else
+            {
+                boardCells[row, column] = new Label()
+                {
+                    Width = wallCellSize,
+                    Height = wallCellSize,
+                    BackColor = Color.White
+                };
             }
 
-            Controls.Add(boardCells[i, j]);
-            boardCells[i, j].BringToFront();
-            boardCells[i, j].Parent = board;
+            boardCells[row, column].Location = new Point(x, y);
+            Controls.Add(boardCells[row, column]);
+            boardCells[row, column].Parent = board;
         }
 
-        private void Wall_MouseEnter(object sender, EventArgs e)
+        private void calculateCellSizes(double cellRatio = 0.1)
         {
-            Label lbl = (Label)sender;
-            lbl.Height += 6;
-            lbl.Top -= 3;
-            lbl.Width += 6;
-            lbl.Left -= 3;
-            lbl.BackColor = Color.Black;
-            lbl.BringToFront();
-        }
-
-        private void Wall_MouseLeave(object sender, EventArgs e)
-        {
-            Label lbl = (Label)sender;
-            lbl.Height -= 6;
-            lbl.Top += 3;
-            lbl.Width -= 6;
-            lbl.Left += 3;
-            lbl.BackColor = Color.White;
+            int combinedSize = (int)(board.Width / game.Dimension);
+            wallCellSize = (int)(combinedSize * cellRatio);
+            playerCellSize = combinedSize - wallCellSize;
         }
 
         protected override void OnPaint(PaintEventArgs e)
