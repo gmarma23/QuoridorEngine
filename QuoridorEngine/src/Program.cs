@@ -1,3 +1,4 @@
+using QuoridorEngine.src.ui.console;
 using QuoridorEngine.UI;
 
 namespace QuoridorEngine
