@@ -4,22 +4,24 @@ namespace QuoridorEngine.src.ui.gui
 #if !CONSOLE222
     public class WallPartCell : BoardCell
     {
-        private const int expand = 6;
-        private const int offset = expand / 2;
         private Orientation orientation;
         private bool isUsed;
+        private int expand;
+        private int offset;
 
         public bool IsUsed { get => isUsed; }
 
-        public WallPartCell(int row, int column) : base(row, column)
+        public WallPartCell(int row, int column, int minSize, int maxSize) : base(row, column)
         {
             isUsed = false;
             assignOrientation();
             transformCellCoordinates();
+
             MouseEnter += new EventHandler(OnMouseEnter);
             MouseLeave += new EventHandler(OnMouseLeave);
             Click += new EventHandler(OnClick);
 
+            setSizes(minSize, maxSize);
             BackColor = Color.White;
         }
 
@@ -45,6 +47,23 @@ namespace QuoridorEngine.src.ui.gui
                 orientation = Orientation.Vertical;
             else
                 throw new Exception("Not a wall part cell");
+        }
+
+        private void setSizes(int minSize, int maxSize)
+        {
+            if(orientation== Orientation.Horizontal)
+            {
+                Width = maxSize;
+                Height = minSize;
+            }
+            else if (orientation== Orientation.Vertical)
+            {
+                Width = minSize; 
+                Height = maxSize; 
+            }
+
+            expand = minSize;
+            offset = expand / 2;
         }
 
         private void OnMouseEnter(object sender, EventArgs e)

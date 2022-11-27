@@ -4,10 +4,12 @@ namespace QuoridorEngine.src.ui.gui
 #if !CONSOLE
     public class PlayerCell : BoardCell
     {
-        public PlayerCell(int row, int column) : base (row, column)
+        public PlayerCell(int row, int column, int size) : base (row, column)
         {
             transformCellCoordinates();
             normalStyle();
+            Width = size;
+            Height = size;
         }
 
         public void availableStyle()
