@@ -44,12 +44,12 @@ namespace QuoridorEngine.UI
 
             // Draw board
             board.Width = 3 * this.ClientRectangle.Width / 4;
-            board.Height = 3 * this.ClientRectangle.Width / 4;
-            board.Location = new Point(this.ClientRectangle.Width / 8, this.ClientRectangle.Width / 8);
-            board.BackColor = Color.Transparent;
+            board.Height = board.Width;
+            board.Location = new Point(
+                (this.ClientRectangle.Width / 2) - (board.Width / 2), 
+                (this.ClientRectangle.Height / 2) - (board.Height / 2));
             calculateCellSizes();
             drawBoard();
-
         }
 
         private void drawBoard()
@@ -66,28 +66,15 @@ namespace QuoridorEngine.UI
                 }    
                 y += boardCells[row, 0].Height;
                 x = 0;
-            }
-                
+            }    
         }
 
         private void drawBoardCell(int row, int column, int x, int y)
         {
             if(row % 2 == 0 && column % 2 == 0)
-            {
-                boardCells[row, column] = new PlayerCell(row, column) 
-                { 
-                    Width = playerCellSize,
-                    Height = playerCellSize
-                };
-            }
+                boardCells[row, column] = new PlayerCell(row, column, playerCellSize);
             else if ((row % 2 == 0 && column % 2 == 1) || (row % 2 == 1 && column % 2 == 0))
-            {
-                boardCells[row, column] = new WallPartCell(row, column)
-                {   
-                    Width = (column % 2 == 0) ? playerCellSize : wallCellSize,
-                    Height = (row % 2 == 0) ? playerCellSize : wallCellSize
-                };
-            }
+                boardCells[row, column] = new WallPartCell(row, column, wallCellSize, playerCellSize);
             else
             {
                 boardCells[row, column] = new Label()
@@ -105,7 +92,7 @@ namespace QuoridorEngine.UI
 
         private void calculateCellSizes(double cellRatio = 0.1)
         {
-            int combinedSize = (int)(board.Width / game.Dimension);
+            int combinedSize = board.Width / game.Dimension;
             wallCellSize = (int)(combinedSize * cellRatio);
             playerCellSize = combinedSize - wallCellSize;
         }
