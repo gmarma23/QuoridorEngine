@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace QuoridorEngine.src.ui.gui
 {
-    public class BoardCell : Label
+#if !CONSOLE
+    public abstract class BoardCell : Label
     {
-        private BoardCellType type;
-        private int row;
-        private int column;
+        protected int guiRow;
+        protected int guiColumn;
+        protected int internalRow;
+        protected int internalColumn;
 
-        public BoardCellType Type { get => type; }
-        public int Row { get => row; }
-        public int Column { get => column; }
+        public int GuiRow { get => guiRow; }
+        public int GuiColumn { get => guiColumn; }
+        public int InternalRow { get => internalRow; } 
+        public int InternalColumn { get => internalColumn; }
 
-        public BoardCell()
+        public BoardCell(int row, int column)
         {
-
+            guiRow = row;
+            guiColumn = column;
         }
-    }
 
-    public enum BoardCellType
-    {
-        Player,
-        Wall
+        protected abstract void transformCellCoordinates();
     }
+#endif
 }
