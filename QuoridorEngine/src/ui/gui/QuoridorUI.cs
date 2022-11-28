@@ -41,7 +41,9 @@ namespace QuoridorEngine.UI
             Angle = 45;
 
             renderBoard();
-            renderPlayer();   
+
+            renderPlayer(ref whitePlayer, 2 * game.Dimension - 2, (2 * game.Dimension - 1) / 2, Color.Red);
+            renderPlayer(ref blackPlayer, 0, (2 * game.Dimension - 1) / 2, Color.Purple);
         }
 
         /// <summary>
@@ -134,19 +136,20 @@ namespace QuoridorEngine.UI
             playerCellSize = combinedSize - wallCellSize;
         }
 
-        private void renderPlayer()
+        /// <summary>
+        /// Render player pawn to board 
+        /// </summary>
+        /// <param name="player">Player object reference</param>
+        /// <param name="initRow">Initial row</param>
+        /// <param name="initColumn">Initial column</param>
+        /// <param name="color">Pawn color</param>
+        private void renderPlayer(ref Player player, int initRow, int initColumn, Color color)
         {
-            blackPlayer = new Player(playerCellSize);
-            Controls.Add(blackPlayer);
-            blackPlayer.Parent = boardCells[0, (2 * game.Dimension - 1) / 2];
-            blackPlayer.BringToFront();
-            blackPlayer.MainColor = Color.Purple;
-
-            whitePlayer = new Player(playerCellSize);
-            Controls.Add(whitePlayer);
-            whitePlayer.Parent = boardCells[2 * game.Dimension - 2, (2 * game.Dimension - 1) / 2];
-            whitePlayer.BringToFront();
-            whitePlayer.MainColor = Color.Red;
+            player = new Player(playerCellSize);
+            Controls.Add(player);
+            player.Parent = boardCells[initRow, initColumn];
+            player.BringToFront();
+            player.MainColor = color;
         }
 
         /// <summary>
