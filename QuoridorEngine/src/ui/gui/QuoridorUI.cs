@@ -32,7 +32,7 @@ namespace QuoridorEngine.UI
 
         private void renderGUIComponents()
         {
-            // Set gradient background attributes
+            // Set gradient background attributes for frame
             TopColor = Color.FromArgb(255, 0, 0, 10);
             BottomColor = Color.FromArgb(255, 0, 38, 80);
             Angle = 45;
@@ -40,6 +40,9 @@ namespace QuoridorEngine.UI
             renderBoard();
         }
 
+        /// <summary>
+        /// Generate and place board panel to frame
+        /// </summary>
         private void renderBoard()
         {
             // Initialize and include board panel to form
@@ -65,24 +68,34 @@ namespace QuoridorEngine.UI
             drawBoard();
         }
 
+        /// <summary>
+        /// Coordinate board cells drawing on board panel
+        /// </summary>
         private void drawBoard()
         {
             boardCells = new Label[2 * game.Dimension - 1, 2 * game.Dimension - 1];
-            int x = 0, y = 0;
+            int xLoc = 0, yLoc = 0;
             
             for (int row = 0; row < boardCells.GetLength(0); row++)
             {
                 for (int column = 0; column < boardCells.GetLength(1); column++)
                 {
-                    drawBoardCell(row, column, x, y);
-                    x += boardCells[row, column].Width;
+                    drawBoardCell(row, column, xLoc, yLoc);
+                    xLoc += boardCells[row, column].Width;
                 }    
-                y += boardCells[row, 0].Height;
-                x = 0;
+                yLoc += boardCells[row, 0].Height;
+                xLoc = 0;
             }    
         }
 
-        private void drawBoardCell(int row, int column, int x, int y)
+        /// <summary>
+        /// Generate and draw board cells based on their type
+        /// </summary>
+        /// <param name="row">Board row</param>
+        /// <param name="column">Board column</param>
+        /// <param name="xLoc">Cell x location</param>
+        /// <param name="yLoc">Cell y location</param>
+        private void drawBoardCell(int row, int column, int xLoc, int yLoc)
         {
             if(row % 2 == 0 && column % 2 == 0)
                 boardCells[row, column] = new PlayerCell(row, column, playerCellSize);
@@ -98,18 +111,29 @@ namespace QuoridorEngine.UI
                 };
             }
 
-            boardCells[row, column].Location = new Point(x, y);
+            boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
             boardCells[row, column].Parent = board;
         }
 
+        /// <summary>
+        /// Calculate player cell and wall cell sizes based on initial board size 
+        /// Board size gets fixed after this action to remove space allocated for an extra wallcell
+        /// </summary>
+        /// <param name="cellRatio"> (wall cell size / player cell size) ratio</param>
         private void calculateCellSizes(double cellRatio = 0.1)
         {
+            // Calculate player cell and wall cell sizes combined
             int combinedSize = board.Width / game.Dimension;
+
             wallCellSize = (int)(combinedSize * cellRatio);
             playerCellSize = combinedSize - wallCellSize;
         }
 
+        /// <summary>
+        /// Overriding OnPaint method for frame to create gradient background effect
+        /// </summary>
+        /// <param name="e">Paint event Arguments</param>
         protected override void OnPaint(PaintEventArgs e)
         {
             LinearGradientBrush brush = new(this.ClientRectangle, this.TopColor, this.BottomColor, this.Angle);
