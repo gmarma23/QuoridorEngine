@@ -12,6 +12,9 @@ namespace QuoridorEngine.UI
 
         private Panel board;
         private Label[,] boardCells;
+        private Player blackPlayer;
+        private Player whitePlayer;
+
         private Panel score;
         private Panel availableWalls;
 
@@ -38,6 +41,7 @@ namespace QuoridorEngine.UI
             Angle = 45;
 
             renderBoard();
+            renderPlayer();   
         }
 
         /// <summary>
@@ -128,6 +132,21 @@ namespace QuoridorEngine.UI
 
             wallCellSize = (int)(combinedSize * cellRatio);
             playerCellSize = combinedSize - wallCellSize;
+        }
+
+        private void renderPlayer()
+        {
+            blackPlayer = new Player(playerCellSize);
+            Controls.Add(blackPlayer);
+            blackPlayer.Parent = boardCells[0, (2 * game.Dimension - 1) / 2];
+            blackPlayer.BringToFront();
+            blackPlayer.MainColor = Color.Purple;
+
+            whitePlayer = new Player(playerCellSize);
+            Controls.Add(whitePlayer);
+            whitePlayer.Parent = boardCells[2 * game.Dimension - 2, (2 * game.Dimension - 1) / 2];
+            whitePlayer.BringToFront();
+            whitePlayer.MainColor = Color.Red;
         }
 
         /// <summary>
