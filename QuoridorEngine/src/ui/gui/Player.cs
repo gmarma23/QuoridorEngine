@@ -11,11 +11,11 @@ namespace QuoridorEngine.src.ui.gui
 #if !CONSOLE
     public class Player : Label
     {
-        protected int guiRow;
-        protected int guiColumn;
-        protected int internalRow;
-        protected int internalColumn;
-        protected bool initMove;
+        private int guiRow;
+        private int guiColumn;
+        private int internalRow;
+        private int internalColumn;
+        private bool moveInit;
 
         public int GuiRow { get => guiRow; }
         public int GuiColumn { get => guiColumn; }
@@ -28,6 +28,7 @@ namespace QuoridorEngine.src.ui.gui
 
         public Player(int cellSize)
         {
+            moveInit = false;
             DoubleBuffered = true;
             style(cellSize);
             Click += new EventHandler(OnClick);
@@ -35,10 +36,14 @@ namespace QuoridorEngine.src.ui.gui
 
         private void OnClick(object sender, EventArgs e)
         {
-            if(!initMove)
-                initMove = true;
+            if (!moveInit)
+            {
+                moveInit = true;
+            }
             else
-                initMove = false;
+            {
+                moveInit = false;
+            }      
         }
 
         private void style(int cellSize)
