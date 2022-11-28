@@ -15,6 +15,7 @@ namespace QuoridorEngine.src.ui.gui
         protected int guiColumn;
         protected int internalRow;
         protected int internalColumn;
+        protected bool initMove;
 
         public int GuiRow { get => guiRow; }
         public int GuiColumn { get => guiColumn; }
@@ -29,6 +30,15 @@ namespace QuoridorEngine.src.ui.gui
         {
             DoubleBuffered = true;
             style(cellSize);
+            Click += new EventHandler(OnClick);
+        }
+
+        private void OnClick(object sender, EventArgs e)
+        {
+            if(!initMove)
+                initMove = true;
+            else
+                initMove = false;
         }
 
         private void style(int cellSize)
