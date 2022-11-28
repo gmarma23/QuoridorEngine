@@ -37,18 +37,31 @@ namespace QuoridorEngine.UI
             BottomColor = Color.FromArgb(255, 0, 38, 80);
             Angle = 45;
 
+            renderBoard();
+        }
+
+        private void renderBoard()
+        {
             // Initialize and include board panel to form
             board = new Panel();
             Controls.Add(board);
             board.BringToFront();
 
-            // Draw board
+            // Set initial board size
             board.Width = 3 * this.ClientRectangle.Width / 4;
             board.Height = board.Width;
-            board.Location = new Point(
-                (this.ClientRectangle.Width / 2) - (board.Width / 2), 
-                (this.ClientRectangle.Height / 2) - (board.Height / 2));
+
             calculateCellSizes();
+
+            // Fix board size after cell size calculation
+            board.Width -= wallCellSize + 3;
+            board.Height = board.Width;
+
+            // Center board to frame
+            board.Location = new Point(
+                (this.ClientRectangle.Width / 2) - (board.Width / 2),
+                (this.ClientRectangle.Height / 2) - (board.Height / 2));
+
             drawBoard();
         }
 
