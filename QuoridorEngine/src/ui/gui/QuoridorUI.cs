@@ -1,5 +1,6 @@
 using QuoridorEngine.Core;
 using QuoridorEngine.src.ui.gui;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace QuoridorEngine.UI
@@ -147,7 +148,7 @@ namespace QuoridorEngine.UI
         {
             player = new Player(playerCellSize);
             Controls.Add(player);
-            player.Parent = boardCells[initRow, initColumn];
+            player.UpdateLocation((PlayerCell)boardCells[initRow, initColumn]);
             player.BringToFront();
             player.MainColor = color;
         }

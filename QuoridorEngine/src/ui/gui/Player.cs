@@ -34,11 +34,21 @@ namespace QuoridorEngine.src.ui.gui
             Click += new EventHandler(OnClick);
         }
 
+        public void UpdateLocation(PlayerCell cell)
+        {
+            Parent = cell;
+            guiRow = cell.GuiRow;
+            guiColumn = cell.GuiColumn;
+            internalRow = cell.InternalRow;
+            internalColumn = cell.InternalColumn;
+        }
+
         private void OnClick(object sender, EventArgs e)
         {
             if (!moveInit)
             {
                 moveInit = true;
+                
             }
             else
             {
