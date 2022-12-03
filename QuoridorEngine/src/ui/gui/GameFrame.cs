@@ -13,7 +13,7 @@ namespace QuoridorEngine.UI
         private QuoridorGame game;
 
         private Panel board;
-        private Label[,] boardCells;
+        private BoardCell[,] boardCells;
         private Player blackPlayer;
         private Player whitePlayer;
 
@@ -81,7 +81,7 @@ namespace QuoridorEngine.UI
         /// </summary>
         private void drawBoard()
         {
-            boardCells = new Label[2 * game.Dimension - 1, 2 * game.Dimension - 1];
+            boardCells = new BoardCell[2 * game.Dimension - 1, 2 * game.Dimension - 1];
             int xLoc = 0, yLoc = 0;
             
             for (int row = 0; row < boardCells.GetLength(0); row++)
@@ -105,19 +105,12 @@ namespace QuoridorEngine.UI
         /// <param name="yLoc">Cell y location</param>
         private void drawBoardCell(int row, int column, int xLoc, int yLoc)
         {
-            if(row % 2 == 0 && column % 2 == 0)
+            if (row % 2 == 0 && column % 2 == 0)
                 boardCells[row, column] = new PlayerCell(row, column, playerCellSize);
             else if ((row % 2 == 0 && column % 2 == 1) || (row % 2 == 1 && column % 2 == 0))
                 boardCells[row, column] = new WallPartCell(row, column, wallCellSize, playerCellSize);
             else
-            {
-                boardCells[row, column] = new Label()
-                {
-                    Width = wallCellSize,
-                    Height = wallCellSize,
-                    BackColor = Color.White
-                };
-            }
+                boardCells[row, column] = new WallCornerCell(row, column, wallCellSize);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
