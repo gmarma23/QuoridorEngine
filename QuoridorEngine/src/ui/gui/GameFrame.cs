@@ -107,10 +107,10 @@ namespace QuoridorEngine.UI
         {
             if (row % 2 == 0 && column % 2 == 0)
                 boardCells[row, column] = new PlayerCell(row, column, playerCellSize);
-            else if ((row % 2 == 0 && column % 2 == 1) || (row % 2 == 1 && column % 2 == 0))
-                boardCells[row, column] = new WallPartCell(row, column, wallCellSize, playerCellSize);
-            else
+            else if (row % 2 == 1 && column % 2 == 1)
                 boardCells[row, column] = new WallCornerCell(row, column, wallCellSize);
+            else
+                boardCells[row, column] = new WallPartCell(row, column, wallCellSize, playerCellSize);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
