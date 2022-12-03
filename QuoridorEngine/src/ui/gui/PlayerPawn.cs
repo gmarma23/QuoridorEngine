@@ -10,24 +10,20 @@ using QuoridorEngine.src.ui.gui.board;
 namespace QuoridorEngine.src.ui.gui
 {
 #if !CONSOLE
-    public class Player : Label
+    public class PlayerPawn : Label
     {
         private int guiRow;
         private int guiColumn;
-        private int internalRow;
-        private int internalColumn;
         private bool moveInit;
 
         public int GuiRow { get => guiRow; }
         public int GuiColumn { get => guiColumn; }
-        public int InternalRow { get => internalRow; }
-        public int InternalColumn { get => internalColumn; }
 
         public Color MainColor { get; set; }
         public Color BoarderColor { get; set; }
         public int CornerRadius { get; set; }
 
-        public Player(int cellSize)
+        public PlayerPawn(int cellSize)
         {
             moveInit = false;
             DoubleBuffered = true;
@@ -38,10 +34,8 @@ namespace QuoridorEngine.src.ui.gui
         public void UpdateLocation(PlayerCell cell)
         {
             Parent = cell;
-            guiRow = cell.GuiRow;
-            guiColumn = cell.GuiColumn;
-            internalRow = cell.InternalRow;
-            internalColumn = cell.InternalColumn;
+            guiRow = cell.Row;
+            guiColumn = cell.Column;
         }
 
         private void OnClick(object sender, EventArgs e)

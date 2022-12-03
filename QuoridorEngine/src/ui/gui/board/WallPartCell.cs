@@ -13,36 +13,21 @@
         public WallPartCell(int row, int column, int minSize, int maxSize) : base(row, column)
         {
             isUsed = false;
-            assignOrientation();
-            transformCellCoordinates();
 
             MouseEnter += new EventHandler(OnMouseEnter);
             MouseLeave += new EventHandler(OnMouseLeave);
             Click += new EventHandler(OnClick);
 
+            assignOrientation();
             setSizes(minSize, maxSize);
             BackColor = Color.White;
         }
 
-        protected override void transformCellCoordinates()
-        {
-            if (orientation == Orientation.Horizontal)
-            {
-                internalRow = (guiRow + 1) / 2;
-                internalColumn = guiColumn / 2;
-            }
-            else if (orientation == Orientation.Vertical)
-            {
-                internalRow = guiRow / 2;
-                internalColumn = (guiColumn - 1) / 2;
-            }
-        }
-
         private void assignOrientation()
         {
-            if (guiRow % 2 == 1 && guiColumn % 2 == 0)
+            if (row % 2 == 1 && column % 2 == 0)
                 orientation = Orientation.Horizontal;
-            else if (guiColumn % 2 == 1 && guiRow % 2 == 0)
+            else if (column % 2 == 1 && row % 2 == 0)
                 orientation = Orientation.Vertical;
             else
                 throw new Exception("Not a wall part cell");

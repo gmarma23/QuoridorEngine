@@ -1,5 +1,5 @@
 using QuoridorEngine.src.ui.console;
-using QuoridorEngine.UI;
+using QuoridorEngine.src.ui.gui;
 
 namespace QuoridorEngine
 {
@@ -8,18 +8,14 @@ namespace QuoridorEngine
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-
-            #if !CONSOLE
-                ApplicationConfiguration.Initialize();
-                Application.Run(new GameFrame());
-            #else
-                ConsoleClient.Play();
-            #endif
+#if !CONSOLE
+            ApplicationConfiguration.Initialize();
+            new GuiClient();
+#else
+            ConsoleClient.Play();
+#endif
         }
     }
 }

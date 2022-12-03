@@ -5,7 +5,6 @@
     {
         public PlayerCell(int row, int column, int size) : base(row, column)
         {
-            transformCellCoordinates();
             normalStyle();
             Width = size;
             Height = size;
@@ -19,12 +18,6 @@
         public void normalStyle()
         {
             BackColor = Color.RoyalBlue;
-        }
-
-        protected override void transformCellCoordinates()
-        {
-            internalRow = guiRow / 2;
-            internalColumn = guiColumn / 2;
         }
     }
 # endif

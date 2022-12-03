@@ -19,10 +19,5 @@ namespace QuoridorEngine.src.ui.gui.board
         {
             BackColor = Color.White;
         }
-
-        protected override void transformCellCoordinates()
-        {
-            return;
-        }
     }
 }

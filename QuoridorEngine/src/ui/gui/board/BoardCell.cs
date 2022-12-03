@@ -3,23 +3,17 @@
 #if !CONSOLE
     public abstract class BoardCell : Label
     {
-        protected int guiRow;
-        protected int guiColumn;
-        protected int internalRow;
-        protected int internalColumn;
+        protected int row;
+        protected int column;
 
-        public int GuiRow { get => guiRow; }
-        public int GuiColumn { get => guiColumn; }
-        public int InternalRow { get => internalRow; }
-        public int InternalColumn { get => internalColumn; }
+        public int Row { get => row; }
+        public int Column { get => column; }
 
         public BoardCell(int row, int column)
         {
-            guiRow = row;
-            guiColumn = column;
+            this.row = row;
+            this.column = column;
         }
-
-        protected abstract void transformCellCoordinates();
     }
 #endif
 }
