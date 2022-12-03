@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using QuoridorEngine.src.ui.gui.board;
 
 namespace QuoridorEngine.src.ui.gui
 {

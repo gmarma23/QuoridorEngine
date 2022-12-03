@@ -16,7 +16,7 @@ namespace QuoridorEngine
 
             #if !CONSOLE
                 ApplicationConfiguration.Initialize();
-                Application.Run(new QuoridorUI());
+                Application.Run(new GameFrame());
             #else
                 ConsoleClient.Play();
             #endif

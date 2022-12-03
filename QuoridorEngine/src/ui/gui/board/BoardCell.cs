@@ -1,5 +1,4 @@
-﻿
-namespace QuoridorEngine.src.ui.gui
+﻿namespace QuoridorEngine.src.ui.gui.board
 {
 #if !CONSOLE
     public abstract class BoardCell : Label
@@ -11,7 +10,7 @@ namespace QuoridorEngine.src.ui.gui
 
         public int GuiRow { get => guiRow; }
         public int GuiColumn { get => guiColumn; }
-        public int InternalRow { get => internalRow; } 
+        public int InternalRow { get => internalRow; }
         public int InternalColumn { get => internalColumn; }
 
         public BoardCell(int row, int column)

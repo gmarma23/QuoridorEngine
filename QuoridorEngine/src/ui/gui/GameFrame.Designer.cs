@@ -1,7 +1,7 @@
 ﻿#if !CONSOLE
 namespace QuoridorEngine.UI
 {
-    partial class QuoridorUI
+    partial class GameFrame
     {
         /// <summary>
         ///  Required designer variable.

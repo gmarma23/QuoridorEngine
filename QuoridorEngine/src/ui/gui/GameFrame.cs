@@ -1,12 +1,13 @@
 using QuoridorEngine.Core;
 using QuoridorEngine.src.ui.gui;
+using QuoridorEngine.src.ui.gui.board;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
-    public partial class QuoridorUI : Form
+    public partial class GameFrame : Form
     {
         private const int defaultBoardDimention = 9;
         private QuoridorGame game;
@@ -26,7 +27,7 @@ namespace QuoridorEngine.UI
         private Color BottomColor { get; set; }
         private float Angle { get; set; }
 
-        public QuoridorUI()
+        public GameFrame()
         {
             game = new QuoridorGame(defaultBoardDimention);
 

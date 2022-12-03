@@ -1,5 +1,4 @@
-﻿
-namespace QuoridorEngine.src.ui.gui
+﻿namespace QuoridorEngine.src.ui.gui.board
 {
 #if !CONSOLE222
     public class WallPartCell : BoardCell
@@ -51,15 +50,15 @@ namespace QuoridorEngine.src.ui.gui
 
         private void setSizes(int minSize, int maxSize)
         {
-            if(orientation== Orientation.Horizontal)
+            if (orientation == Orientation.Horizontal)
             {
                 Width = maxSize;
                 Height = minSize;
             }
-            else if (orientation== Orientation.Vertical)
+            else if (orientation == Orientation.Vertical)
             {
-                Width = minSize; 
-                Height = maxSize; 
+                Width = minSize;
+                Height = maxSize;
             }
 
             expand = minSize;
@@ -68,20 +67,20 @@ namespace QuoridorEngine.src.ui.gui
 
         private void OnMouseEnter(object sender, EventArgs e)
         {
-            if(!isUsed) activeStyle();
+            if (!isUsed) activeStyle();
         }
 
         private void OnMouseLeave(object sender, EventArgs e)
         {
-            if(!isUsed) inactiveStyle();
+            if (!isUsed) inactiveStyle();
         }
 
         private void OnClick(object sender, EventArgs e)
         {
-            if (!isUsed) 
+            if (!isUsed)
             {
                 isUsed = true;
-            }  
+            }
         }
 
         private void activeStyle()
