@@ -1,10 +1,5 @@
 ﻿using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QuoridorEngine.src.ui.gui
 {
@@ -35,7 +30,7 @@ namespace QuoridorEngine.src.ui.gui
             get => dimension; 
         }
   
-        public Board(GuiFrame guiFrame, int dimension)
+        public Board(GuiFrame guiFrame, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
         {
             Dimension = dimension;
             Parent = guiFrame;
@@ -70,9 +65,12 @@ namespace QuoridorEngine.src.ui.gui
             drawBoard();
             drawPlayerPawn(Player.White);
             drawPlayerPawn(Player.Black);
+
+            UpdatePawnLocation(Player.White, initWhiteRow, initWhiteColumn);
+            UpdatePawnLocation(Player.Black, initBlackRow, initBlackColumn);
         } 
 
-        public void UpdatePawnLocation(Player player, int newRow, int newColumn)
+        private void UpdatePawnLocation(Player player, int newRow, int newColumn)
         {
             getPlayerPawn(player).Parent = boardCells[newRow, newColumn];
         }

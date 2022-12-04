@@ -17,36 +17,21 @@ namespace QuoridorEngine.UI
         public GuiFrame()
         {
             InitializeComponent();
-            defaultStyle();
-        }
 
-        public void UpdateWhitePawnLocation(int newRow, int newColumn)
-        {
-            board.UpdatePawnLocation(Player.White, newRow, newColumn);
-        }
-
-        public void UpdateBlackPawnLocation(int newRow, int newColumn)
-        {
-            board.UpdatePawnLocation(Player.Black, newRow, newColumn);
-        }
-
-        /// <summary>
-        /// Generate and place board panel to frame
-        /// </summary>
-        public void RenderBoard(int boardDimension)
-        {
-            // Initialize and include board panel to form
-            board = new Board(this, boardDimension);
-            Controls.Add(board);
-            board.BringToFront();
-        }
-
-        private void defaultStyle()
-        {
             // Set form's gradient background properties
             BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
             BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
-            BackgroundAngle = 45;  
+            BackgroundAngle = 45;
+        }
+
+        /// <summary>
+        /// Initialize and include board panel to frame
+        /// </summary>
+        public void RenderBoard(int boardDimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
+        {
+            board = new Board(this, boardDimension, initWhiteRow, initWhiteColumn, initBlackRow, initBlackColumn);
+            Controls.Add(board);
+            board.BringToFront();
         }
 
         /// <summary>
