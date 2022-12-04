@@ -1,24 +1,19 @@
-﻿namespace QuoridorEngine.src.ui.gui.board
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuoridorEngine.src.ui.gui.board
 {
-#if !CONSOLE
     public class PlayerCell : BoardCell
     {
-        public PlayerCell(int row, int column, int size) : base(row, column)
+        public PlayerCell(Board board, int row, int column) : base(row, column) 
         {
-            normalStyle();
-            Width = size;
-            Height = size;
-        }
-
-        public void availableStyle()
-        {
-            BackColor = Color.Red;
-        }
-
-        public void normalStyle()
-        {
-            BackColor = Color.RoyalBlue;
+            BackColor = board.PlayerCellColor;
+            Width = board.PlayerCellSize;
+            Height = Width;
         }
     }
-# endif
 }

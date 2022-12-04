@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing.Drawing2D;
 using QuoridorEngine.src.ui.gui.board;
 
 namespace QuoridorEngine.src.ui.gui
@@ -12,30 +6,33 @@ namespace QuoridorEngine.src.ui.gui
 #if !CONSOLE
     public class PlayerPawn : Label
     {
-        private int guiRow;
-        private int guiColumn;
         private bool moveInit;
 
-        public int GuiRow { get => guiRow; }
-        public int GuiColumn { get => guiColumn; }
+        public int Row { get; set; }
+        public int Column { get; set; }
+
+        public double CornerRadiusWidthRatio { get; set; }
+        public double PawnCellRatio { get; set; }
 
         public Color MainColor { get; set; }
         public Color BoarderColor { get; set; }
-        public int CornerRadius { get; set; }
+        public float BoarderSize { get; set; }
 
         public PlayerPawn(int cellSize)
         {
             moveInit = false;
             DoubleBuffered = true;
-            style(cellSize);
-            Click += new EventHandler(OnClick);
-        }
 
-        public void UpdateLocation(PlayerCell cell)
-        {
-            Parent = cell;
-            guiRow = cell.Row;
-            guiColumn = cell.Column;
+            // Set default property values
+            CornerRadiusWidthRatio = 0.5;
+            PawnCellRatio = 0.66;
+            BoarderColor = Color.White;
+            BoarderSize = 3.0f;
+            Width = (int)(cellSize * PawnCellRatio);
+            Height = Width;
+            Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
+            
+            Click += new EventHandler(OnClick);
         }
 
         private void OnClick(object sender, EventArgs e)
@@ -51,37 +48,27 @@ namespace QuoridorEngine.src.ui.gui
             }      
         }
 
-        private void style(int cellSize)
-        {
-            CornerRadius = 17;
-            Width = 2 * cellSize / 3;
-            Height = Width;
-            Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
-            BackColor = Color.RoyalBlue;
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            using (var graphicsPath = getRoundRectangle(this.ClientRectangle))
-            {
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                using (var brush = new SolidBrush(MainColor))
-                    e.Graphics.FillPath(brush, graphicsPath);
-                using (var pen = new Pen(Color.White, 3.0f))
-                    e.Graphics.DrawPath(pen, graphicsPath);
-                TextRenderer.DrawText(e.Graphics, Text, this.Font, this.ClientRectangle, this.ForeColor);
-            }
+            GraphicsPath graphicsPath = getRoundRectangle(this.ClientRectangle);
+            SolidBrush brush = new SolidBrush(MainColor);
+            Pen pen = new Pen(BoarderColor, BoarderSize);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.FillPath(brush, graphicsPath);
+            e.Graphics.DrawPath(pen, graphicsPath);
+            TextRenderer.DrawText(e.Graphics, Text, this.Font, this.ClientRectangle, this.ForeColor);
         }
 
         private GraphicsPath getRoundRectangle(Rectangle rectangle)
         {
             int diminisher = 1;
+            int cornerRadius = (int)(Width * CornerRadiusWidthRatio);
             GraphicsPath path = new GraphicsPath();
-            path.AddArc(rectangle.X, rectangle.Y, CornerRadius, CornerRadius, 180, 90);
-            path.AddArc(rectangle.X + rectangle.Width - CornerRadius - diminisher, rectangle.Y, CornerRadius, CornerRadius, 270, 90);
-            path.AddArc(rectangle.X + rectangle.Width - CornerRadius - diminisher, rectangle.Y + rectangle.Height - CornerRadius - diminisher, CornerRadius, CornerRadius, 0, 90);
-            path.AddArc(rectangle.X, rectangle.Y + rectangle.Height - CornerRadius - diminisher, CornerRadius, CornerRadius, 90, 90);
+            path.AddArc(rectangle.X, rectangle.Y, cornerRadius, cornerRadius, 180, 90);
+            path.AddArc(rectangle.X + rectangle.Width - cornerRadius - diminisher, rectangle.Y, cornerRadius, cornerRadius, 270, 90);
+            path.AddArc(rectangle.X + rectangle.Width - cornerRadius - diminisher, rectangle.Y + rectangle.Height - cornerRadius - diminisher, cornerRadius, cornerRadius, 0, 90);
+            path.AddArc(rectangle.X, rectangle.Y + rectangle.Height - cornerRadius - diminisher, cornerRadius, cornerRadius, 90, 90);
             path.CloseAllFigures();
             return path;
         }

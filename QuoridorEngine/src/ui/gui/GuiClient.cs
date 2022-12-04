@@ -22,9 +22,9 @@ namespace QuoridorEngine.src.ui.gui
         private void renderGameGuiComponents()
         {
             // Render board
-            guiFrame.renderBoard(TransformCoordinates.GameToGuiDimension(game.Dimension));
+            guiFrame.RenderBoard(TransformCoordinates.GameToGuiDimension(game.Dimension));
 
-            // Render player pawns
+            // Set player pawns initial locations
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
             game.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
             game.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
@@ -32,8 +32,8 @@ namespace QuoridorEngine.src.ui.gui
             (int guiWhitePawnRow, int guiWhitePawnColumn) = TransformCoordinates.GameToGuiPlayer(gameWhitePawnRow, gameWhitePawnColumn);
             (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
 
-            guiFrame.renderPlayerPawn(Player.White, guiWhitePawnRow, guiWhitePawnColumn);
-            guiFrame.renderPlayerPawn(Player.Black, guiBlackPawnRow, guiBlackPawnColumn);
+            guiFrame.UpdateWhitePawnLocation(guiWhitePawnRow, guiWhitePawnColumn);
+            guiFrame.UpdateBlackPawnLocation(guiBlackPawnRow, guiBlackPawnColumn);
         }
 
         private static class TransformCoordinates

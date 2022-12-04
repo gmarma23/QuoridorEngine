@@ -3,14 +3,16 @@
 #if !CONSOLE222
     public class WallPartCell : BoardCell
     {
-        private Orientation orientation;
         private bool isUsed;
-        private int expand;
-        private int offset;
+        private readonly int expand;
+        private readonly int offset;
 
         public bool IsUsed { get => isUsed; }
 
-        public WallPartCell(int row, int column, int minSize, int maxSize) : base(row, column)
+        public Color FreeColor { get; set; }
+        public Color UsedColor { get; set; } 
+
+        public WallPartCell(Board board, int row, int column) : base (row, column)
         {
             isUsed = false;
 
@@ -18,46 +20,32 @@
             MouseLeave += new EventHandler(OnMouseLeave);
             Click += new EventHandler(OnClick);
 
-            assignOrientation();
-            setSizes(minSize, maxSize);
-            BackColor = Color.White;
-        }
-
-        private void assignOrientation()
-        {
-            if (row % 2 == 1 && column % 2 == 0)
-                orientation = Orientation.Horizontal;
-            else if (column % 2 == 1 && row % 2 == 0)
-                orientation = Orientation.Vertical;
-            else
-                throw new Exception("Not a wall part cell");
-        }
-
-        private void setSizes(int minSize, int maxSize)
-        {
-            if (orientation == Orientation.Horizontal)
+            if (Row % 2 == 1 && Column % 2 == 0)
             {
-                Width = maxSize;
-                Height = minSize;
+                Width = board.PlayerCellSize;
+                Height = board.WallCellSize;
             }
-            else if (orientation == Orientation.Vertical)
+            else if (row % 2 == 0 && column % 2 == 1)
             {
-                Width = minSize;
-                Height = maxSize;
+                Width = board.WallCellSize;
+                Height = board.PlayerCellSize;
             }
 
-            expand = minSize;
+            expand = board.WallCellSize;
             offset = expand / 2;
+
+            FreeColor = board.WallCellFreeColor;
+            UsedColor = board.WallCellUsedColor;
         }
 
         private void OnMouseEnter(object sender, EventArgs e)
         {
-            if (!isUsed) activeStyle();
+            if (!isUsed) usedStyle();
         }
 
         private void OnMouseLeave(object sender, EventArgs e)
         {
-            if (!isUsed) inactiveStyle();
+            if (!isUsed) unusedStyle();
         }
 
         private void OnClick(object sender, EventArgs e)
@@ -68,23 +56,23 @@
             }
         }
 
-        private void activeStyle()
+        private void usedStyle()
         {
             Height += expand;
             Top -= offset;
             Width += expand;
             Left -= offset;
-            BackColor = Color.Black;
+            BackColor = UsedColor;
             BringToFront();
         }
 
-        private void inactiveStyle()
+        private void unusedStyle()
         {
             Height -= expand;
             Top += offset;
             Width -= expand;
             Left += offset;
-            BackColor = Color.White;
+            BackColor = FreeColor;
             SendToBack();
         }
     }

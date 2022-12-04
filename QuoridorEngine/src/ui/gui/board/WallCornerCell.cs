@@ -8,16 +8,11 @@ namespace QuoridorEngine.src.ui.gui.board
 {
     public class WallCornerCell : BoardCell
     {
-        public WallCornerCell(int row, int column, int size) : base(row, column)
+        public WallCornerCell(Board board, int row, int column) : base(row, column)
         {
-            normalStyle();
-            Width = size;
-            Height = size;
-        }
-
-        public void normalStyle()
-        {
-            BackColor = Color.White;
+            BackColor = board.WallCellFreeColor;
+            Width = board.WallCellSize;
+            Height = Width;
         }
     }
 }
