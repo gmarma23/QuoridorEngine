@@ -1,5 +1,6 @@
 using QuoridorEngine.src.ui.gui;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 
 namespace QuoridorEngine.UI
 {
@@ -7,8 +8,8 @@ namespace QuoridorEngine.UI
     public partial class GuiFrame : Form
     {
         private Board board;
-        private Panel score;
-        private Panel availableWalls;
+        private PlayerPropertiesPanel whitePlayerProperties;
+        private PlayerPropertiesPanel blackPlayerProperties;
 
         private Color BackgroundTopColor { get; set; }
         private Color BackgroundBottomColor { get; set; }
@@ -22,6 +23,8 @@ namespace QuoridorEngine.UI
             BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
             BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
             BackgroundAngle = 45;
+
+            RenderPlayerPropertiesPanels();
         }
 
         /// <summary>
@@ -32,6 +35,17 @@ namespace QuoridorEngine.UI
             board = new Board(this, boardDimension, initWhiteRow, initWhiteColumn, initBlackRow, initBlackColumn);
             Controls.Add(board);
             board.BringToFront();
+        }
+
+        public void RenderPlayerPropertiesPanels()
+        {
+            whitePlayerProperties = new PlayerPropertiesPanel(this, 0.06);
+            Controls.Add(whitePlayerProperties);
+            whitePlayerProperties.BringToFront();
+
+            blackPlayerProperties = new PlayerPropertiesPanel(this, 0.895);
+            Controls.Add(blackPlayerProperties);
+            blackPlayerProperties.BringToFront();
         }
 
         /// <summary>
