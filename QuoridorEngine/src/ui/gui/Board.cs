@@ -23,20 +23,14 @@ namespace QuoridorEngine.src.ui.gui
 
         private Color WhitePlayerPawnColor { get; set; }
         private Color BlackPlayerPawnColor { get; set; }
-
-        public int Dimension 
-        {
-            private init { dimension = value; }
-            get => dimension; 
-        }
   
         public Board(GuiFrame guiFrame, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
         {
-            Dimension = dimension;
+            this.dimension = dimension;
             Parent = guiFrame;
 
             // Set default property values
-            BoardFrameRatio = 0.75;
+            BoardFrameRatio = GuiFrame.boardFrameRatio;
             WallPlayerCellRatio = 0.11;
       
             PlayerCellColor = Color.RoyalBlue;
@@ -80,7 +74,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         private void drawBoard()
         {
-            boardCells = new BoardCell[Dimension, Dimension];
+            boardCells = new BoardCell[dimension, dimension];
             int xLoc = 0, yLoc = 0;
 
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
@@ -137,7 +131,7 @@ namespace QuoridorEngine.src.ui.gui
         private void calculateCellSizes()
         {
             // Calculate player cell and wall cell sizes combined
-            int combinedSize = this.Width / ((Dimension + 1) / 2);
+            int combinedSize = this.Width / ((dimension + 1) / 2);
 
             wallCellSize = (int)(combinedSize * WallPlayerCellRatio);
             playerCellSize = combinedSize - wallCellSize;

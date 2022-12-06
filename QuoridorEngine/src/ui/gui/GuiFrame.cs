@@ -7,9 +7,11 @@ namespace QuoridorEngine.UI
 #if !CONSOLE 
     public partial class GuiFrame : Form
     {
+        public const double boardFrameRatio = 0.75;
+
         private Board board;
-        private PlayerPropertiesPanel whitePlayerProperties;
-        private PlayerPropertiesPanel blackPlayerProperties;
+        private PlayerWallsPanel whitePlayerProperties;
+        private PlayerWallsPanel blackPlayerProperties;
 
         private Color BackgroundTopColor { get; set; }
         private Color BackgroundBottomColor { get; set; }
@@ -39,11 +41,11 @@ namespace QuoridorEngine.UI
 
         public void RenderPlayerPropertiesPanels()
         {
-            whitePlayerProperties = new PlayerPropertiesPanel(this, 0.06);
+            whitePlayerProperties = new PlayerWallsPanel(this, Player.White);
             Controls.Add(whitePlayerProperties);
             whitePlayerProperties.BringToFront();
 
-            blackPlayerProperties = new PlayerPropertiesPanel(this, 0.895);
+            blackPlayerProperties = new PlayerWallsPanel(this, Player.Black);
             Controls.Add(blackPlayerProperties);
             blackPlayerProperties.BringToFront();
         }
