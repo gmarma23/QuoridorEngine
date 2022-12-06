@@ -10,8 +10,8 @@ namespace QuoridorEngine.UI
         public const double boardFrameRatio = 0.75;
 
         private Board board;
-        private PlayerWallsPanel whitePlayerProperties;
-        private PlayerWallsPanel blackPlayerProperties;
+        private PlayerWallsPanel whitePlayerWalls;
+        private PlayerWallsPanel blackPlayerWalls;
 
         private Color BackgroundTopColor { get; set; }
         private Color BackgroundBottomColor { get; set; }
@@ -25,8 +25,16 @@ namespace QuoridorEngine.UI
             BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
             BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
             BackgroundAngle = 45;
+        }
 
-            RenderPlayerPropertiesPanels();
+        public void SetWhitePlayerWallCounter(int numOfWalls)
+        {
+            whitePlayerWalls.SetWallNum(numOfWalls);
+        }
+
+        public void SetBlackPlayerWallCounter(int numOfWalls)
+        {
+            blackPlayerWalls.SetWallNum(numOfWalls);
         }
 
         /// <summary>
@@ -39,15 +47,15 @@ namespace QuoridorEngine.UI
             board.BringToFront();
         }
 
-        public void RenderPlayerPropertiesPanels()
+        public void RenderPlayerWallPanels()
         {
-            whitePlayerProperties = new PlayerWallsPanel(this, Player.White);
-            Controls.Add(whitePlayerProperties);
-            whitePlayerProperties.BringToFront();
+            whitePlayerWalls = new PlayerWallsPanel(this, Player.White);
+            Controls.Add(whitePlayerWalls);
+            whitePlayerWalls.BringToFront();
 
-            blackPlayerProperties = new PlayerWallsPanel(this, Player.Black);
-            Controls.Add(blackPlayerProperties);
-            blackPlayerProperties.BringToFront();
+            blackPlayerWalls = new PlayerWallsPanel(this, Player.Black);
+            Controls.Add(blackPlayerWalls);
+            blackPlayerWalls.BringToFront();
         }
 
         /// <summary>

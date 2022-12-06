@@ -32,6 +32,10 @@ namespace QuoridorEngine.src.ui.gui
                 TransformCoordinates.GameToGuiDimension(game.Dimension),
                 guiWhitePawnRow, guiWhitePawnColumn,
                 guiBlackPawnRow, guiBlackPawnColumn);
+
+            guiFrame.RenderPlayerWallPanels();
+            guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
+            guiFrame.SetBlackPlayerWallCounter(game.GetPlayerWalls(false));
         }
 
         private static class TransformCoordinates
