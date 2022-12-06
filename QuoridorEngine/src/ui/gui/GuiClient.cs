@@ -12,10 +12,10 @@ namespace QuoridorEngine.src.ui.gui
 
         public GuiClient() 
         {
-            game = new QuoridorGame(9);
+            game = new QuoridorGame();
             guiFrame = new GuiFrame();
 
-            initializeGameGuiComponents();
+            initializeGameComponents();
         }
 
         public void Play()
@@ -23,7 +23,7 @@ namespace QuoridorEngine.src.ui.gui
             Application.Run(guiFrame);
         }
 
-        private void initializeGameGuiComponents()
+        private void initializeGameComponents()
         {
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
             game.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
