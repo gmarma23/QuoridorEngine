@@ -7,7 +7,6 @@ namespace QuoridorEngine.src.ui.console
     public class ConsoleClient
     {
         private const string engineName = "Quoridor Engine";
-        private const int defaultBoardSize = 7;
         private static QuoridorGame game;
         private static List<string> knownCommands = new List<string>
         {
@@ -22,7 +21,7 @@ namespace QuoridorEngine.src.ui.console
         /// </summary>
         public static void Play()
         {
-            game = new QuoridorGame(defaultBoardSize);
+            game = new QuoridorGame();
 
             Console.WriteLine("#Welcome to Quoridor Engine's Terminal Implementation. Please type any commands\n");
             do

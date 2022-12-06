@@ -15,11 +15,15 @@ namespace QuoridorEngine.src.ui.gui
             game = new QuoridorGame(9);
             guiFrame = new GuiFrame();
 
-            renderGameGuiComponents();
+            initializeGameGuiComponents();
+        }
+
+        public void Play()
+        {
             Application.Run(guiFrame);
         }
 
-        private void renderGameGuiComponents()
+        private void initializeGameGuiComponents()
         {
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
             game.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
