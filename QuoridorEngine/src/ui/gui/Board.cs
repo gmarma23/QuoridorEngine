@@ -1,5 +1,7 @@
 ﻿using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace QuoridorEngine.src.ui.gui
 {
@@ -22,6 +24,8 @@ namespace QuoridorEngine.src.ui.gui
 
         private Color WhitePlayerPawnColor { get; set; }
         private Color BlackPlayerPawnColor { get; set; }
+
+
   
         public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
         {
@@ -55,8 +59,7 @@ namespace QuoridorEngine.src.ui.gui
                 (guiFrame.ClientRectangle.Width / 2) - (Width / 2),
                 (guiFrame.ClientRectangle.Height / 2) - (Height / 2));
 
-            drawBoard();
-            subscribeClientToBoardEvents(guiClient);
+            drawBoard(guiClient);
             drawPlayerPawn(Player.White);
             drawPlayerPawn(Player.Black);
 
@@ -64,29 +67,27 @@ namespace QuoridorEngine.src.ui.gui
             UpdatePawnLocation(Player.Black, initBlackRow, initBlackColumn);
         }
 
+        public void UseWallCell(int row, int column)
+        {
+            Debug.Assert(boardCells[row, column] is WallPartCell);
+            ((WallPartCell)boardCells[row, column]).UsedStyle();
+        }
+
+        public void FreeWallCell(int row, int column)
+        {
+            Debug.Assert(boardCells[row, column] is WallPartCell);
+            ((WallPartCell)boardCells[row, column]).FreeStyle();
+        }
+
         private void UpdatePawnLocation(Player player, int newRow, int newColumn)
         {
             getPlayerPawn(player).Parent = boardCells[newRow, newColumn];
         }
 
-        private void subscribeClientToBoardEvents(GuiClient guiClient)
-        {
-            for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
-            {
-                for (int column = 0; column < boardCells.GetLength(1); column++)
-                {
-                    if (boardCells[row, column] is WallPartCell)
-                    {
-                        ((WallPartCell)boardCells[row, column]).RaisePlaceWallEvent += guiClient.OnPlaceWall;
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Coordinate board cells drawing on board panel
         /// </summary>
-        private void drawBoard()
+        private void drawBoard(GuiClient guiClient)
         {
             boardCells = new BoardCell[Dimension, Dimension];
             int xLoc = 0, yLoc = 0;
@@ -95,7 +96,7 @@ namespace QuoridorEngine.src.ui.gui
             {
                 for (int column = 0; column < boardCells.GetLength(1); column++)
                 {
-                    drawBoardCell(row, column, xLoc, yLoc);
+                    drawBoardCell(row, column, xLoc, yLoc, guiClient);
                     xLoc += boardCells[row, column].Width;
                 }
                 yLoc += boardCells[row, 0].Height;
@@ -110,14 +111,14 @@ namespace QuoridorEngine.src.ui.gui
         /// <param name="column">Board column</param>
         /// <param name="xLoc">Cell x location</param>
         /// <param name="yLoc">Cell y location</param>
-        private void drawBoardCell(int row, int column, int xLoc, int yLoc)
+        private void drawBoardCell(int row, int column, int xLoc, int yLoc, GuiClient guiClient)
         {
             if (row % 2 == 0 && column % 2 == 0)
                 boardCells[row, column] = new PlayerCell(this, row, column);
             else if (row % 2 == 1 && column % 2 == 1)
                 boardCells[row, column] = new WallCornerCell(this, row, column);
             else
-                boardCells[row, column] = new WallPartCell(this, row, column);
+                boardCells[row, column] = new WallPartCell(this, row, column, guiClient);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);

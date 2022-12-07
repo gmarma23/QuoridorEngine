@@ -27,6 +27,16 @@ namespace QuoridorEngine.UI
             BackgroundAngle = 45;
         }
 
+        public void UseWallCell(int row, int column)
+        {
+            board.UseWallCell(row, column);
+        }
+
+        public void FreeWallCell(int row, int column)
+        {
+            board.FreeWallCell(row, column);
+        }
+
         public void SetWhitePlayerWallCounter(int numOfWalls)
         {
             whitePlayerWalls.SetWallNum(numOfWalls);

@@ -5,18 +5,17 @@ namespace QuoridorEngine.src.ui.gui.board
 #if !CONSOLE
     public class WallPartCell : BoardCell
     {
-        private bool isUsed;
         private readonly int expand;
         private readonly int offset;
 
-        public event EventHandler<EventArgs> RaisePlaceWallEvent;
+        public bool IsClicked { get; set; }
 
         public Color FreeColor { get; set; }
         public Color UsedColor { get; set; } 
 
-        public WallPartCell(Board board, int row, int column) : base (row, column)
+        public WallPartCell(Board board, int row, int column, GuiClient guiClient) : base (row, column)
         {
-            isUsed = false;
+            IsClicked = false;
 
             if (Row % 2 == 1 && Column % 2 == 0)
             {
@@ -35,14 +34,14 @@ namespace QuoridorEngine.src.ui.gui.board
             FreeColor = board.WallCellFreeColor;
             UsedColor = board.WallCellUsedColor;
 
-            MouseEnter += new EventHandler(OnMouseEnter);
-            MouseLeave += new EventHandler(OnMouseLeave);
-            Click += new EventHandler(OnClick);
+            MouseEnter += guiClient.OnPlaceWall;
+            MouseLeave += guiClient.OnRemoveWall;
+            MouseClick += OnClick;
         }
 
         public void UsedStyle()
         {
-            if (isUsed) return;
+            if (IsClicked) return;
             Height += expand;
             Top -= offset;
             Width += expand;
@@ -53,7 +52,7 @@ namespace QuoridorEngine.src.ui.gui.board
 
         public void FreeStyle()
         {
-            if (isUsed) return;
+            if (IsClicked) return;
             Height -= expand;
             Top += offset;
             Width -= expand;
@@ -62,34 +61,9 @@ namespace QuoridorEngine.src.ui.gui.board
             SendToBack();
         }
 
-        protected virtual void OnRaisePlaceWallEvent(EventArgs e)
-        {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<EventArgs> raiseEvent = RaisePlaceWallEvent;
-
-            // Event will be null if there are no subscribers
-            if (raiseEvent != null)
-                raiseEvent(this, e);
-        }
-
-        private void OnMouseEnter(object sender, EventArgs e)
-        {
-            OnRaisePlaceWallEvent(new EventArgs());
-        }
-
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
-            FreeStyle();
-        }
-
         private void OnClick(object sender, EventArgs e)
         {
-            if (!isUsed)
-            {
-                isUsed = true;
-            }
+            IsClicked = true;
         }
     }
 #endif

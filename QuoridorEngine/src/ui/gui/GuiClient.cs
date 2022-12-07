@@ -11,6 +11,8 @@ namespace QuoridorEngine.src.ui.gui
         private GuiFrame guiFrame;
         private QuoridorGame game;
 
+        public delegate void EventHandlerMethod(object sender, EventArgs e);
+
         public GuiClient() 
         {
             game = new QuoridorGame();
@@ -26,7 +28,25 @@ namespace QuoridorEngine.src.ui.gui
 
         public void OnPlaceWall(object sender, EventArgs e)
         {
-            ((WallPartCell)sender).UsedStyle();
+            (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
+            game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
+
+            for(int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+            {
+                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
+                {
+                    if(game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
+                    {
+                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
+                        guiFrame.UseWallCell(guiRow, guiColumn);
+                    }
+                }
+            }
+        }
+
+        public void OnRemoveWall(object sender, EventArgs e)
+        {
+
         }
 
         private void initializeGameComponents()
@@ -39,24 +59,20 @@ namespace QuoridorEngine.src.ui.gui
             (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
 
             guiFrame.RenderBoard(
-                this,
-                TransformCoordinates.GameToGuiDimension(game.Dimension),
-                guiWhitePawnRow, guiWhitePawnColumn,
-                guiBlackPawnRow, guiBlackPawnColumn);
+                this, TransformCoordinates.GameToGuiDimension(game.Dimension),
+                guiWhitePawnRow, guiWhitePawnColumn, guiBlackPawnRow, guiBlackPawnColumn);
 
             guiFrame.RenderPlayerWallPanels();
             guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
             guiFrame.SetBlackPlayerWallCounter(game.GetPlayerWalls(false));
         }
 
-        private Orientation? determineWallOrientation(int guiRow, int guiColumn)
+        private Orientation determineWallOrientation(int guiRow, int guiColumn)
         {
             if (guiRow % 2 == 1 && guiColumn % 2 == 0)
                 return Orientation.Horizontal;
-            else if (guiRow % 2 == 0 && guiColumn % 2 == 1)
+            else 
                 return Orientation.Vertical;
-            else
-                return null;
         }
 
         private static class TransformCoordinates
