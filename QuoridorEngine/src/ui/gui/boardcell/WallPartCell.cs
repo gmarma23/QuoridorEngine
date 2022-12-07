@@ -7,8 +7,6 @@
         private readonly int expand;
         private readonly int offset;
 
-        public bool IsUsed { get => isUsed; }
-
         public Color FreeColor { get; set; }
         public Color UsedColor { get; set; } 
 
@@ -40,12 +38,12 @@
 
         private void OnMouseEnter(object sender, EventArgs e)
         {
-            if (!isUsed) usedStyle();
+            UsedStyle();
         }
 
         private void OnMouseLeave(object sender, EventArgs e)
         {
-            if (!isUsed) unusedStyle();
+            FreeStyle();
         }
 
         private void OnClick(object sender, EventArgs e)
@@ -56,8 +54,9 @@
             }
         }
 
-        private void usedStyle()
+        public void UsedStyle()
         {
+            if (isUsed) return;
             Height += expand;
             Top -= offset;
             Width += expand;
@@ -66,8 +65,9 @@
             BringToFront();
         }
 
-        private void unusedStyle()
+        public void FreeStyle()
         {
+            if (isUsed) return;
             Height -= expand;
             Top += offset;
             Width -= expand;
