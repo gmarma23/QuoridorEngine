@@ -49,6 +49,16 @@ namespace QuoridorEngine.src.ui.gui
             guiFrame.SetBlackPlayerWallCounter(game.GetPlayerWalls(false));
         }
 
+        private Orientation? determineWallOrientation(int guiRow, int guiColumn)
+        {
+            if (guiRow % 2 == 1 && guiColumn % 2 == 0)
+                return Orientation.Horizontal;
+            else if (guiRow % 2 == 0 && guiColumn % 2 == 1)
+                return Orientation.Vertical;
+            else
+                return null;
+        }
+
         private static class TransformCoordinates
         {
             public static int GameToGuiDimension(int gameDimension)

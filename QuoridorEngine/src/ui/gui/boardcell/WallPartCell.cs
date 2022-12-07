@@ -2,7 +2,7 @@
 
 namespace QuoridorEngine.src.ui.gui.board
 {
-#if !CONSOLE222
+#if !CONSOLE
     public class WallPartCell : BoardCell
     {
         private bool isUsed;
@@ -10,8 +10,6 @@ namespace QuoridorEngine.src.ui.gui.board
         private readonly int offset;
 
         public event EventHandler<EventArgs> RaisePlaceWallEvent;
-
-        public Orientation Orientation { get; init; }
 
         public Color FreeColor { get; set; }
         public Color UsedColor { get; set; } 
@@ -24,13 +22,11 @@ namespace QuoridorEngine.src.ui.gui.board
             {
                 Width = board.PlayerCellSize;
                 Height = board.WallCellSize;
-                Orientation = Orientation.Horizontal;
             }
             else if (row % 2 == 0 && column % 2 == 1)
             {
                 Width = board.WallCellSize;
                 Height = board.PlayerCellSize;
-                Orientation = Orientation.Vertical;
             }
 
             expand = board.WallCellSize;
