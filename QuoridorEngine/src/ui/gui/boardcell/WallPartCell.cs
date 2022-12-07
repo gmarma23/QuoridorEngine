@@ -1,4 +1,6 @@
-﻿namespace QuoridorEngine.src.ui.gui.board
+﻿using Orientation = QuoridorEngine.Core.Orientation;
+
+namespace QuoridorEngine.src.ui.gui.board
 {
 #if !CONSOLE222
     public class WallPartCell : BoardCell
@@ -6,6 +8,8 @@
         private bool isUsed;
         private readonly int expand;
         private readonly int offset;
+
+        public event EventHandler<EventArgs> RaisePlaceWallEvent;
 
         public Orientation Orientation { get; init; }
 
@@ -40,24 +44,6 @@
             Click += new EventHandler(OnClick);
         }
 
-        private void OnMouseEnter(object sender, EventArgs e)
-        {
-            UsedStyle();
-        }
-
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
-            FreeStyle();
-        }
-
-        private void OnClick(object sender, EventArgs e)
-        {
-            if (!isUsed)
-            {
-                isUsed = true;
-            }
-        }
-
         public void UsedStyle()
         {
             if (isUsed) return;
@@ -78,6 +64,36 @@
             Left += offset;
             BackColor = FreeColor;
             SendToBack();
+        }
+
+        protected virtual void OnRaisePlaceWallEvent(EventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<EventArgs> raiseEvent = RaisePlaceWallEvent;
+
+            // Event will be null if there are no subscribers
+            if (raiseEvent != null)
+                raiseEvent(this, e);
+        }
+
+        private void OnMouseEnter(object sender, EventArgs e)
+        {
+            OnRaisePlaceWallEvent(new EventArgs());
+        }
+
+        private void OnMouseLeave(object sender, EventArgs e)
+        {
+            FreeStyle();
+        }
+
+        private void OnClick(object sender, EventArgs e)
+        {
+            if (!isUsed)
+            {
+                isUsed = true;
+            }
         }
     }
 #endif

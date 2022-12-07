@@ -1,4 +1,5 @@
 ﻿using QuoridorEngine.Core;
+using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
 
 using Orientation = QuoridorEngine.Core.Orientation;
@@ -23,6 +24,11 @@ namespace QuoridorEngine.src.ui.gui
             Application.Run(guiFrame);
         }
 
+        public void OnPlaceWall(object sender, EventArgs e)
+        {
+            ((WallPartCell)sender).UsedStyle();
+        }
+
         private void initializeGameComponents()
         {
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
@@ -33,6 +39,7 @@ namespace QuoridorEngine.src.ui.gui
             (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
 
             guiFrame.RenderBoard(
+                this,
                 TransformCoordinates.GameToGuiDimension(game.Dimension),
                 guiWhitePawnRow, guiWhitePawnColumn,
                 guiBlackPawnRow, guiBlackPawnColumn);

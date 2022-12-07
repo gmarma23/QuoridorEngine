@@ -23,7 +23,7 @@ namespace QuoridorEngine.src.ui.gui
         private Color WhitePlayerPawnColor { get; set; }
         private Color BlackPlayerPawnColor { get; set; }
   
-        public Board(GuiFrame guiFrame, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
+        public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
         {
             Dimension = dimension;
             Parent = guiFrame;
@@ -56,16 +56,31 @@ namespace QuoridorEngine.src.ui.gui
                 (guiFrame.ClientRectangle.Height / 2) - (Height / 2));
 
             drawBoard();
+            subscribeClientToBoardEvents(guiClient);
             drawPlayerPawn(Player.White);
             drawPlayerPawn(Player.Black);
 
             UpdatePawnLocation(Player.White, initWhiteRow, initWhiteColumn);
             UpdatePawnLocation(Player.Black, initBlackRow, initBlackColumn);
-        } 
+        }
 
         private void UpdatePawnLocation(Player player, int newRow, int newColumn)
         {
             getPlayerPawn(player).Parent = boardCells[newRow, newColumn];
+        }
+
+        private void subscribeClientToBoardEvents(GuiClient guiClient)
+        {
+            for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
+            {
+                for (int column = 0; column < boardCells.GetLength(1); column++)
+                {
+                    if (boardCells[row, column] is WallPartCell)
+                    {
+                        ((WallPartCell)boardCells[row, column]).RaisePlaceWallEvent += guiClient.OnPlaceWall;
+                    }
+                }
+            }
         }
 
         /// <summary>

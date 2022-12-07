@@ -40,9 +40,9 @@ namespace QuoridorEngine.UI
         /// <summary>
         /// Initialize and include board panel to frame
         /// </summary>
-        public void RenderBoard(int boardDimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
+        public void RenderBoard(GuiClient guiClient, int boardDimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
         {
-            board = new Board(this, boardDimension, initWhiteRow, initWhiteColumn, initBlackRow, initBlackColumn);
+            board = new Board(this, guiClient, boardDimension, initWhiteRow, initWhiteColumn, initBlackRow, initBlackColumn);
             Controls.Add(board);
             board.BringToFront();
         }
