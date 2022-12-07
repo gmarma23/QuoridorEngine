@@ -5,17 +5,16 @@ namespace QuoridorEngine.src.ui.gui
 {
     public class Board : Panel
     {
-        private readonly int dimension;
         private BoardCell[,] boardCells;
         private PlayerPawn blackPawn;
         private PlayerPawn whitePawn;
-        private int playerCellSize;
-        private int wallCellSize;
+
+        private int Dimension { get; init; }
 
         public double BoardFrameRatio { get; set; }
         public double WallPlayerCellRatio { get; set; }
-        public int PlayerCellSize { get => playerCellSize; }
-        public int WallCellSize { get => wallCellSize; }
+        public int PlayerCellSize { get; private set; }
+        public int WallCellSize { get; private set; }
 
         public Color PlayerCellColor { get; set; }
         public Color WallCellFreeColor { get; set; }
@@ -26,7 +25,7 @@ namespace QuoridorEngine.src.ui.gui
   
         public Board(GuiFrame guiFrame, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
         {
-            this.dimension = dimension;
+            Dimension = dimension;
             Parent = guiFrame;
 
             // Set default property values
@@ -48,7 +47,7 @@ namespace QuoridorEngine.src.ui.gui
             calculateCellSizes();
 
             // Fix board size after cell size calculation
-            Width -= wallCellSize + 3;
+            Width -= WallCellSize + 3;
             Height = Width;
 
             // Center board to frame
@@ -74,7 +73,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         private void drawBoard()
         {
-            boardCells = new BoardCell[dimension, dimension];
+            boardCells = new BoardCell[Dimension, Dimension];
             int xLoc = 0, yLoc = 0;
 
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
@@ -117,7 +116,7 @@ namespace QuoridorEngine.src.ui.gui
         public void drawPlayerPawn(Player player)
         {
             ref PlayerPawn playerPawn = ref getPlayerPawn(player);
-            playerPawn = new PlayerPawn(playerCellSize);
+            playerPawn = new PlayerPawn(PlayerCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
             playerPawn.MainColor = (player == Player.White) ? WhitePlayerPawnColor : BlackPlayerPawnColor;
@@ -131,10 +130,10 @@ namespace QuoridorEngine.src.ui.gui
         private void calculateCellSizes()
         {
             // Calculate player cell and wall cell sizes combined
-            int combinedSize = this.Width / ((dimension + 1) / 2);
+            int combinedSize = this.Width / ((Dimension + 1) / 2);
 
-            wallCellSize = (int)(combinedSize * WallPlayerCellRatio);
-            playerCellSize = combinedSize - wallCellSize;
+            WallCellSize = (int)(combinedSize * WallPlayerCellRatio);
+            PlayerCellSize = combinedSize - WallCellSize;
         }
 
         private ref PlayerPawn getPlayerPawn(Player player)
