@@ -7,6 +7,8 @@
         private readonly int expand;
         private readonly int offset;
 
+        public Orientation Orientation { get; init; }
+
         public Color FreeColor { get; set; }
         public Color UsedColor { get; set; } 
 
@@ -14,19 +16,17 @@
         {
             isUsed = false;
 
-            MouseEnter += new EventHandler(OnMouseEnter);
-            MouseLeave += new EventHandler(OnMouseLeave);
-            Click += new EventHandler(OnClick);
-
             if (Row % 2 == 1 && Column % 2 == 0)
             {
                 Width = board.PlayerCellSize;
                 Height = board.WallCellSize;
+                Orientation = Orientation.Horizontal;
             }
             else if (row % 2 == 0 && column % 2 == 1)
             {
                 Width = board.WallCellSize;
                 Height = board.PlayerCellSize;
+                Orientation = Orientation.Vertical;
             }
 
             expand = board.WallCellSize;
@@ -34,6 +34,10 @@
 
             FreeColor = board.WallCellFreeColor;
             UsedColor = board.WallCellUsedColor;
+
+            MouseEnter += new EventHandler(OnMouseEnter);
+            MouseLeave += new EventHandler(OnMouseLeave);
+            Click += new EventHandler(OnClick);
         }
 
         private void OnMouseEnter(object sender, EventArgs e)
