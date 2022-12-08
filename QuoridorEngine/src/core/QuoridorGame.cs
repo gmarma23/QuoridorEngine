@@ -58,8 +58,7 @@ namespace QuoridorEngine.Core
             List<QuoridorMove> possibleMoves = new();
             QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
 
-            foreach((int row, int col) in getLegalNeighbourSquares(currentPlayer.Row, currentPlayer.Column, playerIsWhite))
-                possibleMoves.Add(new QuoridorMove(currentPlayer.Row, currentPlayer.Column, row, col, playerIsWhite));
+            possibleMoves.AddRange(GetPossiblePlayerMoves(playerIsWhite));
 
             if (currentPlayer.AvailableWalls <= 0)
                 return possibleMoves;
@@ -77,6 +76,17 @@ namespace QuoridorEngine.Core
                 }
 
             return possibleMoves;
+        }
+
+        public IEnumerable<Move> GetPossiblePlayerMoves(bool playerIsWhite)
+        {
+            List<QuoridorMove> possiblePlayerMoves = new();
+            QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
+
+            foreach ((int row, int col) in getLegalNeighbourSquares(currentPlayer.Row, currentPlayer.Column, playerIsWhite))
+                possiblePlayerMoves.Add(new QuoridorMove(currentPlayer.Row, currentPlayer.Column, row, col, playerIsWhite));
+
+            return possiblePlayerMoves;
         }
 
         /// <summary>
