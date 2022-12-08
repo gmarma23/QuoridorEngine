@@ -32,9 +32,9 @@ namespace QuoridorEngine.src.ui.gui
             (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
             game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
 
-            for(int gameRow = game.Dimension-1; gameRow >= 0; gameRow--)
+            for(int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
             {
-                for (int gameColumn = 0; gameColumn < game.Dimension-1; gameColumn++)
+                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
                 {
                     if (gameRow > 0)
                         if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
@@ -63,7 +63,7 @@ namespace QuoridorEngine.src.ui.gui
             {
                 for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
                 {
-                    for (int gameColumn = 0; gameColumn < game.Dimension - 1; gameColumn++)
+                    for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
                     {
                         if (gameRow > 0)
                             if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
@@ -89,7 +89,7 @@ namespace QuoridorEngine.src.ui.gui
 
             for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
             {
-                for (int gameColumn = 0; gameColumn < game.Dimension - 1; gameColumn++)
+                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
                 {
                     if (gameRow > 0)
                         if (!game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
