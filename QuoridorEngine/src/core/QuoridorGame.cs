@@ -134,7 +134,7 @@ namespace QuoridorEngine.Core
                     board.RemoveCorner(lastMove.Row, lastMove.Column + 1);
                 }
 
-                getTargetPlayer(lastMove.IsWhitePlayer).DecreaseAvailableWalls();
+                getTargetPlayer(lastMove.IsWhitePlayer).IncreaseAvailableWalls();
             }
         }
 
