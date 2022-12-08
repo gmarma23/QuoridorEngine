@@ -133,6 +133,8 @@ namespace QuoridorEngine.Core
                     board.RemoveWallPartVertical(lastMove.Row - 1, lastMove.Column);
                     board.RemoveCorner(lastMove.Row, lastMove.Column + 1);
                 }
+
+                getTargetPlayer(lastMove.IsWhitePlayer).IncreaseAvailableWalls();
             }
         }
 
