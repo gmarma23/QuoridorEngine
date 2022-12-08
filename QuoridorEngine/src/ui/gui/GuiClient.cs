@@ -28,25 +28,88 @@ namespace QuoridorEngine.src.ui.gui
 
         public void OnPlaceWall(object sender, EventArgs e)
         {
+            if (((WallPartCell)sender).IsClicked) return;
             (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
             game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
 
-            for(int gameRow = game.Dimension - 1; gameRow > 0; gameRow--)
+            for(int gameRow = game.Dimension-1; gameRow >= 0; gameRow--)
             {
-                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
+                for (int gameColumn = 0; gameColumn < game.Dimension-1; gameColumn++)
                 {
-                    if(game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
-                    {
-                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
-                        guiFrame.UseWallCell(guiRow, guiColumn);
-                    }
+                    if (gameRow > 0)
+                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
+                        {
+                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
+                            guiFrame.UseWallCell(guiRow, guiColumn);
+
+                        }
+
+                    if (gameColumn < game.Dimension - 1)
+                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical))
+                        {
+                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
+                            guiFrame.UseWallCell(guiRow, guiColumn);
+
+                        }
+
+                    guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
                 }
             }
         }
 
         public void OnRemoveWall(object sender, EventArgs e)
         {
+            if (((WallPartCell)sender).IsClicked)
+            {
+                for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+                {
+                    for (int gameColumn = 0; gameColumn < game.Dimension - 1; gameColumn++)
+                    {
+                        if (gameRow > 0)
+                            if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
+                            {
+                                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
+                                guiFrame.ClickedWallCell(guiRow, guiColumn, true);
 
+                            }
+
+                        if (gameColumn < game.Dimension - 1)
+                            if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical))
+                            {
+                                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
+                                guiFrame.ClickedWallCell(guiRow, guiColumn, true);
+
+                            }
+                    }
+                }
+                return;
+            }
+
+            game.UndoMoves(1);
+
+            for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+            {
+                for (int gameColumn = 0; gameColumn < game.Dimension - 1; gameColumn++)
+                {
+                    if (gameRow > 0)
+                        if (!game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
+                        {
+                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
+                            guiFrame.FreeWallCell(guiRow, guiColumn);
+
+                        }
+
+                    if (gameColumn < game.Dimension - 1)
+                        if (!game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical))
+                        {
+                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
+                            guiFrame.FreeWallCell(guiRow, guiColumn);
+
+                        }
+
+                    guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
+                }
+            }
         }
 
         private void initializeGameComponents()

@@ -9,6 +9,7 @@ namespace QuoridorEngine.src.ui.gui.board
         private readonly int offset;
 
         public bool IsClicked { get; set; }
+        public bool IsActive { get; private set; }
 
         public Color FreeColor { get; set; }
         public Color UsedColor { get; set; } 
@@ -42,6 +43,7 @@ namespace QuoridorEngine.src.ui.gui.board
         public void UsedStyle()
         {
             if (IsClicked) return;
+            IsActive= true;
             Height += expand;
             Top -= offset;
             Width += expand;
@@ -53,6 +55,7 @@ namespace QuoridorEngine.src.ui.gui.board
         public void FreeStyle()
         {
             if (IsClicked) return;
+            IsActive= false;
             Height -= expand;
             Top += offset;
             Width -= expand;

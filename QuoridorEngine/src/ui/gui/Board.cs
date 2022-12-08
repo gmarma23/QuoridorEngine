@@ -67,16 +67,24 @@ namespace QuoridorEngine.src.ui.gui
             UpdatePawnLocation(Player.Black, initBlackRow, initBlackColumn);
         }
 
+        public void ClickedWallCell(int row, int column, bool isClicked)
+        {
+            Debug.Assert(boardCells[row, column] is WallPartCell);
+            ((WallPartCell)boardCells[row, column]).IsClicked = isClicked;
+        }
+
         public void UseWallCell(int row, int column)
         {
             Debug.Assert(boardCells[row, column] is WallPartCell);
-            ((WallPartCell)boardCells[row, column]).UsedStyle();
+            if(!((WallPartCell)boardCells[row, column]).IsActive)
+                ((WallPartCell)boardCells[row, column]).UsedStyle();
         }
 
         public void FreeWallCell(int row, int column)
         {
             Debug.Assert(boardCells[row, column] is WallPartCell);
-            ((WallPartCell)boardCells[row, column]).FreeStyle();
+            if (((WallPartCell)boardCells[row, column]).IsActive)
+                ((WallPartCell)boardCells[row, column]).FreeStyle();
         }
 
         private void UpdatePawnLocation(Player player, int newRow, int newColumn)

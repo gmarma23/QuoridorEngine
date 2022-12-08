@@ -1,4 +1,6 @@
 using QuoridorEngine.src.ui.gui;
+using QuoridorEngine.src.ui.gui.board;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
 
@@ -25,6 +27,11 @@ namespace QuoridorEngine.UI
             BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
             BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
             BackgroundAngle = 45;
+        }
+
+        public void ClickedWallCell(int row, int column, bool isClicked)
+        {
+            board.ClickedWallCell(row, column, isClicked);
         }
 
         public void UseWallCell(int row, int column)
