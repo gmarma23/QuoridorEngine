@@ -8,7 +8,7 @@ namespace QuoridorEngine.src.ui.gui.board
         private readonly int expand;
         private readonly int offset;
 
-        public bool IsClicked { get; set; }
+        public bool IsPlaced { get; set; }
         public bool IsActive { get; private set; }
 
         public Color FreeColor { get; set; }
@@ -16,7 +16,7 @@ namespace QuoridorEngine.src.ui.gui.board
 
         public WallPartCell(Board board, int row, int column, GuiClient guiClient) : base (row, column)
         {
-            IsClicked = false;
+            IsPlaced = false;
 
             if (Row % 2 == 1 && Column % 2 == 0)
             {
@@ -40,10 +40,9 @@ namespace QuoridorEngine.src.ui.gui.board
             MouseClick += OnClick;
         }
 
-        public void UsedStyle()
+        public void Use()
         {
-            if (IsClicked) return;
-            IsActive= true;
+            IsActive = true;
             Height += expand;
             Top -= offset;
             Width += expand;
@@ -52,10 +51,9 @@ namespace QuoridorEngine.src.ui.gui.board
             BringToFront();
         }
 
-        public void FreeStyle()
+        public void Free()
         {
-            if (IsClicked) return;
-            IsActive= false;
+            IsActive = false;
             Height -= expand;
             Top += offset;
             Width -= expand;
@@ -66,7 +64,7 @@ namespace QuoridorEngine.src.ui.gui.board
 
         private void OnClick(object sender, EventArgs e)
         {
-            IsClicked = true;
+            IsPlaced = true;
         }
     }
 #endif

@@ -70,21 +70,21 @@ namespace QuoridorEngine.src.ui.gui
         public void ClickedWallCell(int row, int column, bool isClicked)
         {
             Debug.Assert(boardCells[row, column] is WallPartCell);
-            ((WallPartCell)boardCells[row, column]).IsClicked = isClicked;
+            ((WallPartCell)boardCells[row, column]).IsPlaced = isClicked;
         }
 
         public void UseWallCell(int row, int column)
         {
             Debug.Assert(boardCells[row, column] is WallPartCell);
             if(!((WallPartCell)boardCells[row, column]).IsActive)
-                ((WallPartCell)boardCells[row, column]).UsedStyle();
+                ((WallPartCell)boardCells[row, column]).Use();
         }
 
         public void FreeWallCell(int row, int column)
         {
             Debug.Assert(boardCells[row, column] is WallPartCell);
             if (((WallPartCell)boardCells[row, column]).IsActive)
-                ((WallPartCell)boardCells[row, column]).FreeStyle();
+                ((WallPartCell)boardCells[row, column]).Free();
         }
 
         private void UpdatePawnLocation(Player player, int newRow, int newColumn)

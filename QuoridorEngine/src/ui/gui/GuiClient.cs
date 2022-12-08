@@ -1,7 +1,7 @@
 ﻿using QuoridorEngine.Core;
 using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
-
+using QuoridorEngine.Utils;
 using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.src.ui.gui
@@ -28,9 +28,14 @@ namespace QuoridorEngine.src.ui.gui
 
         public void OnPlaceWall(object sender, EventArgs e)
         {
-            if (((WallPartCell)sender).IsClicked) return;
+            if (((WallPartCell)sender).IsPlaced) return;
+
             (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
-            game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
+            try
+            {
+                game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
+            }
+            catch(InvalidMoveException) { return; }
 
             for(int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
             {
@@ -59,7 +64,9 @@ namespace QuoridorEngine.src.ui.gui
 
         public void OnRemoveWall(object sender, EventArgs e)
         {
-            if (((WallPartCell)sender).IsClicked)
+            if (!((WallPartCell)sender).IsActive) return;
+
+            if (((WallPartCell)sender).IsPlaced)
             {
                 for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
                 {
@@ -70,7 +77,6 @@ namespace QuoridorEngine.src.ui.gui
                             {
                                 (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
                                 guiFrame.ClickedWallCell(guiRow, guiColumn, true);
-
                             }
 
                         if (gameColumn < game.Dimension - 1)
@@ -78,7 +84,6 @@ namespace QuoridorEngine.src.ui.gui
                             {
                                 (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
                                 guiFrame.ClickedWallCell(guiRow, guiColumn, true);
-
                             }
                     }
                 }
