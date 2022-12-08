@@ -31,7 +31,7 @@ namespace QuoridorEngine.src.ui.gui
             (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
             game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
 
-            for(int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+            for(int gameRow = game.Dimension - 1; gameRow > 0; gameRow--)
             {
                 for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
                 {
@@ -99,7 +99,7 @@ namespace QuoridorEngine.src.ui.gui
 
             public static (int, int) GameToGuiWall(int gameRow, int gameColumn, Orientation orientation)
             {
-                return (orientation == Orientation.Horizontal) ? (2 * (gameRow - 1), 2 * gameColumn) : (2 * gameRow, 2 * (gameColumn - 1));
+                return (orientation == Orientation.Horizontal) ? (2 * gameRow - 1, 2 * gameColumn) : (2 * gameRow, 2 * gameColumn + 1);
             }
         }
     }
