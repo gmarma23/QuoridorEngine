@@ -11,8 +11,6 @@ namespace QuoridorEngine.src.ui.gui
         private GuiFrame guiFrame;
         private QuoridorGame game;
 
-        public delegate void EventHandlerMethod(object sender, EventArgs e);
-
         public GuiClient() 
         {
             game = new QuoridorGame();
@@ -30,10 +28,10 @@ namespace QuoridorEngine.src.ui.gui
         {
             if (((WallPartCell)sender).IsPlaced) return;
 
-            (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
+            (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, getWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
             try
             {
-                game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, determineWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
+                game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, getWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
             }
             catch(InvalidMoveException) { return; }
 
@@ -135,12 +133,9 @@ namespace QuoridorEngine.src.ui.gui
             guiFrame.SetBlackPlayerWallCounter(game.GetPlayerWalls(false));
         }
 
-        private Orientation determineWallOrientation(int guiRow, int guiColumn)
+        private Orientation getWallOrientation(int guiRow, int guiColumn)
         {
-            if (guiRow % 2 == 1 && guiColumn % 2 == 0)
-                return Orientation.Horizontal;
-            else 
-                return Orientation.Vertical;
+            return (guiRow % 2 == 1 && guiColumn % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
         }
 
         private static class TransformCoordinates
