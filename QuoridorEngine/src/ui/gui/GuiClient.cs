@@ -13,7 +13,8 @@ namespace QuoridorEngine.src.ui.gui
         private GuiFrame guiFrame;
         private QuoridorGame game;
 
-        public bool IsWhitePlayerTurn { get; set; } 
+        private bool IsWhitePlayerTurn { get; set; } 
+        private bool PlayerMoveInit { get; set; }
 
         public GuiClient() 
         {
@@ -35,7 +36,7 @@ namespace QuoridorEngine.src.ui.gui
 
         }
 
-        public void MovePlayer()
+        public void MovePlayer(object sender, EventArgs e)
         {
 
         }
