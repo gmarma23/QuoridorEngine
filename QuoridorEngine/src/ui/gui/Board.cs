@@ -38,7 +38,7 @@ namespace QuoridorEngine.src.ui.gui
       
             PlayerCellColor = Color.RoyalBlue;
             WallCellFreeColor = Color.Transparent;
-            WallCellUsedColor = Color.White;
+            WallCellUsedColor = Color.LightGray;
             BackColor = Color.Transparent;
 
             WhitePlayerPawnColor = Color.Red;

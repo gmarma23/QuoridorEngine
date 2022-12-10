@@ -56,7 +56,7 @@ namespace QuoridorEngine.src.ui.gui
         public void PlaceWall(object sender, EventArgs e)
         {
             iterateGameBoard(guiFrame.PlaceWallCell, true);
-            IsWhitePlayerTurn = !IsWhitePlayerTurn;
+            switchPlayerTurn();
         }
 
         public void RemoveWallPreview(object sender, EventArgs e)
@@ -115,9 +115,9 @@ namespace QuoridorEngine.src.ui.gui
             guiFrame.SetPlayerWallCounter(false, game.GetPlayerWalls(false));
         }
 
-        private Orientation getWallOrientation(WallPartCell wallcell)
+        private void switchPlayerTurn()
         {
-            return (wallcell.Row % 2 == 1 && wallcell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
+            IsWhitePlayerTurn = !IsWhitePlayerTurn;
         }
 
         private static class TransformCoordinates
@@ -146,6 +146,11 @@ namespace QuoridorEngine.src.ui.gui
             {
                 return (orientation == Orientation.Horizontal) ? (2 * gameRow - 1, 2 * gameColumn) : (2 * gameRow, 2 * gameColumn + 1);
             }
+        }
+
+        private Orientation getWallOrientation(WallPartCell wallcell)
+        {
+            return (wallcell.Row % 2 == 1 && wallcell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
         }
     }
 }
