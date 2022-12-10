@@ -69,6 +69,16 @@ namespace QuoridorEngine.src.ui.gui
             getPlayerPawn(isWhitePlayer).Parent = boardCells[newRow, newColumn];
         }
 
+        public void NormalPlayerCell(int row, int column)
+        {
+
+        }
+
+        public void PossibleMovePlayerCell(int row, int column)
+        {
+
+        }
+
         public void UseWallCell(int row, int column)
         {
             WallPartCell wallPartCell = (WallPartCell)boardCells[row, column];

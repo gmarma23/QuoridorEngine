@@ -8,7 +8,7 @@ namespace QuoridorEngine.src.ui.gui
 {
     public class GuiClient
     {
-        public delegate void Function<in T1, in T2>(T1 arg1, T2 arg2);
+        public delegate void BoardCellAction(int row, int column);
 
         private GuiFrame guiFrame;
         private QuoridorGame game;
@@ -51,13 +51,14 @@ namespace QuoridorEngine.src.ui.gui
                 return; 
             }
 
-            iterateGameBoard(guiFrame.UseWallCell, true);
+            refreshWallCells(guiFrame.UseWallCell, true);
             guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
         }
 
         public void PlaceWall(object sender, EventArgs e)
         {
-            iterateGameBoard(guiFrame.PlaceWallCell, true);
+            refreshWallCells(guiFrame.PlaceWallCell, true);
+            if (InitPlayerMove) hidePossiblePlayerMoves();
             switchPlayerTurn();
         }
 
@@ -71,7 +72,7 @@ namespace QuoridorEngine.src.ui.gui
 
             game.UndoMoves(1);
 
-            iterateGameBoard(guiFrame.FreeWallCell, false);
+            refreshWallCells(guiFrame.FreeWallCell, false);
             guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
         }
 
@@ -83,24 +84,29 @@ namespace QuoridorEngine.src.ui.gui
         public void PlayerPawnClicked(object sender, EventArgs e)
         {
             if (InitPlayerMove)
-                HidePossiblePlayerMoves(sender, e);
+                hidePossiblePlayerMoves();
             else
-                ShowPossiblePlayerMoves(sender, e);
+                showPossiblePlayerMoves(sender, e);
 
             InitPlayerMove = !InitPlayerMove;
         }
 
-        private void ShowPossiblePlayerMoves(object sender, EventArgs e)
+        private void showPossiblePlayerMoves(object sender, EventArgs e)
         {
 
         }
 
-        private void HidePossiblePlayerMoves(object sender, EventArgs e)
+        private void hidePossiblePlayerMoves()
         {
-
+            for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
+                {
+                    (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
+                    guiFrame.NormalPlayerCell(guiRow, guiColumn);
+                }
         }
 
-        private void iterateGameBoard(Function<int, int> function, bool hasWallPiece)
+        private void refreshWallCells(BoardCellAction function, bool hasWallPiece)
         {
             for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
                 for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)

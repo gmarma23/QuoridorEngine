@@ -31,6 +31,8 @@ namespace QuoridorEngine.UI
 
         public void MovePlayerPawn(bool isWhitePlayer, int row, int column) => board.MovePlayerPawn(isWhitePlayer, row, column);
 
+        public void NormalPlayerCell(int row, int column) => board.NormalPlayerCell(row, column);
+
         public void UseWallCell(int row, int column) => board.UseWallCell(row, column);
 
         public void FreeWallCell(int row, int column) => board.FreeWallCell(row, column);
