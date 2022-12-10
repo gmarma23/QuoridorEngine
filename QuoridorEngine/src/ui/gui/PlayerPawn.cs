@@ -31,7 +31,7 @@ namespace QuoridorEngine.src.ui.gui
             Height = Width;
             Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
             
-            Click += guiClient.ShowPossiblePlayerMoves;
+            Click += guiClient.PlayerPawnClicked;
         }
 
         protected override void OnPaint(PaintEventArgs e)

@@ -14,7 +14,7 @@ namespace QuoridorEngine.src.ui.gui
         private QuoridorGame game;
 
         private bool IsWhitePlayerTurn { get; set; } 
-        private bool PlayerMoveInit { get; set; }
+        private bool InitPlayerMove { get; set; }
 
         public GuiClient() 
         {
@@ -24,21 +24,12 @@ namespace QuoridorEngine.src.ui.gui
             renderGameComponents();
 
             IsWhitePlayerTurn = true;
+            InitPlayerMove = false;
         }
 
         public void Play()
         {
             Application.Run(guiFrame);
-        }
-
-        public void ShowPossiblePlayerMoves(object sender, EventArgs e)
-        {
-
-        }
-
-        public void MovePlayer(object sender, EventArgs e)
-        {
-
         }
 
         public void PreviewWall(object sender, EventArgs e)
@@ -82,6 +73,31 @@ namespace QuoridorEngine.src.ui.gui
 
             iterateGameBoard(guiFrame.FreeWallCell, false);
             guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
+        }
+
+        public void MovePlayer(object sender, EventArgs e)
+        {
+
+        }
+
+        public void PlayerPawnClicked(object sender, EventArgs e)
+        {
+            if (InitPlayerMove)
+                HidePossiblePlayerMoves(sender, e);
+            else
+                ShowPossiblePlayerMoves(sender, e);
+
+            InitPlayerMove = !InitPlayerMove;
+        }
+
+        private void ShowPossiblePlayerMoves(object sender, EventArgs e)
+        {
+
+        }
+
+        private void HidePossiblePlayerMoves(object sender, EventArgs e)
+        {
+
         }
 
         private void iterateGameBoard(Function<int, int> function, bool hasWallPiece)
