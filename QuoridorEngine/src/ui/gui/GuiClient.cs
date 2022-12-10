@@ -18,7 +18,7 @@ namespace QuoridorEngine.src.ui.gui
             game = new QuoridorGame();
             guiFrame = new GuiFrame();
 
-            initializeGameComponents();
+            renderGameComponents();
         }
 
         public void Play()
@@ -44,7 +44,7 @@ namespace QuoridorEngine.src.ui.gui
             }
 
             iterateGameBoard(guiFrame.UseWallCell, true);
-            guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
+            guiFrame.SetPlayerWallCounter(true, game.GetPlayerWalls(true));
         }
 
         public void OnRemoveWall(object sender, EventArgs e)
@@ -53,14 +53,14 @@ namespace QuoridorEngine.src.ui.gui
 
             if (((WallPartCell)sender).IsPlaced)
             {
-                iterateGameBoard(guiFrame.ClickedWallCell, true);
+                iterateGameBoard(guiFrame.PlaceWallCell, true);
                 return;
             }
 
             game.UndoMoves(1);
 
             iterateGameBoard(guiFrame.FreeWallCell, false);
-            guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
+            guiFrame.SetPlayerWallCounter(true, game.GetPlayerWalls(true));
         }
 
         private void iterateGameBoard(Function<int, int> function, bool hasWallPiece)
@@ -84,22 +84,25 @@ namespace QuoridorEngine.src.ui.gui
                 }
         }
 
-        private void initializeGameComponents()
+        private void renderGameComponents()
         {
+            int guiBoardDimension = TransformCoordinates.GameToGuiDimension(game.Dimension);
+            guiFrame.RenderBoard(this, guiBoardDimension);
+            
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
+            
             game.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
-            game.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
-
             (int guiWhitePawnRow, int guiWhitePawnColumn) = TransformCoordinates.GameToGuiPlayer(gameWhitePawnRow, gameWhitePawnColumn);
+            guiFrame.MovePlayerPawn(true, guiWhitePawnRow, guiWhitePawnColumn);
+
+            game.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
             (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
+            guiFrame.MovePlayerPawn(false, guiBlackPawnRow, guiBlackPawnColumn);
 
-            guiFrame.RenderBoard(
-                this, TransformCoordinates.GameToGuiDimension(game.Dimension),
-                guiWhitePawnRow, guiWhitePawnColumn, guiBlackPawnRow, guiBlackPawnColumn);
-
-            guiFrame.RenderPlayerWallPanels();
-            guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
-            guiFrame.SetBlackPlayerWallCounter(game.GetPlayerWalls(false));
+            guiFrame.RenderPlayerWallsPanel(true);
+            guiFrame.RenderPlayerWallsPanel(false);
+            guiFrame.SetPlayerWallCounter(true, game.GetPlayerWalls(true));
+            guiFrame.SetPlayerWallCounter(false, game.GetPlayerWalls(false));
         }
 
         private Orientation getWallOrientation(WallPartCell wallcell)

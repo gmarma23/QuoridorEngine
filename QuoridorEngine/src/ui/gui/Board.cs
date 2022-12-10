@@ -27,7 +27,7 @@ namespace QuoridorEngine.src.ui.gui
 
 
   
-        public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
+        public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension)
         {
             Dimension = dimension;
             Parent = guiFrame;
@@ -62,34 +62,28 @@ namespace QuoridorEngine.src.ui.gui
             drawBoard(guiClient);
             drawPlayerPawn(true);
             drawPlayerPawn(false);
-
-            UpdatePawnLocation(true, initWhiteRow, initWhiteColumn);
-            UpdatePawnLocation(false, initBlackRow, initBlackColumn);
         }
 
-        public void ClickedWallCell(int row, int column, bool isClicked)
+        public void MovePlayerPawn(bool isWhitePlayer, int newRow, int newColumn)
         {
-            Debug.Assert(boardCells[row, column] is WallPartCell);
-            ((WallPartCell)boardCells[row, column]).IsPlaced = isClicked;
+            getPlayerPawn(isWhitePlayer).Parent = boardCells[newRow, newColumn];
         }
 
         public void UseWallCell(int row, int column)
         {
-            Debug.Assert(boardCells[row, column] is WallPartCell);
-            if(!((WallPartCell)boardCells[row, column]).IsActive)
-                ((WallPartCell)boardCells[row, column]).Use();
+            WallPartCell wallPartCell = (WallPartCell)boardCells[row, column];
+            if (!wallPartCell.IsActive) wallPartCell.Use();
         }
 
         public void FreeWallCell(int row, int column)
         {
-            Debug.Assert(boardCells[row, column] is WallPartCell);
-            if (((WallPartCell)boardCells[row, column]).IsActive)
-                ((WallPartCell)boardCells[row, column]).Free();
+            WallPartCell wallPartCell = (WallPartCell)boardCells[row, column];
+            if (wallPartCell.IsActive) wallPartCell.Free();
         }
 
-        private void UpdatePawnLocation(bool isWhitePlayer, int newRow, int newColumn)
+        public void PlaceWallCell(int row, int column, bool isPlaced)
         {
-            getPlayerPawn(isWhitePlayer).Parent = boardCells[newRow, newColumn];
+            ((WallPartCell)boardCells[row, column]).IsPlaced = isPlaced;
         }
 
         /// <summary>

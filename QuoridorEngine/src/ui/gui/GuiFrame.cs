@@ -29,50 +29,34 @@ namespace QuoridorEngine.UI
             BackgroundAngle = 45;
         }
 
-        public void ClickedWallCell(int row, int column)
-        {
-            board.ClickedWallCell(row, column, true);
-        }
+        public void MovePlayerPawn(bool isWhitePlayer, int row, int column) => board.MovePlayerPawn(isWhitePlayer, row, column);
 
-        public void UseWallCell(int row, int column)
-        {
-            board.UseWallCell(row, column);
-        }
+        public void UseWallCell(int row, int column) => board.UseWallCell(row, column);
 
-        public void FreeWallCell(int row, int column)
-        {
-            board.FreeWallCell(row, column);
-        }
+        public void FreeWallCell(int row, int column) => board.FreeWallCell(row, column);
 
-        public void SetWhitePlayerWallCounter(int numOfWalls)
-        {
-            whitePlayerWalls.SetWallNum(numOfWalls);
-        }
+        public void PlaceWallCell(int row, int column) => board.PlaceWallCell(row, column, true);
 
-        public void SetBlackPlayerWallCounter(int numOfWalls)
-        {
-            blackPlayerWalls.SetWallNum(numOfWalls);
-        }
+        public void RemoveWallCell(int row, int column) => board.PlaceWallCell(row, column, false);
+
+        public void SetPlayerWallCounter(bool isWhitePlayer, int numOfWalls) => getPlayerWallsPanel(isWhitePlayer).SetWallNum(numOfWalls);
 
         /// <summary>
         /// Initialize and include board panel to frame
         /// </summary>
-        public void RenderBoard(GuiClient guiClient, int boardDimension, int initWhiteRow, int initWhiteColumn, int initBlackRow, int initBlackColumn)
+        public void RenderBoard(GuiClient guiClient, int boardDimension)
         {
-            board = new Board(this, guiClient, boardDimension, initWhiteRow, initWhiteColumn, initBlackRow, initBlackColumn);
+            board = new Board(this, guiClient, boardDimension);
             Controls.Add(board);
             board.BringToFront();
         }
 
-        public void RenderPlayerWallPanels()
+        public void RenderPlayerWallsPanel(bool isWhitePlayer)
         {
-            whitePlayerWalls = new PlayerWallsPanel(this, true);
-            Controls.Add(whitePlayerWalls);
-            whitePlayerWalls.BringToFront();
-
-            blackPlayerWalls = new PlayerWallsPanel(this, false);
-            Controls.Add(blackPlayerWalls);
-            blackPlayerWalls.BringToFront();
+            ref PlayerWallsPanel playerWallsPanel = ref getPlayerWallsPanel(isWhitePlayer);
+            playerWallsPanel = new PlayerWallsPanel(this, isWhitePlayer);
+            Controls.Add(playerWallsPanel);
+            playerWallsPanel.BringToFront();
         }
 
         /// <summary>
@@ -85,6 +69,11 @@ namespace QuoridorEngine.UI
             Graphics graphics = e.Graphics;
             graphics.FillRectangle(brush, ClientRectangle);
             base.OnPaint(e);
+        }
+
+        private ref PlayerWallsPanel getPlayerWallsPanel(bool isWhitePlayer)
+        {
+            return ref isWhitePlayer ? ref whitePlayerWalls : ref blackPlayerWalls;
         }
     }
 #endif
