@@ -60,8 +60,8 @@ namespace QuoridorEngine.src.ui.gui
                 (guiFrame.ClientRectangle.Height / 2) - (Height / 2));
 
             drawBoard(guiClient);
-            drawPlayerPawn(true);
-            drawPlayerPawn(false);
+            drawPlayerPawn(guiClient, true);
+            drawPlayerPawn(guiClient, false);
         }
 
         public void MovePlayerPawn(bool isWhitePlayer, int newRow, int newColumn)
@@ -98,7 +98,7 @@ namespace QuoridorEngine.src.ui.gui
             {
                 for (int column = 0; column < boardCells.GetLength(1); column++)
                 {
-                    drawBoardCell(row, column, xLoc, yLoc, guiClient);
+                    drawBoardCell(guiClient, row, column, xLoc, yLoc);
                     xLoc += boardCells[row, column].Width;
                 }
                 yLoc += boardCells[row, 0].Height;
@@ -113,14 +113,14 @@ namespace QuoridorEngine.src.ui.gui
         /// <param name="column">Board column</param>
         /// <param name="xLoc">Cell x location</param>
         /// <param name="yLoc">Cell y location</param>
-        private void drawBoardCell(int row, int column, int xLoc, int yLoc, GuiClient guiClient)
+        private void drawBoardCell(GuiClient guiClient, int row, int column, int xLoc, int yLoc)
         {
             if (row % 2 == 0 && column % 2 == 0)
-                boardCells[row, column] = new PlayerCell(this, row, column);
+                boardCells[row, column] = new PlayerCell(this, guiClient, row, column);
             else if (row % 2 == 1 && column % 2 == 1)
                 boardCells[row, column] = new WallCornerCell(this, row, column);
             else
-                boardCells[row, column] = new WallPartCell(this, row, column, guiClient);
+                boardCells[row, column] = new WallPartCell(this, guiClient, row, column);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
@@ -131,10 +131,10 @@ namespace QuoridorEngine.src.ui.gui
         /// Render player pawn to board 
         /// </summary>
         /// <param name="player">Player enum option</param>
-        public void drawPlayerPawn(bool isWhitePlayer)
+        public void drawPlayerPawn(GuiClient guiClient, bool isWhitePlayer)
         {
             ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
-            playerPawn = new PlayerPawn(PlayerCellSize);
+            playerPawn = new PlayerPawn(guiClient, PlayerCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
             playerPawn.MainColor = isWhitePlayer ? WhitePlayerPawnColor : BlackPlayerPawnColor;

@@ -13,7 +13,7 @@ namespace QuoridorEngine.src.ui.gui.board
         public Color FreeColor { get; set; }
         public Color UsedColor { get; set; } 
 
-        public WallPartCell(Board board, int row, int column, GuiClient guiClient) : base (row, column)
+        public WallPartCell(Board board, GuiClient guiClient, int row, int column) : base (row, column)
         {
             IsPlaced = false;
 

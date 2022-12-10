@@ -18,7 +18,7 @@ namespace QuoridorEngine.src.ui.gui
         public Color BoarderColor { get; set; }
         public float BoarderSize { get; set; }
 
-        public PlayerPawn(int cellSize)
+        public PlayerPawn(GuiClient guiClient, int cellSize)
         {
             moveInit = false;
             DoubleBuffered = true;
