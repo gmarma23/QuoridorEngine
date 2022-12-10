@@ -1,5 +1,4 @@
-﻿using Orientation = QuoridorEngine.Core.Orientation;
-
+﻿
 namespace QuoridorEngine.src.ui.gui.board
 {
 #if !CONSOLE
