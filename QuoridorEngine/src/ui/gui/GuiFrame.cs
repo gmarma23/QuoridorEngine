@@ -29,9 +29,9 @@ namespace QuoridorEngine.UI
             BackgroundAngle = 45;
         }
 
-        public void ClickedWallCell(int row, int column, bool isClicked)
+        public void ClickedWallCell(int row, int column)
         {
-            board.ClickedWallCell(row, column, isClicked);
+            board.ClickedWallCell(row, column, true);
         }
 
         public void UseWallCell(int row, int column)

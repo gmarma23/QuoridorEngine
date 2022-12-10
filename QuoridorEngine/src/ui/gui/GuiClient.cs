@@ -8,6 +8,8 @@ namespace QuoridorEngine.src.ui.gui
 {
     public class GuiClient
     {
+        public delegate void Function<in T1, in T2>(T1 arg1, T2 arg2);
+
         private GuiFrame guiFrame;
         private QuoridorGame game;
 
@@ -28,36 +30,21 @@ namespace QuoridorEngine.src.ui.gui
         {
             if (((WallPartCell)sender).IsPlaced) return;
 
-            (int senderGameRow, int senderGameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, getWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column));
+            Orientation orientation = getWallOrientation((WallPartCell)sender);
+            (int gameRow, int gameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, orientation);
+            QuoridorMove newMove = new QuoridorMove(gameRow, gameColumn, true, orientation);
+
             try
             {
-                game.ExecuteMove(new QuoridorMove(senderGameRow, senderGameColumn, true, getWallOrientation(((WallPartCell)sender).Row, ((WallPartCell)sender).Column)));
+                game.ExecuteMove(newMove);
             }
-            catch(InvalidMoveException) { return; }
-
-            for(int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
-            {
-                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
-                {
-                    if (gameRow > 0)
-                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
-                        {
-                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
-                            guiFrame.UseWallCell(guiRow, guiColumn);
-
-                        }
-
-                    if (gameColumn < game.Dimension - 1)
-                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical))
-                        {
-                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
-                            guiFrame.UseWallCell(guiRow, guiColumn);
-
-                        }
-
-                    guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
-                }
+            catch (InvalidMoveException) 
+            { 
+                return; 
             }
+
+            iterateGameBoard(guiFrame.UseWallCell, true);
+            guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
         }
 
         public void OnRemoveWall(object sender, EventArgs e)
@@ -66,53 +53,35 @@ namespace QuoridorEngine.src.ui.gui
 
             if (((WallPartCell)sender).IsPlaced)
             {
-                for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
-                {
-                    for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
-                    {
-                        if (gameRow > 0)
-                            if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
-                            {
-                                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
-                                guiFrame.ClickedWallCell(guiRow, guiColumn, true);
-                            }
-
-                        if (gameColumn < game.Dimension - 1)
-                            if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical))
-                            {
-                                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
-                                guiFrame.ClickedWallCell(guiRow, guiColumn, true);
-                            }
-                    }
-                }
+                iterateGameBoard(guiFrame.ClickedWallCell, true);
                 return;
             }
 
             game.UndoMoves(1);
 
+            iterateGameBoard(guiFrame.FreeWallCell, false);
+            guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
+        }
+
+        private void iterateGameBoard(Function<int, int> function, bool hasWallPiece)
+        {
             for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
-            {
                 for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
                 {
                     if (gameRow > 0)
-                        if (!game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal))
+                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
                         {
                             (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
-                            guiFrame.FreeWallCell(guiRow, guiColumn);
-
+                            function(guiRow, guiColumn);
                         }
 
                     if (gameColumn < game.Dimension - 1)
-                        if (!game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical))
+                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
                         {
                             (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
-                            guiFrame.FreeWallCell(guiRow, guiColumn);
-
+                            function(guiRow, guiColumn);
                         }
-
-                    guiFrame.SetWhitePlayerWallCounter(game.GetPlayerWalls(true));
                 }
-            }
         }
 
         private void initializeGameComponents()
@@ -133,9 +102,9 @@ namespace QuoridorEngine.src.ui.gui
             guiFrame.SetBlackPlayerWallCounter(game.GetPlayerWalls(false));
         }
 
-        private Orientation getWallOrientation(int guiRow, int guiColumn)
+        private Orientation getWallOrientation(WallPartCell wallcell)
         {
-            return (guiRow % 2 == 1 && guiColumn % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
+            return (wallcell.Row % 2 == 1 && wallcell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
         }
 
         private static class TransformCoordinates
