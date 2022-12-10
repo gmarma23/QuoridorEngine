@@ -8,6 +8,8 @@ namespace QuoridorEngine.src.ui.gui.board
             BackColor = board.PlayerCellColor;
             Width = board.PlayerCellSize;
             Height = Width;
+
+            Click += guiClient.MovePlayer;
         }
     }
 }

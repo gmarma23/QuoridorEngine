@@ -6,10 +6,9 @@ namespace QuoridorEngine.src.ui.gui
 #if !CONSOLE
     public class PlayerPawn : Label
     {
-        private bool moveInit;
-
         public int Row { get; set; }
         public int Column { get; set; }
+        public bool IsWhite { get; init; }
 
         public double CornerRadiusWidthRatio { get; set; }
         public double PawnCellRatio { get; set; }
@@ -18,9 +17,9 @@ namespace QuoridorEngine.src.ui.gui
         public Color BoarderColor { get; set; }
         public float BoarderSize { get; set; }
 
-        public PlayerPawn(GuiClient guiClient, int cellSize)
+        public PlayerPawn(GuiClient guiClient, bool isWhite, int cellSize)
         {
-            moveInit = false;
+            IsWhite = isWhite;
             DoubleBuffered = true;
 
             // Set default property values
@@ -32,20 +31,7 @@ namespace QuoridorEngine.src.ui.gui
             Height = Width;
             Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
             
-            Click += new EventHandler(OnClick);
-        }
-
-        private void OnClick(object sender, EventArgs e)
-        {
-            if (!moveInit)
-            {
-                moveInit = true;
-                
-            }
-            else
-            {
-                moveInit = false;
-            }      
+            Click += guiClient.ShowPossiblePlayerMoves;
         }
 
         protected override void OnPaint(PaintEventArgs e)

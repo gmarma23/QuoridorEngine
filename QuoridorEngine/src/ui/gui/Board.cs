@@ -134,7 +134,7 @@ namespace QuoridorEngine.src.ui.gui
         public void drawPlayerPawn(GuiClient guiClient, bool isWhitePlayer)
         {
             ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
-            playerPawn = new PlayerPawn(guiClient, PlayerCellSize);
+            playerPawn = new PlayerPawn(guiClient, isWhitePlayer, PlayerCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
             playerPawn.MainColor = isWhitePlayer ? WhitePlayerPawnColor : BlackPlayerPawnColor;

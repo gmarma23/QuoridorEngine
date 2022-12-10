@@ -30,6 +30,16 @@ namespace QuoridorEngine.src.ui.gui
             Application.Run(guiFrame);
         }
 
+        public void ShowPossiblePlayerMoves(object sender, EventArgs e)
+        {
+
+        }
+
+        public void MovePlayer()
+        {
+
+        }
+
         public void PreviewWall(object sender, EventArgs e)
         {
             WallPartCell wallPartCell = (WallPartCell)sender;
