@@ -11,9 +11,9 @@ namespace QuoridorEngine.src.ui.gui
         public int PanelBoardMargin { get; set; }
         public int DescriptionCounterMargin { get; set; }
 
-        public PlayerWallsPanel(GuiFrame guiFrame, Player player)
+        public PlayerWallsPanel(GuiFrame guiFrame, bool isWhitePlayer)
         {
-            int playerSide = player == Player.White ? 1 : -1;
+            int playerSide = isWhitePlayer ? 1 : -1;
             PanelFrameWidthRatio = GuiFrame.boardFrameRatio;
             PanelBoardMargin = 40;
             DescriptionCounterMargin = 6;
@@ -25,7 +25,7 @@ namespace QuoridorEngine.src.ui.gui
             Location = new Point(
                 (guiFrame.ClientRectangle.Width / 2) - (Width / 2),
                 (int)(guiFrame.ClientRectangle.Width / 2 + playerSide * guiFrame.ClientRectangle.Width * GuiFrame.boardFrameRatio / 2) + 
-                playerSide * PanelBoardMargin - ((player == Player.White) ? Height : 0));
+                playerSide * PanelBoardMargin - (isWhitePlayer ? Height : 0));
 
             description= new Label();
             Controls.Add(description);

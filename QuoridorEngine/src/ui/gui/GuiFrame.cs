@@ -66,11 +66,11 @@ namespace QuoridorEngine.UI
 
         public void RenderPlayerWallPanels()
         {
-            whitePlayerWalls = new PlayerWallsPanel(this, Player.White);
+            whitePlayerWalls = new PlayerWallsPanel(this, true);
             Controls.Add(whitePlayerWalls);
             whitePlayerWalls.BringToFront();
 
-            blackPlayerWalls = new PlayerWallsPanel(this, Player.Black);
+            blackPlayerWalls = new PlayerWallsPanel(this, false);
             Controls.Add(blackPlayerWalls);
             blackPlayerWalls.BringToFront();
         }

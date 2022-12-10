@@ -60,11 +60,11 @@ namespace QuoridorEngine.src.ui.gui
                 (guiFrame.ClientRectangle.Height / 2) - (Height / 2));
 
             drawBoard(guiClient);
-            drawPlayerPawn(Player.White);
-            drawPlayerPawn(Player.Black);
+            drawPlayerPawn(true);
+            drawPlayerPawn(false);
 
-            UpdatePawnLocation(Player.White, initWhiteRow, initWhiteColumn);
-            UpdatePawnLocation(Player.Black, initBlackRow, initBlackColumn);
+            UpdatePawnLocation(true, initWhiteRow, initWhiteColumn);
+            UpdatePawnLocation(false, initBlackRow, initBlackColumn);
         }
 
         public void ClickedWallCell(int row, int column, bool isClicked)
@@ -87,9 +87,9 @@ namespace QuoridorEngine.src.ui.gui
                 ((WallPartCell)boardCells[row, column]).Free();
         }
 
-        private void UpdatePawnLocation(Player player, int newRow, int newColumn)
+        private void UpdatePawnLocation(bool isWhitePlayer, int newRow, int newColumn)
         {
-            getPlayerPawn(player).Parent = boardCells[newRow, newColumn];
+            getPlayerPawn(isWhitePlayer).Parent = boardCells[newRow, newColumn];
         }
 
         /// <summary>
@@ -137,13 +137,13 @@ namespace QuoridorEngine.src.ui.gui
         /// Render player pawn to board 
         /// </summary>
         /// <param name="player">Player enum option</param>
-        public void drawPlayerPawn(Player player)
+        public void drawPlayerPawn(bool isWhitePlayer)
         {
-            ref PlayerPawn playerPawn = ref getPlayerPawn(player);
+            ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
             playerPawn = new PlayerPawn(PlayerCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
-            playerPawn.MainColor = (player == Player.White) ? WhitePlayerPawnColor : BlackPlayerPawnColor;
+            playerPawn.MainColor = isWhitePlayer ? WhitePlayerPawnColor : BlackPlayerPawnColor;
             playerPawn.BackColor = PlayerCellColor;
         }
 
@@ -160,15 +160,9 @@ namespace QuoridorEngine.src.ui.gui
             PlayerCellSize = combinedSize - WallCellSize;
         }
 
-        private ref PlayerPawn getPlayerPawn(Player player)
+        private ref PlayerPawn getPlayerPawn(bool isWhitePlayer)
         {
-            return ref (player == Player.White) ? ref whitePawn : ref blackPawn;
+            return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
         }
-    }
-
-    public enum Player
-    {
-        White,
-        Black
     }
 }
