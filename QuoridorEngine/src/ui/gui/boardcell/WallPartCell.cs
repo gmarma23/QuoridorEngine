@@ -34,9 +34,9 @@ namespace QuoridorEngine.src.ui.gui.board
             FreeColor = board.WallCellFreeColor;
             UsedColor = board.WallCellUsedColor;
 
-            MouseEnter += guiClient.OnPlaceWall;
-            MouseLeave += guiClient.OnRemoveWall;
-            MouseClick += OnClick;
+            MouseEnter += guiClient.PreviewWall;
+            MouseLeave += guiClient.RemoveWallPreview;
+            MouseClick += guiClient.PlaceWall;
         }
 
         public void Use()
@@ -59,11 +59,6 @@ namespace QuoridorEngine.src.ui.gui.board
             Left += offset;
             BackColor = FreeColor;
             SendToBack();
-        }
-
-        private void OnClick(object sender, EventArgs e)
-        {
-            IsPlaced = true;
         }
     }
 #endif

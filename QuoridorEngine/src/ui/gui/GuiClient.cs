@@ -13,12 +13,16 @@ namespace QuoridorEngine.src.ui.gui
         private GuiFrame guiFrame;
         private QuoridorGame game;
 
+        public bool IsWhitePlayerTurn { get; set; } 
+
         public GuiClient() 
         {
             game = new QuoridorGame();
             guiFrame = new GuiFrame();
 
             renderGameComponents();
+
+            IsWhitePlayerTurn = true;
         }
 
         public void Play()
@@ -26,13 +30,15 @@ namespace QuoridorEngine.src.ui.gui
             Application.Run(guiFrame);
         }
 
-        public void OnPlaceWall(object sender, EventArgs e)
+        public void PreviewWall(object sender, EventArgs e)
         {
-            if (((WallPartCell)sender).IsPlaced) return;
+            WallPartCell wallPartCell = (WallPartCell)sender;
 
-            Orientation orientation = getWallOrientation((WallPartCell)sender);
-            (int gameRow, int gameColumn) = TransformCoordinates.GuiToGameWall(((WallPartCell)sender).Row, ((WallPartCell)sender).Column, orientation);
-            QuoridorMove newMove = new QuoridorMove(gameRow, gameColumn, true, orientation);
+            if (wallPartCell.IsPlaced) return;
+
+            Orientation orientation = getWallOrientation(wallPartCell);
+            (int gameRow, int gameColumn) = TransformCoordinates.GuiToGameWall(wallPartCell.Row, wallPartCell.Column, orientation);
+            QuoridorMove newMove = new QuoridorMove(gameRow, gameColumn, IsWhitePlayerTurn, orientation);
 
             try
             {
@@ -44,23 +50,27 @@ namespace QuoridorEngine.src.ui.gui
             }
 
             iterateGameBoard(guiFrame.UseWallCell, true);
-            guiFrame.SetPlayerWallCounter(true, game.GetPlayerWalls(true));
+            guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
         }
 
-        public void OnRemoveWall(object sender, EventArgs e)
+        public void PlaceWall(object sender, EventArgs e)
         {
-            if (!((WallPartCell)sender).IsActive) return;
+            iterateGameBoard(guiFrame.PlaceWallCell, true);
+            IsWhitePlayerTurn = !IsWhitePlayerTurn;
+        }
 
-            if (((WallPartCell)sender).IsPlaced)
-            {
-                iterateGameBoard(guiFrame.PlaceWallCell, true);
-                return;
-            }
+        public void RemoveWallPreview(object sender, EventArgs e)
+        {
+            WallPartCell wallPartCell = (WallPartCell)sender;
+
+            if (!wallPartCell.IsActive) return;
+
+            if (wallPartCell.IsPlaced) return;
 
             game.UndoMoves(1);
 
             iterateGameBoard(guiFrame.FreeWallCell, false);
-            guiFrame.SetPlayerWallCounter(true, game.GetPlayerWalls(true));
+            guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
         }
 
         private void iterateGameBoard(Function<int, int> function, bool hasWallPiece)
