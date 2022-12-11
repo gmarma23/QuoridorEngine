@@ -83,6 +83,11 @@ namespace QuoridorEngine.src.ui.gui
         // Event handler for a wall placing move
         private void PlaceWall(object sender, EventArgs e)
         {
+            WallPartCell wallPartCell = (WallPartCell)sender;
+
+            // Ignore wall part is already placed
+            if (wallPartCell.IsPlaced) return;
+
             // Make wall preview permanent in gui
             refreshWallCells(guiFrame.PlaceWallCell, true);
 
