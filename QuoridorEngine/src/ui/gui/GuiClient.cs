@@ -87,13 +87,20 @@ namespace QuoridorEngine.src.ui.gui
                 hidePossiblePlayerMoves();
             else
                 showPossiblePlayerMoves(sender, e);
-
-            InitPlayerMove = !InitPlayerMove;
         }
 
         private void showPossiblePlayerMoves(object sender, EventArgs e)
         {
+            bool isWhitePlayer = ((PlayerPawn)sender).IsWhite;
+            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)game.GetPossiblePlayerMoves(isWhitePlayer);
 
+            foreach (QuoridorMove move in possiblePlayerMoves)
+            {
+                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(move.Row, move.Column);
+                guiFrame.PossibleMovePlayerCell(guiRow, guiColumn);
+            }
+
+            InitPlayerMove = true;
         }
 
         private void hidePossiblePlayerMoves()
@@ -104,6 +111,8 @@ namespace QuoridorEngine.src.ui.gui
                     (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
                     guiFrame.NormalPlayerCell(guiRow, guiColumn);
                 }
+
+            InitPlayerMove = false;
         }
 
         private void refreshWallCells(BoardCellAction function, bool hasWallPiece)

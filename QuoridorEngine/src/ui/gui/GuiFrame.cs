@@ -33,6 +33,8 @@ namespace QuoridorEngine.UI
 
         public void NormalPlayerCell(int row, int column) => board.NormalPlayerCell(row, column);
 
+        public void PossibleMovePlayerCell(int row, int column) => board.PossibleMovePlayerCell(row, column);
+
         public void UseWallCell(int row, int column) => board.UseWallCell(row, column);
 
         public void FreeWallCell(int row, int column) => board.FreeWallCell(row, column);

@@ -18,7 +18,9 @@ namespace QuoridorEngine.src.ui.gui
         public int PlayerCellSize { get; private set; }
         public int WallCellSize { get; private set; }
 
-        public Color PlayerCellColor { get; set; }
+        public Color PlayerCellNormalColor { get; set; }
+        public Color PlayerCellPossibleMoveColor { get; set; }
+
         public Color WallCellFreeColor { get; set; }
         public Color WallCellUsedColor { get; set; }
 
@@ -36,7 +38,8 @@ namespace QuoridorEngine.src.ui.gui
             BoardFrameRatio = GuiFrame.boardFrameRatio;
             WallPlayerCellRatio = 0.11;
       
-            PlayerCellColor = Color.RoyalBlue;
+            PlayerCellNormalColor = Color.RoyalBlue;
+            PlayerCellPossibleMoveColor = Color.Orange;
             WallCellFreeColor = Color.Transparent;
             WallCellUsedColor = Color.LightGray;
             BackColor = Color.Transparent;
@@ -71,12 +74,12 @@ namespace QuoridorEngine.src.ui.gui
 
         public void NormalPlayerCell(int row, int column)
         {
-
+            ((PlayerCell)boardCells[row, column]).Normal();
         }
 
         public void PossibleMovePlayerCell(int row, int column)
         {
-
+            ((PlayerCell)boardCells[row, column]).PossibleMove();
         }
 
         public void UseWallCell(int row, int column)
@@ -148,7 +151,7 @@ namespace QuoridorEngine.src.ui.gui
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
             playerPawn.MainColor = isWhitePlayer ? WhitePlayerPawnColor : BlackPlayerPawnColor;
-            playerPawn.BackColor = PlayerCellColor;
+            playerPawn.BackColor = PlayerCellNormalColor;
         }
 
         /// <summary>
