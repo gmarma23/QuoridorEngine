@@ -23,7 +23,7 @@ namespace QuoridorEngine.src.ui.gui
         private int maxCellSize;
         private int minCellSize;
 
-        public Board(GuiFrame guiFrame, int dimension, EventHandler onPlayerCellClick, EventHandler onWallCellClick, 
+        public Board(int parrentWidth, int parrentHeight, int dimension, EventHandler onPlayerCellClick, EventHandler onWallCellClick, 
                      EventHandler onWallCellEnter, EventHandler onWallCellLeave, EventHandler onPlayerPawnClick)
         {
             this.dimension = dimension;
@@ -33,7 +33,7 @@ namespace QuoridorEngine.src.ui.gui
             this.onWallCellLeave = onWallCellLeave;
             this.onPlayerPawnClick = onPlayerPawnClick;
 
-            sizesAndArrangement(guiFrame.ClientRectangle.Width, guiFrame.ClientRectangle.Height);
+            sizesAndArrangement(parrentWidth, parrentHeight);
             defaultStyle();
 
             drawBoard();

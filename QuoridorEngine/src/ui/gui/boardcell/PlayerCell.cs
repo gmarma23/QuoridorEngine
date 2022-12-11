@@ -24,12 +24,12 @@ namespace QuoridorEngine.src.ui.gui.board
 
         public void AddEventHandlers(EventHandler onClick)
         {
-            Click += new EventHandler(onClick);
+            Click += onClick;
         }
 
         public void RemoveEventHandlers(EventHandler onClick)
         {
-            Click -= new EventHandler(onClick);
+            Click -= onClick;
         }
 
         private void sizes(int size)

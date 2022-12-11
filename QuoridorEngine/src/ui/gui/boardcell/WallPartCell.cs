@@ -46,16 +46,16 @@ namespace QuoridorEngine.src.ui.gui.board
 
         public void AddEventHandlers(EventHandler onMouseEnter, EventHandler onMouseLeave, EventHandler onClick)
         {
-            MouseEnter += new EventHandler(onMouseEnter);
-            MouseLeave += new EventHandler(onMouseLeave);
-            Click += new EventHandler(onClick);
+            MouseEnter += onMouseEnter;
+            MouseLeave += onMouseLeave;
+            Click += onClick;
         }
 
         public void RemoveEventHandlers(EventHandler onMouseEnter, EventHandler onMouseLeave, EventHandler onClick)
         {
-            MouseEnter -= new EventHandler(onMouseEnter);
-            MouseLeave -= new EventHandler(onMouseLeave);
-            Click -= new EventHandler(onClick);
+            MouseEnter -= onMouseEnter;
+            MouseLeave -= onMouseLeave;
+            Click -= onClick;
         }
 
         private void sizes(int minSize, int maxSize)

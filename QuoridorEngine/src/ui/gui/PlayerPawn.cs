@@ -26,12 +26,12 @@ namespace QuoridorEngine.src.ui.gui
 
         public void AddEventHandlers(EventHandler onClick)
         {
-            Click += new EventHandler(onClick);
+            Click += onClick;
         }
 
         public void RemoveEventHandlers(EventHandler onClick)
         {
-            Click -= new EventHandler(onClick);
+            Click -= onClick;
         }
 
         protected override void OnPaint(PaintEventArgs e)

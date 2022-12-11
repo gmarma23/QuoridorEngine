@@ -52,10 +52,9 @@ namespace QuoridorEngine.UI
         public void RenderBoard(int boardDimension, EventHandler onPlayerCellClick, EventHandler onWallCellClick,
                      EventHandler onWallCellEnter, EventHandler onWallCellLeave, EventHandler onPlayerPawnClick)
         {
-            board = new Board(this, boardDimension, onPlayerCellClick, onWallCellClick,
-                              onWallCellEnter, onWallCellLeave, onPlayerPawnClick);
+            board = new Board(ClientRectangle.Width, ClientRectangle.Height, boardDimension, onPlayerCellClick, 
+                              onWallCellClick, onWallCellEnter, onWallCellLeave, onPlayerPawnClick);
             Controls.Add(board);
-            board.BringToFront();
         }
 
         public void RenderPlayerWallsPanel(bool isWhitePlayer)
