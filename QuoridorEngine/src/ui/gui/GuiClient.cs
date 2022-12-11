@@ -6,6 +6,7 @@ using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.src.ui.gui
 {
+#if !CONSOLE
     public class GuiClient
     {
         private GuiFrame guiFrame;
@@ -323,4 +324,5 @@ namespace QuoridorEngine.src.ui.gui
             isWhitePlayerTurn = !isWhitePlayerTurn;
         }
     }
+#endif
 }
