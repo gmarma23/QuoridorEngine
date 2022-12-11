@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 namespace QuoridorEngine.src.ui.gui
 {
+#if !CONSOLE
     public class PlayerWallsCounter : Panel
     {
         private const int panelBoardMargin = 40;
@@ -33,7 +34,6 @@ namespace QuoridorEngine.src.ui.gui
 
             availableWallsCounter = new Label();
             Controls.Add(availableWallsCounter);
-            availableWallsCounter.BringToFront();
         }
 
         private void sizesAndArrangement(int parrentWidth, bool isWhitePlayer)
@@ -69,4 +69,5 @@ namespace QuoridorEngine.src.ui.gui
             availableWallsCounter.ForeColor = fontColor;
         }
     }
+#endif
 }

@@ -1,6 +1,7 @@
 ﻿
 namespace QuoridorEngine.src.ui.gui.board
 {
+#if !CONSOLE 
     public class PlayerCell : BoardCell
     {
         private Color normalColor;
@@ -45,4 +46,5 @@ namespace QuoridorEngine.src.ui.gui.board
             Normal();
         }
     }
+#endif
 }

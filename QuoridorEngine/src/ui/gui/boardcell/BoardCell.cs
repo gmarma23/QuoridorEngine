@@ -1,6 +1,7 @@
 ﻿
 namespace QuoridorEngine.src.ui.gui.board
 {
+#if !CONSOLE 
     public class BoardCell : Label
     {
         public int Row { get; init; }
@@ -12,4 +13,5 @@ namespace QuoridorEngine.src.ui.gui.board
             Column = column;
         }
     }
+#endif
 }

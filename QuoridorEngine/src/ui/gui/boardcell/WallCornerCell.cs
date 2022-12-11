@@ -1,6 +1,7 @@
 ﻿
 namespace QuoridorEngine.src.ui.gui.board
 {
+#if !CONSOLE
     public class WallCornerCell : BoardCell
     {
         public WallCornerCell(int row, int column, int size) : base(row, column)
@@ -20,4 +21,5 @@ namespace QuoridorEngine.src.ui.gui.board
             BackColor = Color.Transparent;
         }
     }
+#endif
 }

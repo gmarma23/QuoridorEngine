@@ -1,8 +1,5 @@
 using QuoridorEngine.src.ui.gui;
-using QuoridorEngine.src.ui.gui.board;
-using System.Diagnostics;
 using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
 
 namespace QuoridorEngine.UI
 {

@@ -39,7 +39,7 @@ namespace QuoridorEngine.src.ui.gui
             initPlayerMove = false;
         }
 
-        public void Play()
+        public void RunGui()
         {
             Application.Run(guiFrame);
         }
@@ -49,7 +49,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         /// <param name="sender">Wall part cell with invoked event</param>
         /// <param name="e">Event arguments</param>
-        public void PreviewWall(object sender, EventArgs e)
+        private void PreviewWall(object sender, EventArgs e)
         {
             WallPartCell wallPartCell = (WallPartCell)sender;
 
@@ -80,7 +80,7 @@ namespace QuoridorEngine.src.ui.gui
         }
 
         // Event handler for a wall placing move
-        public void PlaceWall(object sender, EventArgs e)
+        private void PlaceWall(object sender, EventArgs e)
         {
             // Make wall preview permanent in gui
             refreshWallCells(guiFrame.PlaceWallCell, true);
@@ -97,7 +97,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         /// <param name="sender">Wall part cell with invoked event</param>
         /// <param name="e">Event arguments</param>
-        public void RemoveWallPreview(object sender, EventArgs e)
+        private void RemoveWallPreview(object sender, EventArgs e)
         {
             WallPartCell wallPartCell = (WallPartCell)sender;
 
@@ -122,7 +122,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         /// <param name="sender">Player cell to move player pawn</param>
         /// <param name="e">Event arguments</param>
-        public void MovePlayer(object sender, EventArgs e)
+        private void MovePlayer(object sender, EventArgs e)
         {
             // Ignore if player move is not initiated
             if (!initPlayerMove) return;
@@ -166,7 +166,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         /// <param name="sender">Clicked player pawn</param>
         /// <param name="e">Event arguments</param>
-        public void PlayerPawnClicked(object sender, EventArgs e)
+        private void PlayerPawnClicked(object sender, EventArgs e)
         {
             bool isWhitePlayer = ((PlayerPawn)sender).IsWhite;
 
@@ -199,9 +199,7 @@ namespace QuoridorEngine.src.ui.gui
             initPlayerMove = true;
         }
 
-        /// <summary>
-        /// Reset all possible player move cells to normal state 
-        /// </summary>
+        // Reset all possible player move cells to normal state 
         private void hidePossiblePlayerMoves()
         {
             for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)

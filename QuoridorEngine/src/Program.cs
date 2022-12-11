@@ -12,7 +12,7 @@ namespace QuoridorEngine
         {
 #if !CONSOLE
             ApplicationConfiguration.Initialize();
-            new GuiClient().Play();
+            new GuiClient().RunGui();
 #else
             ConsoleClient.Play();
 #endif

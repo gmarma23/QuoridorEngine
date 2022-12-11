@@ -1,9 +1,9 @@
 ﻿using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
-using System.Windows.Forms.Design;
 
 namespace QuoridorEngine.src.ui.gui
 {
+#if !CONSOLE 
     public class Board : Panel
     {
         private const double wallPlayerCellRatio = 0.11;
@@ -68,7 +68,8 @@ namespace QuoridorEngine.src.ui.gui
                     if (boardCells[row, column] is PlayerCell)
                         ((PlayerCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnPlayerCellClick"]);
                     else if (boardCells[row, column] is WallPartCell)
-                        ((WallPartCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
+                        ((WallPartCell)boardCells[row, column]).AddEventHandlers(
+                            eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
 
             whitePawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
             blackPawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
@@ -81,7 +82,8 @@ namespace QuoridorEngine.src.ui.gui
                     if (boardCells[row, column] is PlayerCell)
                         ((PlayerCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnPlayerCellClick"]);
                     else if (boardCells[row, column] is WallPartCell)
-                        ((WallPartCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
+                        ((WallPartCell)boardCells[row, column]).RemoveEventHandlers(
+                            eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
 
             whitePawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
             blackPawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
@@ -176,4 +178,5 @@ namespace QuoridorEngine.src.ui.gui
             BackColor = Color.Transparent;
         }
     }
+#endif
 }
