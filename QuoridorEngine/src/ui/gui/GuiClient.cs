@@ -8,25 +8,35 @@ namespace QuoridorEngine.src.ui.gui
 {
     public class GuiClient
     {
-        public delegate void BoardCellAction(int row, int column);
-        public delegate void BoardEventHandler(object sender, EventArgs e);
-
         private GuiFrame guiFrame;
         private QuoridorGame game;
 
-        private bool IsWhitePlayerTurn { get; set; } 
-        private bool InitPlayerMove { get; set; }
+        private readonly Dictionary<string, EventHandler> boardEventHandlers;
+
+        private delegate void BoardCellAction(int row, int column);
+        
+        private bool isWhitePlayerTurn;
+        private bool initPlayerMove;
 
         public GuiClient() 
         {
             game = new QuoridorGame();
             guiFrame = new GuiFrame();
 
-            renderGameComponents();
-            guiFrame.BoardEventSubscribe();
+            boardEventHandlers = new Dictionary<string, EventHandler>
+            {
+                { "OnPlayerCellClick", MovePlayer },
+                { "OnWallCellClick", PlaceWall },
+                { "OnWallCellEnter", PreviewWall },
+                { "OnWallCellLeave", RemoveWallPreview },
+                { "OnPlayerPawnClick", PlayerPawnClicked }
+            };
 
-            IsWhitePlayerTurn = true;
-            InitPlayerMove = false;
+            renderGameComponents();
+            guiFrame.BoardEventsSubscribe();
+
+            isWhitePlayerTurn = true;
+            initPlayerMove = false;
         }
 
         public void Play()
@@ -49,7 +59,7 @@ namespace QuoridorEngine.src.ui.gui
             // Construct new quoridor move
             Orientation orientation = getWallOrientation(wallPartCell);
             (int gameRow, int gameColumn) = TransformCoordinates.GuiToGameWall(wallPartCell.Row, wallPartCell.Column, orientation);
-            QuoridorMove newMove = new QuoridorMove(gameRow, gameColumn, IsWhitePlayerTurn, orientation);
+            QuoridorMove newMove = new QuoridorMove(gameRow, gameColumn, isWhitePlayerTurn, orientation);
 
             try
             {
@@ -66,7 +76,7 @@ namespace QuoridorEngine.src.ui.gui
             refreshWallCells(guiFrame.UseWallCell, true);
 
             // Update player's wall counter in gui
-            guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
+            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, game.GetPlayerWalls(isWhitePlayerTurn));
         }
 
         // Event handler for a wall placing move
@@ -76,7 +86,7 @@ namespace QuoridorEngine.src.ui.gui
             refreshWallCells(guiFrame.PlaceWallCell, true);
 
             // Cancel interrupted player pawn move 
-            if (InitPlayerMove) hidePossiblePlayerMoves();
+            if (initPlayerMove) hidePossiblePlayerMoves();
 
             // Player's turn has finished
             switchPlayerTurn();
@@ -104,7 +114,7 @@ namespace QuoridorEngine.src.ui.gui
             refreshWallCells(guiFrame.FreeWallCell, false);
 
             // Update player's wall counter in gui
-            guiFrame.SetPlayerWallCounter(IsWhitePlayerTurn, game.GetPlayerWalls(IsWhitePlayerTurn));
+            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, game.GetPlayerWalls(isWhitePlayerTurn));
         }
 
         /// <summary>
@@ -115,20 +125,20 @@ namespace QuoridorEngine.src.ui.gui
         public void MovePlayer(object sender, EventArgs e)
         {
             // Ignore if player move is not initiated
-            if (!InitPlayerMove) return;
+            if (!initPlayerMove) return;
 
             PlayerCell playerCell = (PlayerCell)sender;
 
             // Get current player coordinates
             int currentGameRow = 0, currentGameColumn = 0;
-            if(IsWhitePlayerTurn)
+            if(isWhitePlayerTurn)
                 game.GetWhiteCoordinates(ref currentGameRow, ref currentGameColumn);
             else
                 game.GetBlackCoordinates(ref currentGameRow, ref currentGameColumn);
 
             // Construct new quoridor move
             (int newGameRow, int newGameColumn) = TransformCoordinates.GuiToGamePlayer(playerCell.Row, playerCell.Column);
-            QuoridorMove newMove = new QuoridorMove(currentGameRow, currentGameColumn, newGameRow, newGameColumn, IsWhitePlayerTurn);
+            QuoridorMove newMove = new QuoridorMove(currentGameRow, currentGameColumn, newGameRow, newGameColumn, isWhitePlayerTurn);
 
             try
             {
@@ -145,7 +155,7 @@ namespace QuoridorEngine.src.ui.gui
             hidePossiblePlayerMoves();
 
             // Update player pawn location in gui based on last move
-            guiFrame.MovePlayerPawn(IsWhitePlayerTurn, playerCell.Row, playerCell.Column);
+            guiFrame.MovePlayerPawn(isWhitePlayerTurn, playerCell.Row, playerCell.Column);
 
             // Player's turn has finished
             switchPlayerTurn();
@@ -161,9 +171,9 @@ namespace QuoridorEngine.src.ui.gui
             bool isWhitePlayer = ((PlayerPawn)sender).IsWhite;
 
             // Ignore if not player's turn
-            if (isWhitePlayer != IsWhitePlayerTurn) return;
+            if (isWhitePlayer != isWhitePlayerTurn) return;
 
-            if (InitPlayerMove)
+            if (initPlayerMove)
                 // Cancel initiated player move
                 hidePossiblePlayerMoves();
             else
@@ -186,7 +196,7 @@ namespace QuoridorEngine.src.ui.gui
             }
 
             // Player pawn move initiated
-            InitPlayerMove = true;
+            initPlayerMove = true;
         }
 
         /// <summary>
@@ -202,7 +212,7 @@ namespace QuoridorEngine.src.ui.gui
                 }
 
             // Player pawn move completed, canceled or interrupted
-            InitPlayerMove = false;
+            initPlayerMove = false;
         }
 
         /// <summary>
@@ -239,7 +249,7 @@ namespace QuoridorEngine.src.ui.gui
         {
             // Render board
             int guiBoardDimension = TransformCoordinates.GameToGuiDimension(game.Dimension);
-            guiFrame.RenderBoard(guiBoardDimension, MovePlayer, PlaceWall, PreviewWall, RemoveWallPreview, PlayerPawnClicked);
+            guiFrame.RenderBoard(guiBoardDimension, boardEventHandlers);
             
             // Render player pawns
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
@@ -305,14 +315,14 @@ namespace QuoridorEngine.src.ui.gui
             if (!game.IsTerminalState()) return;
 
             // Freeze state 
-            guiFrame.BoaedEventUnsubscribe();
+            guiFrame.BoaedEventsUnsubscribe();
         }
 
         // Utility to determine which player has the next move
         private void switchPlayerTurn()
         {
             gameOver();
-            IsWhitePlayerTurn = !IsWhitePlayerTurn;
+            isWhitePlayerTurn = !isWhitePlayerTurn;
         }
     }
 }

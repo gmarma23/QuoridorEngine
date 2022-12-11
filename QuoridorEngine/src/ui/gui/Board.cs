@@ -8,30 +8,20 @@ namespace QuoridorEngine.src.ui.gui
     {
         private const double wallPlayerCellRatio = 0.11;
 
+        private readonly Dictionary<string, EventHandler> eventHandlers;
         private readonly int dimension;
 
         private BoardCell[,] boardCells;
         private PlayerPawn blackPawn;
         private PlayerPawn whitePawn;
 
-        private readonly EventHandler onPlayerCellClick;
-        private readonly EventHandler onWallCellClick;
-        private readonly EventHandler onWallCellEnter;
-        private readonly EventHandler onWallCellLeave;
-        private readonly EventHandler onPlayerPawnClick;
-
         private int maxCellSize;
         private int minCellSize;
 
-        public Board(int parrentWidth, int parrentHeight, int dimension, EventHandler onPlayerCellClick, EventHandler onWallCellClick, 
-                     EventHandler onWallCellEnter, EventHandler onWallCellLeave, EventHandler onPlayerPawnClick)
+        public Board(int parrentWidth, int parrentHeight, int dimension, Dictionary<string, EventHandler> eventHandlers)
         {
             this.dimension = dimension;
-            this.onPlayerCellClick = onPlayerCellClick;
-            this.onWallCellClick = onWallCellClick;
-            this.onWallCellEnter = onWallCellEnter;
-            this.onWallCellLeave = onWallCellLeave;
-            this.onPlayerPawnClick = onPlayerPawnClick;
+            this.eventHandlers = eventHandlers;
 
             sizesAndArrangement(parrentWidth, parrentHeight);
             defaultStyle();
@@ -76,12 +66,12 @@ namespace QuoridorEngine.src.ui.gui
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
                 for (int column = 0; column < boardCells.GetLength(1); column++)
                     if (boardCells[row, column] is PlayerCell)
-                        ((PlayerCell)boardCells[row, column]).AddEventHandlers(onPlayerCellClick);
+                        ((PlayerCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnPlayerCellClick"]);
                     else if (boardCells[row, column] is WallPartCell)
-                        ((WallPartCell)boardCells[row, column]).AddEventHandlers(onWallCellEnter, onWallCellLeave, onWallCellClick);
+                        ((WallPartCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
 
-            whitePawn.AddEventHandlers(onPlayerPawnClick);
-            blackPawn.AddEventHandlers(onPlayerPawnClick);
+            whitePawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
+            blackPawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
         }
 
         public void RemoveEventHandlers()
@@ -89,12 +79,12 @@ namespace QuoridorEngine.src.ui.gui
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
                 for (int column = 0; column < boardCells.GetLength(1); column++)
                     if (boardCells[row, column] is PlayerCell)
-                        ((PlayerCell)boardCells[row, column]).RemoveEventHandlers(onPlayerCellClick);
+                        ((PlayerCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnPlayerCellClick"]);
                     else if (boardCells[row, column] is WallPartCell)
-                        ((WallPartCell)boardCells[row, column]).RemoveEventHandlers(onWallCellEnter, onWallCellLeave, onWallCellClick);
+                        ((WallPartCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
 
-            whitePawn.RemoveEventHandlers(onPlayerPawnClick);
-            blackPawn.RemoveEventHandlers(onPlayerPawnClick);
+            whitePawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
+            blackPawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
         }
 
         /// <summary>

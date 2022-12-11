@@ -41,19 +41,17 @@ namespace QuoridorEngine.UI
 
         public void SetPlayerWallCounter(bool isWhitePlayer, int numOfWalls) => getPlayerWallsCounter(isWhitePlayer).SetWallNum(numOfWalls);
 
-        public void BoardEventSubscribe() => board.AddEventHandlers();
+        public void BoardEventsSubscribe() => board.AddEventHandlers();
 
-        public void BoaedEventUnsubscribe() => board.RemoveEventHandlers();
+        public void BoaedEventsUnsubscribe() => board.RemoveEventHandlers();
 
 
         /// <summary>
         /// Initialize and include board panel to frame
         /// </summary>
-        public void RenderBoard(int boardDimension, EventHandler onPlayerCellClick, EventHandler onWallCellClick,
-                     EventHandler onWallCellEnter, EventHandler onWallCellLeave, EventHandler onPlayerPawnClick)
+        public void RenderBoard(int boardDimension, Dictionary<string, EventHandler> boardEventHandlers)
         {
-            board = new Board(ClientRectangle.Width, ClientRectangle.Height, boardDimension, onPlayerCellClick, 
-                              onWallCellClick, onWallCellEnter, onWallCellLeave, onPlayerPawnClick);
+            board = new Board(ClientRectangle.Width, ClientRectangle.Height, boardDimension, boardEventHandlers);
             Controls.Add(board);
         }
 
