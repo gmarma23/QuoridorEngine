@@ -85,7 +85,7 @@ namespace QuoridorEngine.src.ui.gui
         {
             WallPartCell wallPartCell = (WallPartCell)sender;
 
-            // Ignore wall part is already placed
+            // Ignore if wall part is already placed
             if (wallPartCell.IsPlaced) return;
 
             // Make wall preview permanent in gui
@@ -107,10 +107,10 @@ namespace QuoridorEngine.src.ui.gui
         {
             WallPartCell wallPartCell = (WallPartCell)sender;
 
-            // Ignore wall part has no active preview
+            // Ignore if wall part has no active preview
             if (!wallPartCell.IsActive) return;
 
-            // Ignore wall part is already placed
+            // Ignore if wall part is already placed
             if (wallPartCell.IsPlaced) return;
 
             // Undo last move (wall preview) in core
