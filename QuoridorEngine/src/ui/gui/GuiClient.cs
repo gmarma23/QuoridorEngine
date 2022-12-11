@@ -2,6 +2,7 @@
 using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
 using QuoridorEngine.Utils;
+using System.Windows.Forms;
 using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.src.ui.gui
@@ -78,20 +79,46 @@ namespace QuoridorEngine.src.ui.gui
 
         public void MovePlayer(object sender, EventArgs e)
         {
+            if (!InitPlayerMove) return;
 
+            PlayerCell playerCell = (PlayerCell)sender;
+
+            int oldGameRow = 0, oldGameColumn = 0;
+            if(IsWhitePlayerTurn)
+                game.GetWhiteCoordinates(ref oldGameRow, ref oldGameColumn);
+            else
+                game.GetBlackCoordinates(ref oldGameRow, ref oldGameColumn);
+
+            (int newGameRow, int newGameColumn) = TransformCoordinates.GuiToGamePlayer(playerCell.Row, playerCell.Column);
+            QuoridorMove newMove = new QuoridorMove(oldGameRow, oldGameColumn, newGameRow, newGameColumn, IsWhitePlayerTurn);
+
+            try
+            {
+                game.ExecuteMove(newMove);
+            }
+            catch (InvalidMoveException)
+            {
+                return;
+            }
+
+            hidePossiblePlayerMoves();
+            guiFrame.MovePlayerPawn(IsWhitePlayerTurn, playerCell.Row, playerCell.Column);
+            switchPlayerTurn();
         }
 
         public void PlayerPawnClicked(object sender, EventArgs e)
         {
+            bool isWhitePlayer = ((PlayerPawn)sender).IsWhite;
+            if (isWhitePlayer != IsWhitePlayerTurn) return;
+
             if (InitPlayerMove)
                 hidePossiblePlayerMoves();
             else
-                showPossiblePlayerMoves(sender, e);
+                showPossiblePlayerMoves(isWhitePlayer);
         }
 
-        private void showPossiblePlayerMoves(object sender, EventArgs e)
+        private void showPossiblePlayerMoves(bool isWhitePlayer)
         {
-            bool isWhitePlayer = ((PlayerPawn)sender).IsWhite;
             List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)game.GetPossiblePlayerMoves(isWhitePlayer);
 
             foreach (QuoridorMove move in possiblePlayerMoves)
