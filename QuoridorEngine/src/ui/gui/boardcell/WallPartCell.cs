@@ -31,8 +31,7 @@ namespace QuoridorEngine.src.ui.gui.board
             expand = board.WallCellSize;
             offset = expand / 2;
 
-            FreeColor = board.WallCellFreeColor;
-            UsedColor = board.WallCellUsedColor;
+            defaultStyle();
 
             MouseEnter += guiClient.PreviewWall;
             MouseLeave += guiClient.RemoveWallPreview;
@@ -59,6 +58,12 @@ namespace QuoridorEngine.src.ui.gui.board
             Left += offset;
             BackColor = FreeColor;
             SendToBack();
+        }
+
+        private void defaultStyle()
+        {
+            FreeColor = Color.Transparent;
+            UsedColor = Color.LightGray;
         }
     }
 #endif

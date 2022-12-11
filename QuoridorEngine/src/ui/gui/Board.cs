@@ -1,7 +1,5 @@
 ﻿using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
-using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace QuoridorEngine.src.ui.gui
 {
@@ -18,17 +16,6 @@ namespace QuoridorEngine.src.ui.gui
         public int PlayerCellSize { get; private set; }
         public int WallCellSize { get; private set; }
 
-        public Color PlayerCellNormalColor { get; set; }
-        public Color PlayerCellPossibleMoveColor { get; set; }
-
-        public Color WallCellFreeColor { get; set; }
-        public Color WallCellUsedColor { get; set; }
-
-        private Color WhitePlayerPawnColor { get; set; }
-        private Color BlackPlayerPawnColor { get; set; }
-
-
-  
         public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension)
         {
             Dimension = dimension;
@@ -37,15 +24,8 @@ namespace QuoridorEngine.src.ui.gui
             // Set default property values
             BoardFrameRatio = GuiFrame.boardFrameRatio;
             WallPlayerCellRatio = 0.11;
-      
-            PlayerCellNormalColor = Color.RoyalBlue;
-            PlayerCellPossibleMoveColor = Color.Orange;
-            WallCellFreeColor = Color.Transparent;
-            WallCellUsedColor = Color.LightGray;
-            BackColor = Color.Transparent;
 
-            WhitePlayerPawnColor = Color.Red;
-            BlackPlayerPawnColor = Color.Purple;
+            defaultStyle();
 
             // Set initial board size
             Width = (int)(guiFrame.ClientRectangle.Width * BoardFrameRatio);
@@ -150,8 +130,6 @@ namespace QuoridorEngine.src.ui.gui
             playerPawn = new PlayerPawn(guiClient, isWhitePlayer, PlayerCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
-            playerPawn.MainColor = isWhitePlayer ? WhitePlayerPawnColor : BlackPlayerPawnColor;
-            playerPawn.BackColor = PlayerCellNormalColor;
         }
 
         /// <summary>
@@ -170,6 +148,11 @@ namespace QuoridorEngine.src.ui.gui
         private ref PlayerPawn getPlayerPawn(bool isWhitePlayer)
         {
             return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
+        }
+
+        private void defaultStyle()
+        {
+            BackColor = Color.Transparent;
         }
     }
 }

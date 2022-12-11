@@ -5,9 +5,14 @@ namespace QuoridorEngine.src.ui.gui.board
     {
         public WallCornerCell(Board board, int row, int column) : base(row, column)
         {
-            BackColor = board.WallCellFreeColor;
             Width = board.WallCellSize;
             Height = Width;
+            defaultStyle();
+        }
+
+        private void defaultStyle()
+        {
+            BackColor = Color.Transparent;
         }
     }
 }

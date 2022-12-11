@@ -6,8 +6,6 @@ namespace QuoridorEngine.src.ui.gui
 #if !CONSOLE
     public class PlayerPawn : Label
     {
-        public int Row { get; set; }
-        public int Column { get; set; }
         public bool IsWhite { get; init; }
 
         public double CornerRadiusWidthRatio { get; set; }
@@ -21,12 +19,12 @@ namespace QuoridorEngine.src.ui.gui
         {
             IsWhite = isWhite;
             DoubleBuffered = true;
+            defaultStyle();
 
             // Set default property values
             CornerRadiusWidthRatio = 0.5;
             PawnCellRatio = 0.66;
-            BoarderColor = Color.White;
-            BoarderSize = 3.0f;
+            
             Width = (int)(cellSize * PawnCellRatio);
             Height = Width;
             Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
@@ -37,13 +35,13 @@ namespace QuoridorEngine.src.ui.gui
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            GraphicsPath graphicsPath = getRoundRectangle(this.ClientRectangle);
+            GraphicsPath graphicsPath = getRoundRectangle(ClientRectangle);
             SolidBrush brush = new SolidBrush(MainColor);
             Pen pen = new Pen(BoarderColor, BoarderSize);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.FillPath(brush, graphicsPath);
             e.Graphics.DrawPath(pen, graphicsPath);
-            TextRenderer.DrawText(e.Graphics, Text, this.Font, this.ClientRectangle, this.ForeColor);
+            TextRenderer.DrawText(e.Graphics, Text, Font, ClientRectangle, ForeColor);
         }
 
         private GraphicsPath getRoundRectangle(Rectangle rectangle)
@@ -57,6 +55,14 @@ namespace QuoridorEngine.src.ui.gui
             path.AddArc(rectangle.X, rectangle.Y + rectangle.Height - cornerRadius - diminisher, cornerRadius, cornerRadius, 90, 90);
             path.CloseAllFigures();
             return path;
+        }
+
+        private void defaultStyle()
+        {
+            MainColor = IsWhite ? Color.Green : Color.Purple;
+            BoarderColor = Color.White;
+            BackColor = Color.Transparent;
+            BoarderSize = 3.0f;
         }
     }
 #endif

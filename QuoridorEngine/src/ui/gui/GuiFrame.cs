@@ -22,11 +22,7 @@ namespace QuoridorEngine.UI
         public GuiFrame()
         {
             InitializeComponent();
-
-            // Set form's gradient background properties
-            BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
-            BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
-            BackgroundAngle = 45;
+            defaultStyle();
         }
 
         public void MovePlayerPawn(bool isWhitePlayer, int row, int column) => board.MovePlayerPawn(isWhitePlayer, row, column);
@@ -78,6 +74,14 @@ namespace QuoridorEngine.UI
         private ref PlayerWallsPanel getPlayerWallsPanel(bool isWhitePlayer)
         {
             return ref isWhitePlayer ? ref whitePlayerWalls : ref blackPlayerWalls;
+        }
+
+        private void defaultStyle()
+        {
+            // Set form's gradient background properties
+            BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
+            BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
+            BackgroundAngle = 45;
         }
     }
 #endif

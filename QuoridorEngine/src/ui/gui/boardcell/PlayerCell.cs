@@ -8,10 +8,7 @@ namespace QuoridorEngine.src.ui.gui.board
 
         public PlayerCell(Board board, GuiClient guiClient, int row, int column) : base(row, column) 
         {
-            NormalColor = board.PlayerCellNormalColor;
-            PossibleMoveColor = board.PlayerCellPossibleMoveColor;
-            Normal();
-
+            defaultStyle();
             Width = board.PlayerCellSize;
             Height = Width;
 
@@ -25,7 +22,14 @@ namespace QuoridorEngine.src.ui.gui.board
 
         public void PossibleMove()
         {
-            BackColor= PossibleMoveColor;
+            BackColor = PossibleMoveColor;
+        }
+
+        private void defaultStyle()
+        {
+            NormalColor = Color.RoyalBlue;
+            PossibleMoveColor = Color.OrangeRed;
+            Normal();
         }
     }
 }
