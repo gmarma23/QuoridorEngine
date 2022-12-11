@@ -33,7 +33,7 @@ namespace QuoridorEngine.src.ui.gui.board
         private void defaultStyle()
         {
             normalColor = Color.RoyalBlue;
-            possibleMoveColor = Color.OrangeRed;
+            possibleMoveColor = Color.YellowGreen;
             Normal();
         }
     }

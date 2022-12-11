@@ -47,7 +47,7 @@ namespace QuoridorEngine.src.ui.gui
 
         private void defaultStyle()
         {
-            mainColor = IsWhite ? Color.Green : Color.Purple;
+            mainColor = IsWhite ? Color.Red : Color.Purple;
             boarderColor = Color.White;
             BackColor = Color.Transparent;
             boarderSize = 3.0f;
