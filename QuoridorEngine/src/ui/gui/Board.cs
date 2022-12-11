@@ -1,46 +1,26 @@
 ﻿using QuoridorEngine.src.ui.gui.board;
 using QuoridorEngine.UI;
+using System.Windows.Forms.Design;
 
 namespace QuoridorEngine.src.ui.gui
 {
     public class Board : Panel
     {
+        private const double wallPlayerCellRatio = 0.11;
+
         private BoardCell[,] boardCells;
         private PlayerPawn blackPawn;
         private PlayerPawn whitePawn;
-
-        private int Dimension { get; init; }
-
-        public double BoardFrameRatio { get; set; }
-        public double WallPlayerCellRatio { get; set; }
-        public int PlayerCellSize { get; private set; }
-        public int WallCellSize { get; private set; }
+        private readonly int dimension;
+        private int maxCellSize;
+        private int minCellSize;
 
         public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension)
         {
-            Dimension = dimension;
-            Parent = guiFrame;
+            this.dimension = dimension;
 
-            // Set default property values
-            BoardFrameRatio = GuiFrame.boardFrameRatio;
-            WallPlayerCellRatio = 0.11;
-
+            sizesAndArrangement(guiFrame.ClientRectangle.Width, guiFrame.ClientRectangle.Height);
             defaultStyle();
-
-            // Set initial board size
-            Width = (int)(guiFrame.ClientRectangle.Width * BoardFrameRatio);
-            Height = Width;
-
-            calculateCellSizes();
-
-            // Fix board size after cell size calculation
-            Width -= WallCellSize + 3;
-            Height = Width;
-
-            // Center board to frame
-            Location = new Point(
-                (guiFrame.ClientRectangle.Width / 2) - (Width / 2),
-                (guiFrame.ClientRectangle.Height / 2) - (Height / 2));
 
             drawBoard(guiClient);
             drawPlayerPawn(guiClient, true);
@@ -64,14 +44,12 @@ namespace QuoridorEngine.src.ui.gui
 
         public void UseWallCell(int row, int column)
         {
-            WallPartCell wallPartCell = (WallPartCell)boardCells[row, column];
-            if (!wallPartCell.IsActive) wallPartCell.Use();
+            ((WallPartCell)boardCells[row, column]).Use();
         }
 
         public void FreeWallCell(int row, int column)
         {
-            WallPartCell wallPartCell = (WallPartCell)boardCells[row, column];
-            if (wallPartCell.IsActive) wallPartCell.Free();
+            ((WallPartCell)boardCells[row, column]).Free();
         }
 
         public void PlaceWallCell(int row, int column, bool isPlaced)
@@ -84,7 +62,7 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         private void drawBoard(GuiClient guiClient)
         {
-            boardCells = new BoardCell[Dimension, Dimension];
+            boardCells = new BoardCell[dimension, dimension];
             int xLoc = 0, yLoc = 0;
 
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
@@ -109,11 +87,11 @@ namespace QuoridorEngine.src.ui.gui
         private void drawBoardCell(GuiClient guiClient, int row, int column, int xLoc, int yLoc)
         {
             if (row % 2 == 0 && column % 2 == 0)
-                boardCells[row, column] = new PlayerCell(this, guiClient, row, column);
+                boardCells[row, column] = new PlayerCell(guiClient, row, column, maxCellSize);
             else if (row % 2 == 1 && column % 2 == 1)
-                boardCells[row, column] = new WallCornerCell(this, row, column);
+                boardCells[row, column] = new WallCornerCell(row, column, minCellSize);
             else
-                boardCells[row, column] = new WallPartCell(this, guiClient, row, column);
+                boardCells[row, column] = new WallPartCell(guiClient, row, column, minCellSize, maxCellSize);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
@@ -127,9 +105,30 @@ namespace QuoridorEngine.src.ui.gui
         public void drawPlayerPawn(GuiClient guiClient, bool isWhitePlayer)
         {
             ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
-            playerPawn = new PlayerPawn(guiClient, isWhitePlayer, PlayerCellSize);
+            playerPawn = new PlayerPawn(guiClient, isWhitePlayer, maxCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
+        }
+
+        private ref PlayerPawn getPlayerPawn(bool isWhitePlayer)
+        {
+            return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
+        }
+
+        private void sizesAndArrangement(int parrentWidth, int parrentHeight)
+        {
+            // Set initial board size
+            Width = (int)(parrentWidth * GuiFrame.boardFrameRatio);
+            Height = Width;
+
+            calculateCellSizes();
+
+            // Fix board size after cell size calculation
+            Width -= minCellSize + 3;
+            Height = Width;
+
+            // Center board to frame
+            Location = new Point((parrentWidth / 2) - (Width / 2), (parrentHeight / 2) - (Height / 2));
         }
 
         /// <summary>
@@ -138,16 +137,9 @@ namespace QuoridorEngine.src.ui.gui
         /// </summary>
         private void calculateCellSizes()
         {
-            // Calculate player cell and wall cell sizes combined
-            int combinedSize = this.Width / ((Dimension + 1) / 2);
-
-            WallCellSize = (int)(combinedSize * WallPlayerCellRatio);
-            PlayerCellSize = combinedSize - WallCellSize;
-        }
-
-        private ref PlayerPawn getPlayerPawn(bool isWhitePlayer)
-        {
-            return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
+            int combinedSize = Width / ((dimension + 1) / 2);
+            minCellSize = (int)(combinedSize * wallPlayerCellRatio);
+            maxCellSize = combinedSize - minCellSize;
         }
 
         private void defaultStyle()

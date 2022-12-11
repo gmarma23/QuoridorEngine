@@ -3,11 +3,16 @@ namespace QuoridorEngine.src.ui.gui.board
 {
     public class WallCornerCell : BoardCell
     {
-        public WallCornerCell(Board board, int row, int column) : base(row, column)
+        public WallCornerCell(int row, int column, int size) : base(row, column)
         {
-            Width = board.WallCellSize;
-            Height = Width;
+            sizes(size);
             defaultStyle();
+        }
+
+        private void sizes(int size)
+        {
+            Width = size;
+            Height = Width;
         }
 
         private void defaultStyle()

@@ -3,32 +3,37 @@ namespace QuoridorEngine.src.ui.gui.board
 {
     public class PlayerCell : BoardCell
     {
-        public Color NormalColor { get; set; }
-        public Color PossibleMoveColor { get; set; }
+        private Color normalColor;
+        private Color possibleMoveColor;
 
-        public PlayerCell(Board board, GuiClient guiClient, int row, int column) : base(row, column) 
+        public PlayerCell(GuiClient guiClient, int row, int column, int size) : base(row, column) 
         {
+            sizes(size);
             defaultStyle();
-            Width = board.PlayerCellSize;
-            Height = Width;
 
             Click += guiClient.MovePlayer;
         }
 
         public void Normal()
         {
-            BackColor = NormalColor;
+            BackColor = normalColor;
         }
 
         public void PossibleMove()
         {
-            BackColor = PossibleMoveColor;
+            BackColor = possibleMoveColor;
+        }
+
+        private void sizes(int size)
+        {
+            Width = size;
+            Height = Width;
         }
 
         private void defaultStyle()
         {
-            NormalColor = Color.RoyalBlue;
-            PossibleMoveColor = Color.OrangeRed;
+            normalColor = Color.RoyalBlue;
+            possibleMoveColor = Color.OrangeRed;
             Normal();
         }
     }

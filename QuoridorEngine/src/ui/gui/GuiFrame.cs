@@ -12,12 +12,12 @@ namespace QuoridorEngine.UI
         public const double boardFrameRatio = 0.75;
 
         private Board board;
-        private PlayerWallsPanel whitePlayerWalls;
-        private PlayerWallsPanel blackPlayerWalls;
+        private PlayerWallsCounter whitePlayerWallsCounter;
+        private PlayerWallsCounter blackPlayerWallsCounter;
 
-        private Color BackgroundTopColor { get; set; }
-        private Color BackgroundBottomColor { get; set; }
-        private float BackgroundAngle { get; set; }
+        private Color backgroundTopColor;
+        private Color backgroundBottomColor;
+        private float backgroundAngle;
 
         public GuiFrame()
         {
@@ -39,7 +39,7 @@ namespace QuoridorEngine.UI
 
         public void RemoveWallCell(int row, int column) => board.PlaceWallCell(row, column, false);
 
-        public void SetPlayerWallCounter(bool isWhitePlayer, int numOfWalls) => getPlayerWallsPanel(isWhitePlayer).SetWallNum(numOfWalls);
+        public void SetPlayerWallCounter(bool isWhitePlayer, int numOfWalls) => getPlayerWallsCounter(isWhitePlayer).SetWallNum(numOfWalls);
 
         /// <summary>
         /// Initialize and include board panel to frame
@@ -53,35 +53,34 @@ namespace QuoridorEngine.UI
 
         public void RenderPlayerWallsPanel(bool isWhitePlayer)
         {
-            ref PlayerWallsPanel playerWallsPanel = ref getPlayerWallsPanel(isWhitePlayer);
-            playerWallsPanel = new PlayerWallsPanel(this, isWhitePlayer);
-            Controls.Add(playerWallsPanel);
-            playerWallsPanel.BringToFront();
+            ref PlayerWallsCounter playerWallsCounter = ref getPlayerWallsCounter(isWhitePlayer);
+            playerWallsCounter = new PlayerWallsCounter(this, isWhitePlayer);
+            Controls.Add(playerWallsCounter);
         }
 
         /// <summary>
         /// Overriding OnPaint method for frame to create gradient background effect
         /// </summary>
-        /// <param name="e">Paint event Arguments</param>
+        /// <param name="e">Paint event arguments</param>
         protected override void OnPaint(PaintEventArgs e)
         {
-            LinearGradientBrush brush = new(ClientRectangle, BackgroundTopColor, BackgroundBottomColor, BackgroundAngle);
+            LinearGradientBrush brush = new(ClientRectangle, backgroundTopColor, backgroundBottomColor, backgroundAngle);
             Graphics graphics = e.Graphics;
             graphics.FillRectangle(brush, ClientRectangle);
             base.OnPaint(e);
         }
 
-        private ref PlayerWallsPanel getPlayerWallsPanel(bool isWhitePlayer)
+        private ref PlayerWallsCounter getPlayerWallsCounter(bool isWhitePlayer)
         {
-            return ref isWhitePlayer ? ref whitePlayerWalls : ref blackPlayerWalls;
+            return ref isWhitePlayer ? ref whitePlayerWallsCounter : ref blackPlayerWallsCounter;
         }
 
         private void defaultStyle()
         {
             // Set form's gradient background properties
-            BackgroundTopColor = Color.FromArgb(255, 0, 0, 10);
-            BackgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
-            BackgroundAngle = 45;
+            backgroundTopColor = Color.FromArgb(255, 0, 0, 10);
+            backgroundBottomColor = Color.FromArgb(255, 0, 38, 80);
+            backgroundAngle = 45;
         }
     }
 #endif
