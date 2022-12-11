@@ -8,23 +8,37 @@ namespace QuoridorEngine.src.ui.gui
     {
         private const double wallPlayerCellRatio = 0.11;
 
+        private readonly int dimension;
+
         private BoardCell[,] boardCells;
         private PlayerPawn blackPawn;
         private PlayerPawn whitePawn;
-        private readonly int dimension;
+
+        private readonly EventHandler onPlayerCellClick;
+        private readonly EventHandler onWallCellClick;
+        private readonly EventHandler onWallCellEnter;
+        private readonly EventHandler onWallCellLeave;
+        private readonly EventHandler onPlayerPawnClick;
+
         private int maxCellSize;
         private int minCellSize;
 
-        public Board(GuiFrame guiFrame, GuiClient guiClient, int dimension)
+        public Board(GuiFrame guiFrame, int dimension, EventHandler onPlayerCellClick, EventHandler onWallCellClick, 
+                     EventHandler onWallCellEnter, EventHandler onWallCellLeave, EventHandler onPlayerPawnClick)
         {
             this.dimension = dimension;
+            this.onPlayerCellClick = onPlayerCellClick;
+            this.onWallCellClick = onWallCellClick;
+            this.onWallCellEnter = onWallCellEnter;
+            this.onWallCellLeave = onWallCellLeave;
+            this.onPlayerPawnClick = onPlayerPawnClick;
 
             sizesAndArrangement(guiFrame.ClientRectangle.Width, guiFrame.ClientRectangle.Height);
             defaultStyle();
 
-            drawBoard(guiClient);
-            drawPlayerPawn(guiClient, true);
-            drawPlayerPawn(guiClient, false);
+            drawBoard();
+            drawPlayerPawn(true);
+            drawPlayerPawn(false);
         }
 
         public void MovePlayerPawn(bool isWhitePlayer, int newRow, int newColumn)
@@ -57,10 +71,36 @@ namespace QuoridorEngine.src.ui.gui
             ((WallPartCell)boardCells[row, column]).IsPlaced = isPlaced;
         }
 
+        public void AddEventHandlers()
+        {
+            for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
+                for (int column = 0; column < boardCells.GetLength(1); column++)
+                    if (boardCells[row, column] is PlayerCell)
+                        ((PlayerCell)boardCells[row, column]).AddEventHandlers(onPlayerCellClick);
+                    else if (boardCells[row, column] is WallPartCell)
+                        ((WallPartCell)boardCells[row, column]).AddEventHandlers(onWallCellEnter, onWallCellLeave, onWallCellClick);
+
+            whitePawn.AddEventHandlers(onPlayerPawnClick);
+            blackPawn.AddEventHandlers(onPlayerPawnClick);
+        }
+
+        public void RemoveEventHandlers()
+        {
+            for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
+                for (int column = 0; column < boardCells.GetLength(1); column++)
+                    if (boardCells[row, column] is PlayerCell)
+                        ((PlayerCell)boardCells[row, column]).RemoveEventHandlers(onPlayerCellClick);
+                    else if (boardCells[row, column] is WallPartCell)
+                        ((WallPartCell)boardCells[row, column]).RemoveEventHandlers(onWallCellEnter, onWallCellLeave, onWallCellClick);
+
+            whitePawn.RemoveEventHandlers(onPlayerPawnClick);
+            blackPawn.RemoveEventHandlers(onPlayerPawnClick);
+        }
+
         /// <summary>
         /// Coordinate board cells drawing on board panel
         /// </summary>
-        private void drawBoard(GuiClient guiClient)
+        private void drawBoard()
         {
             boardCells = new BoardCell[dimension, dimension];
             int xLoc = 0, yLoc = 0;
@@ -69,7 +109,7 @@ namespace QuoridorEngine.src.ui.gui
             {
                 for (int column = 0; column < boardCells.GetLength(1); column++)
                 {
-                    drawBoardCell(guiClient, row, column, xLoc, yLoc);
+                    drawBoardCell(row, column, xLoc, yLoc);
                     xLoc += boardCells[row, column].Width;
                 }
                 yLoc += boardCells[row, 0].Height;
@@ -84,28 +124,27 @@ namespace QuoridorEngine.src.ui.gui
         /// <param name="column">Board column</param>
         /// <param name="xLoc">Cell x location</param>
         /// <param name="yLoc">Cell y location</param>
-        private void drawBoardCell(GuiClient guiClient, int row, int column, int xLoc, int yLoc)
+        private void drawBoardCell(int row, int column, int xLoc, int yLoc)
         {
             if (row % 2 == 0 && column % 2 == 0)
-                boardCells[row, column] = new PlayerCell(guiClient, row, column, maxCellSize);
+                boardCells[row, column] = new PlayerCell(row, column, maxCellSize);
             else if (row % 2 == 1 && column % 2 == 1)
                 boardCells[row, column] = new WallCornerCell(row, column, minCellSize);
             else
-                boardCells[row, column] = new WallPartCell(guiClient, row, column, minCellSize, maxCellSize);
+                boardCells[row, column] = new WallPartCell(row, column, minCellSize, maxCellSize);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
-            boardCells[row, column].Parent = this;
         }
 
         /// <summary>
         /// Render player pawn to board 
         /// </summary>
         /// <param name="player">Player enum option</param>
-        public void drawPlayerPawn(GuiClient guiClient, bool isWhitePlayer)
+        public void drawPlayerPawn(bool isWhitePlayer)
         {
             ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
-            playerPawn = new PlayerPawn(guiClient, isWhitePlayer, maxCellSize);
+            playerPawn = new PlayerPawn(isWhitePlayer, maxCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
         }

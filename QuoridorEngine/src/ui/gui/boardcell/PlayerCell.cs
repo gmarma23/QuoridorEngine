@@ -6,12 +6,10 @@ namespace QuoridorEngine.src.ui.gui.board
         private Color normalColor;
         private Color possibleMoveColor;
 
-        public PlayerCell(GuiClient guiClient, int row, int column, int size) : base(row, column) 
+        public PlayerCell(int row, int column, int size) : base(row, column) 
         {
             sizes(size);
             defaultStyle();
-
-            Click += guiClient.MovePlayer;
         }
 
         public void Normal()
@@ -22,6 +20,16 @@ namespace QuoridorEngine.src.ui.gui.board
         public void PossibleMove()
         {
             BackColor = possibleMoveColor;
+        }
+
+        public void AddEventHandlers(EventHandler onClick)
+        {
+            Click += new EventHandler(onClick);
+        }
+
+        public void RemoveEventHandlers(EventHandler onClick)
+        {
+            Click -= new EventHandler(onClick);
         }
 
         private void sizes(int size)

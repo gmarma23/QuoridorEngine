@@ -14,7 +14,7 @@ namespace QuoridorEngine.src.ui.gui
 
         public bool IsWhite { get; init; }
 
-        public PlayerPawn(GuiClient guiClient, bool isWhite, int cellSize)
+        public PlayerPawn(bool isWhite, int cellSize)
         {
             IsWhite = isWhite;
 
@@ -22,8 +22,16 @@ namespace QuoridorEngine.src.ui.gui
 
             DoubleBuffered = true;
             defaultStyle();
-            
-            Click += guiClient.PlayerPawnClicked;
+        }
+
+        public void AddEventHandlers(EventHandler onClick)
+        {
+            Click += new EventHandler(onClick);
+        }
+
+        public void RemoveEventHandlers(EventHandler onClick)
+        {
+            Click -= new EventHandler(onClick);
         }
 
         protected override void OnPaint(PaintEventArgs e)

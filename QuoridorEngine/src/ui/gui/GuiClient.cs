@@ -9,6 +9,7 @@ namespace QuoridorEngine.src.ui.gui
     public class GuiClient
     {
         public delegate void BoardCellAction(int row, int column);
+        public delegate void BoardEventHandler(object sender, EventArgs e);
 
         private GuiFrame guiFrame;
         private QuoridorGame game;
@@ -22,6 +23,7 @@ namespace QuoridorEngine.src.ui.gui
             guiFrame = new GuiFrame();
 
             renderGameComponents();
+            guiFrame.BoardEventSubscribe();
 
             IsWhitePlayerTurn = true;
             InitPlayerMove = false;
@@ -232,18 +234,12 @@ namespace QuoridorEngine.src.ui.gui
                 }
         }
 
-        // Unsubscribe all handlers from events
-        private void eventUnsubscriber()
-        {
-
-        }
-
         // Render gui elements based on quoridor game core
         private void renderGameComponents()
         {
             // Render board
             int guiBoardDimension = TransformCoordinates.GameToGuiDimension(game.Dimension);
-            guiFrame.RenderBoard(this, guiBoardDimension);
+            guiFrame.RenderBoard(guiBoardDimension, MovePlayer, PlaceWall, PreviewWall, RemoveWallPreview, PlayerPawnClicked);
             
             // Render player pawns
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
@@ -309,7 +305,7 @@ namespace QuoridorEngine.src.ui.gui
             if (!game.IsTerminalState()) return;
 
             // Freeze state 
-            eventUnsubscriber();
+            guiFrame.BoaedEventUnsubscribe();
         }
 
         // Utility to determine which player has the next move
