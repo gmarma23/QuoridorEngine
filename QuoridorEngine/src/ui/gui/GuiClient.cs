@@ -232,9 +232,13 @@ namespace QuoridorEngine.src.ui.gui
                 }
         }
 
-        /// <summary>
-        /// Render gui elements based on quoridor game core
-        /// </summary>
+        // Unsubscribe all handlers from events
+        private void eventUnsubscriber()
+        {
+
+        }
+
+        // Render gui elements based on quoridor game core
         private void renderGameComponents()
         {
             // Render board
@@ -259,9 +263,7 @@ namespace QuoridorEngine.src.ui.gui
             guiFrame.SetPlayerWallCounter(false, game.GetPlayerWalls(false));
         }
 
-        /// <summary>
-        /// Group of methods for coordinate transformations to ensure proper game/gui communication
-        /// </summary>
+        // Group of methods for coordinate transformations to ensure proper game/gui communication
         private static class TransformCoordinates
         {
             public static int GameToGuiDimension(int gameDimension)
@@ -300,11 +302,20 @@ namespace QuoridorEngine.src.ui.gui
             return (wallcell.Row % 2 == 1 && wallcell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
         }
 
-        /// <summary>
-        /// Utility to determine which player has the next move
-        /// </summary>
+        // Game over handler
+        private void gameOver()
+        {
+            // Ignore if game is not over
+            if (!game.IsTerminalState()) return;
+
+            // Freeze state 
+            eventUnsubscriber();
+        }
+
+        // Utility to determine which player has the next move
         private void switchPlayerTurn()
         {
+            gameOver();
             IsWhitePlayerTurn = !IsWhitePlayerTurn;
         }
     }
