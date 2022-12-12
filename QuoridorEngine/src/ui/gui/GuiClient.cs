@@ -11,6 +11,7 @@ namespace QuoridorEngine.src.ui.gui
     {
         private GuiFrame guiFrame;
         private QuoridorGame game;
+        private GameMode gameMode;
 
         private readonly Dictionary<string, EventHandler> boardEventHandlers;
 
@@ -19,10 +20,15 @@ namespace QuoridorEngine.src.ui.gui
         private bool isWhitePlayerTurn;
         private bool initPlayerMove;
 
-        public GuiClient() 
+        public GuiClient(int boardDimension, int playerWallsCount, GameMode gameMode) 
         {
-            game = new QuoridorGame();
+            game = new QuoridorGame(boardDimension);
             guiFrame = new GuiFrame();
+
+            game.SetPlayerWalls(true, playerWallsCount);
+            game.SetPlayerWalls(false, playerWallsCount);
+
+            this.gameMode = gameMode;
 
             boardEventHandlers = new Dictionary<string, EventHandler>
             {
@@ -34,7 +40,9 @@ namespace QuoridorEngine.src.ui.gui
             };
 
             renderGameComponents();
-            guiFrame.BoardEventsSubscribe();
+            
+            if (gameMode != GameMode.WhiteIsAI) 
+                guiFrame.BoardEventsSubscribe();
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
@@ -319,7 +327,7 @@ namespace QuoridorEngine.src.ui.gui
             if (!game.IsTerminalState()) return;
 
             // Freeze state 
-            guiFrame.BoaedEventsUnsubscribe();
+            guiFrame.BoardEventsSubscribe();
         }
 
         // Utility to determine which player has the next move
@@ -327,7 +335,21 @@ namespace QuoridorEngine.src.ui.gui
         {
             gameOver();
             isWhitePlayerTurn = !isWhitePlayerTurn;
+            
+            if ((isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
+               (!isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
+                guiFrame.BoardEventsUnsubscribe();
+            else if ((!isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
+                    (isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
+                guiFrame.BoardEventsSubscribe();
         }
+    }
+
+    public enum GameMode
+    {
+        TwoPlayers,
+        WhiteIsAI,
+        BlackIsAI
     }
 #endif
 }

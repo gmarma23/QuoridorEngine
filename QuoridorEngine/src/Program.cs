@@ -12,7 +12,7 @@ namespace QuoridorEngine
         {
 #if !CONSOLE
             ApplicationConfiguration.Initialize();
-            new GuiClient().RunGui();
+            new GuiClient(9, 10, GameMode.TwoPlayers).RunGui();
 #else
             ConsoleClient.Play();
 #endif

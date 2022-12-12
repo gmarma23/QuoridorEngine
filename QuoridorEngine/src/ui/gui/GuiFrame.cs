@@ -40,7 +40,7 @@ namespace QuoridorEngine.UI
 
         public void BoardEventsSubscribe() => board.AddEventHandlers();
 
-        public void BoaedEventsUnsubscribe() => board.RemoveEventHandlers();
+        public void BoardEventsUnsubscribe() => board.RemoveEventHandlers();
 
 
         /// <summary>
