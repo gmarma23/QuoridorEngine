@@ -1,6 +1,6 @@
 ﻿using Orientation = QuoridorEngine.Core.Orientation;
 
-namespace QuoridorEngine.Utls
+namespace QuoridorEngine.Utils
 {
     // Group of methods for coordinate transformations to ensure proper game/gui communication
     public static class TransformCoordinates

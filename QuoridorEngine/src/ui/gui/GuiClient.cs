@@ -1,6 +1,5 @@
 ﻿using QuoridorEngine.Core;
 using QuoridorEngine.Utils;
-using QuoridorEngine.Utls;
 using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.UI
