@@ -18,7 +18,7 @@ namespace QuoridorEngine.UI
         public GuiFrame()
         {
             InitializeComponent();
-            defaultStyle();
+            applyDefaultStyle();
         }
 
         public void MovePlayerPawn(bool isWhitePlayer, int row, int column) => board.MovePlayerPawn(isWhitePlayer, row, column);
@@ -75,7 +75,7 @@ namespace QuoridorEngine.UI
             return ref isWhitePlayer ? ref whitePlayerWallsCounter : ref blackPlayerWallsCounter;
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             // Set form's gradient background properties
             backgroundTopColor = Color.FromArgb(255, 0, 0, 10);

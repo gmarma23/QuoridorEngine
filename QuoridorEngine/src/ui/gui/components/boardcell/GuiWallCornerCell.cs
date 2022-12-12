@@ -6,17 +6,17 @@ namespace QuoridorEngine.UI
     {
         public GuiWallCornerCell(int row, int column, int size) : base(row, column)
         {
-            sizes(size);
-            defaultStyle();
+            setSizes(size);
+            applyDefaultStyle();
         }
 
-        private void sizes(int size)
+        private void setSizes(int size)
         {
             Width = size;
             Height = Width;
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             BackColor = Color.Transparent;
         }

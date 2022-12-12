@@ -16,8 +16,8 @@ namespace QuoridorEngine.UI
         {
             IsPlaced = false;
 
-            sizes(minSize, maxSize);
-            defaultStyle();
+            setSizes(minSize, maxSize);
+            applyDefaultStyle();
         }
 
         public void Use()
@@ -58,7 +58,7 @@ namespace QuoridorEngine.UI
             Click -= onClick;
         }
 
-        private void sizes(int minSize, int maxSize)
+        private void setSizes(int minSize, int maxSize)
         {
             if (Row % 2 == 1 && Column % 2 == 0)
             {
@@ -75,7 +75,7 @@ namespace QuoridorEngine.UI
             offset = expand / 2;
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             freeColor = Color.Transparent;
             usedColor = Color.LightGray;

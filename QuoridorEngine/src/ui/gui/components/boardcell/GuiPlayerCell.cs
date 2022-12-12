@@ -9,16 +9,16 @@ namespace QuoridorEngine.UI
 
         public GuiPlayerCell(int row, int column, int size) : base(row, column) 
         {
-            sizes(size);
-            defaultStyle();
+            setSizes(size);
+            applyDefaultStyle();
         }
 
-        public void Normal()
+        public void ToNormal()
         {
             BackColor = normalColor;
         }
 
-        public void PossibleMove()
+        public void ToPossibleMove()
         {
             BackColor = possibleMoveColor;
         }
@@ -33,17 +33,17 @@ namespace QuoridorEngine.UI
             Click -= onClick;
         }
 
-        private void sizes(int size)
+        private void setSizes(int size)
         {
             Width = size;
             Height = Width;
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             normalColor = Color.RoyalBlue;
             possibleMoveColor = Color.YellowGreen;
-            Normal();
+            ToNormal();
         }
     }
 #endif

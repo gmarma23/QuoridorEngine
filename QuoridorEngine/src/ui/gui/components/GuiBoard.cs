@@ -21,8 +21,8 @@ namespace QuoridorEngine.UI
             this.dimension = dimension;
             this.eventHandlers = eventHandlers;
 
-            sizesAndArrangement(parrentWidth, parrentHeight);
-            defaultStyle();
+            setSizesAndArrangement(parrentWidth, parrentHeight);
+            applyDefaultStyle();
 
             drawBoard();
             drawPlayerPawn(true);
@@ -36,12 +36,12 @@ namespace QuoridorEngine.UI
 
         public void NormalPlayerCell(int row, int column)
         {
-            ((GuiPlayerCell)boardCells[row, column]).Normal();
+            ((GuiPlayerCell)boardCells[row, column]).ToNormal();
         }
 
         public void PossibleMovePlayerCell(int row, int column)
         {
-            ((GuiPlayerCell)boardCells[row, column]).PossibleMove();
+            ((GuiPlayerCell)boardCells[row, column]).ToPossibleMove();
         }
 
         public void UseWallCell(int row, int column)
@@ -144,7 +144,7 @@ namespace QuoridorEngine.UI
             return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
         }
 
-        private void sizesAndArrangement(int parrentWidth, int parrentHeight)
+        private void setSizesAndArrangement(int parrentWidth, int parrentHeight)
         {
             // Set initial board size
             Width = (int)(parrentWidth * GuiFrame.boardFrameRatio);
@@ -171,7 +171,7 @@ namespace QuoridorEngine.UI
             maxCellSize = combinedSize - minCellSize;
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             BackColor = Color.Transparent;
         }

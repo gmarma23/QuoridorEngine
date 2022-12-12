@@ -16,9 +16,9 @@ namespace QuoridorEngine.UI
         public GuiPlayerWallsCounter(GuiFrame guiFrame, bool isWhitePlayer)
         {
             initializeLabels();
-            sizesAndArrangement(guiFrame.ClientRectangle.Width, isWhitePlayer);
-            
-            defaultStyle();
+            setSizesAndArrangement(guiFrame.ClientRectangle.Width, isWhitePlayer);
+
+            applyDefaultStyle();
         }
 
         public void SetWallNum(int numOfWalls)
@@ -36,7 +36,7 @@ namespace QuoridorEngine.UI
             Controls.Add(availableWallsCounter);
         }
 
-        private void sizesAndArrangement(int parrentWidth, bool isWhitePlayer)
+        private void setSizesAndArrangement(int parrentWidth, bool isWhitePlayer)
         {
             int playerSide = isWhitePlayer ? 1 : -1;
             Height = 25;
@@ -54,7 +54,7 @@ namespace QuoridorEngine.UI
             availableWallsCounter.Left = description.Width + descriptionCounterMargin;
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             BackColor = Color.Transparent;
 

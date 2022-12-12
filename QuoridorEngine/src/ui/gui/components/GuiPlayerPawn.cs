@@ -18,10 +18,10 @@ namespace QuoridorEngine.UI
         {
             IsWhite = isWhite;
 
-            sizesAndArrangement(cellSize);
+            setSizesAndArrangement(cellSize);
 
             DoubleBuffered = true;
-            defaultStyle();
+            applyDefaultStyle();
         }
 
         public void AddEventHandlers(EventHandler onClick)
@@ -47,14 +47,14 @@ namespace QuoridorEngine.UI
             TextRenderer.DrawText(e.Graphics, Text, Font, ClientRectangle, ForeColor);
         }
 
-        private void sizesAndArrangement(int cellSize)
+        private void setSizesAndArrangement(int cellSize)
         {
             Width = (int)(cellSize * pawnCellRatio);
             Height = Width;
             Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
         }
 
-        private void defaultStyle()
+        private void applyDefaultStyle()
         {
             mainColor = IsWhite ? Color.Red : Color.Purple;
             boarderColor = Color.White;
