@@ -1,10 +1,16 @@
 ﻿
+using QuoridorEngine.Core;
+using QuoridorEngine.Utils;
+using Orientation = QuoridorEngine.Core.Orientation;
+
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
     public class GuiBoard : Panel
     {
         private const double wallPlayerCellRatio = 0.11;
+
+        private delegate void BoardCellAction(int row, int column);
 
         private readonly Dictionary<string, EventHandler> eventHandlers;
         private readonly int dimension;
@@ -29,34 +35,93 @@ namespace QuoridorEngine.UI
             drawPlayerPawn(false);
         }
 
+        public void UpdateUsedWallCells(QuoridorGame gameState) => updateWallCells(gameState, UseWallCell, true);
+
+        public void UpdatePlacedWallCells(QuoridorGame gameState) => updateWallCells(gameState, PlaceWallCell, true);
+
+        public void UpdateFreeWallCells(QuoridorGame gameState) => updateWallCells(gameState, FreeWallCell, false);
+ 
+        /// <summary>
+        /// Update gui board player cells to show player's pawn possible moves
+        /// </summary>
+        /// <param name="isWhitePlayer">Player to show possible moves</param>
+        public void ShowPossiblePlayerMoveCells(QuoridorGame gameState, bool isWhitePlayer)
+        {
+            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)gameState.GetPossiblePlayerMoves(isWhitePlayer);
+
+            foreach (QuoridorMove move in possiblePlayerMoves)
+            {
+                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(move.Row, move.Column);
+                PossiblePlayerMoveCell(guiRow, guiColumn);
+            }
+        }
+
+        // Reset all possible player move cells to normal state 
+        public void HidePossiblePlayerMoveCells(QuoridorGame gameState)
+        {
+            for (int gameRow = gameState.Dimension - 1; gameRow >= 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
+                {
+                    (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
+                    NormalPlayerCell(guiRow, guiColumn);
+                }
+        }
+
+        /// <summary>
+        /// Utility to refresh/update wall cells on gui based on changes made in quoridor core
+        /// </summary>
+        /// <param name="function"> An action to perform on gui wall cells</param>
+        /// <param name="hasWallPiece">Utility parameter to determine whether a wall piece 
+        /// is placed or not in quoridor core according to performed action</param>
+        private void updateWallCells(QuoridorGame gameState, BoardCellAction function, bool hasWallPiece)
+        {
+            // Check horizontal wall pieces
+            for (int gameRow = gameState.Dimension - 1; gameRow > 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
+                    if (gameState.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
+                    {
+                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
+                        function(guiRow, guiColumn);
+                    }
+
+            // Check vertical wall pieces
+            for (int gameRow = gameState.Dimension - 1; gameRow >= 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < gameState.Dimension - 1; gameColumn++)
+                    if (gameState.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
+                    {
+                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
+                        function(guiRow, guiColumn);
+                    }
+        }
+
         public void MovePlayerPawn(bool isWhitePlayer, int newRow, int newColumn)
         {
             getPlayerPawn(isWhitePlayer).Parent = boardCells[newRow, newColumn];
         }
 
-        public void NormalPlayerCell(int row, int column)
+        private void NormalPlayerCell(int row, int column)
         {
             ((GuiPlayerCell)boardCells[row, column]).ToNormal();
         }
 
-        public void PossibleMovePlayerCell(int row, int column)
+        private void PossiblePlayerMoveCell(int row, int column)
         {
             ((GuiPlayerCell)boardCells[row, column]).ToPossibleMove();
         }
 
-        public void UseWallCell(int row, int column)
+        private void UseWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).Use();
         }
 
-        public void FreeWallCell(int row, int column)
+        private void FreeWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).Free();
         }
 
-        public void PlaceWallCell(int row, int column, bool isPlaced)
+        private void PlaceWallCell(int row, int column)
         {
-            ((GuiWallPartCell)boardCells[row, column]).IsPlaced = isPlaced;
+            ((GuiWallPartCell)boardCells[row, column]).IsPlaced = true;
         }
 
         // Add event handlers to all board events

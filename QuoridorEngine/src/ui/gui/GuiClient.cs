@@ -12,8 +12,6 @@ namespace QuoridorEngine.UI
         private GameMode gameMode;
 
         private readonly Dictionary<string, EventHandler> boardEventHandlers;
-
-        private delegate void BoardCellAction(int row, int column);
         
         private bool isWhitePlayerTurn;
         private bool initPlayerMove;
@@ -80,7 +78,7 @@ namespace QuoridorEngine.UI
             }
 
             // Update gui wall cells based on new state
-            refreshWallCells(guiFrame.UseWallCell, true);
+            guiFrame.UpdateUsedBoardWallCells(gameState);
 
             // Update player's wall counter in gui
             guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, gameState.GetPlayerWalls(isWhitePlayerTurn));
@@ -95,10 +93,10 @@ namespace QuoridorEngine.UI
             if (wallPartCell.IsPlaced) return;
 
             // Make wall preview permanent in gui
-            refreshWallCells(guiFrame.PlaceWallCell, true);
+            guiFrame.UpdatePlacedBoardWallCells(gameState);
 
             // Cancel interrupted player pawn move 
-            if (initPlayerMove) hidePossiblePlayerMoves();
+            if (initPlayerMove) endPlayerPawnMove();
 
             // Player's turn has finished
             switchPlayerTurn();
@@ -123,7 +121,7 @@ namespace QuoridorEngine.UI
             gameState.UndoMoves(1);
 
             // Update gui wall cells based on new state
-            refreshWallCells(guiFrame.FreeWallCell, false);
+            guiFrame.UpdateFreeBoardWallCells(gameState);
 
             // Update player's wall counter in gui
             guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, gameState.GetPlayerWalls(isWhitePlayerTurn));
@@ -164,7 +162,7 @@ namespace QuoridorEngine.UI
             }
 
             // Move completed
-            hidePossiblePlayerMoves();
+            endPlayerPawnMove();
 
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(isWhitePlayerTurn, playerCell.Row, playerCell.Column);
@@ -186,70 +184,25 @@ namespace QuoridorEngine.UI
             if (isWhitePlayer != isWhitePlayerTurn) return;
 
             if (initPlayerMove)
-                // Cancel initiated player move
-                hidePossiblePlayerMoves();
+                endPlayerPawnMove();
             else
-                // Initiate player move 
-                showPossiblePlayerMoves(isWhitePlayer);
-        }
-
-        /// <summary>
-        /// Update gui board player cells to show player's pawn possible moves
-        /// </summary>
-        /// <param name="isWhitePlayer">Player to show possible moves</param>
-        private void showPossiblePlayerMoves(bool isWhitePlayer)
+                beginPayerPawnMove(isWhitePlayer); 
+        }  
+        
+        private void beginPayerPawnMove(bool isWhitePlayer)
         {
-            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)gameState.GetPossiblePlayerMoves(isWhitePlayer);
-
-            foreach (QuoridorMove move in possiblePlayerMoves)
-            {
-                (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(move.Row, move.Column);
-                guiFrame.PossibleMovePlayerCell(guiRow, guiColumn);
-            }
-
             // Player pawn move initiated
             initPlayerMove = true;
+            // Initiate player move 
+            guiFrame.ShowPossiblePlayerMoves(gameState, isWhitePlayer);
         }
 
-        // Reset all possible player move cells to normal state 
-        private void hidePossiblePlayerMoves()
+        private void endPlayerPawnMove()
         {
-            for (int gameRow = gameState.Dimension - 1; gameRow >= 0; gameRow--)
-                for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
-                {
-                    (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
-                    guiFrame.NormalPlayerCell(guiRow, guiColumn);
-                }
-
             // Player pawn move completed, canceled or interrupted
             initPlayerMove = false;
-        }
-
-        /// <summary>
-        /// Utility to refresh/update wall cells on gui based on changes made in quoridor core
-        /// </summary>
-        /// <param name="function"> An action to perform on gui wall cells</param>
-        /// <param name="hasWallPiece">Utility parameter to determine whether a wall piece 
-        /// is placed or not in quoridor core according to performed action</param>
-        private void refreshWallCells(BoardCellAction function, bool hasWallPiece)
-        {
-            // Check horizontal wall pieces
-            for (int gameRow = gameState.Dimension - 1; gameRow > 0; gameRow--)
-                for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
-                    if (gameState.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
-                    {
-                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
-                        function(guiRow, guiColumn);
-                    }
-
-            // Check vertical wall pieces
-            for (int gameRow = gameState.Dimension - 1; gameRow >= 0; gameRow--)
-                for (int gameColumn = 0; gameColumn < gameState.Dimension - 1; gameColumn++)
-                    if (gameState.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
-                    {
-                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
-                        function(guiRow, guiColumn);
-                    }
+            // Cancel initiated player move
+            guiFrame.HidePossiblePlayerMoves(gameState);
         }
 
         // Render gui elements based on quoridor game core

@@ -1,3 +1,4 @@
+using QuoridorEngine.Core;
 using System.Drawing.Drawing2D;
 
 namespace QuoridorEngine.UI
@@ -23,17 +24,15 @@ namespace QuoridorEngine.UI
 
         public void MovePlayerPawn(bool isWhitePlayer, int row, int column) => board.MovePlayerPawn(isWhitePlayer, row, column);
 
-        public void NormalPlayerCell(int row, int column) => board.NormalPlayerCell(row, column);
+        public void HidePossiblePlayerMoves(QuoridorGame gameState) => board.HidePossiblePlayerMoveCells(gameState);
 
-        public void PossibleMovePlayerCell(int row, int column) => board.PossibleMovePlayerCell(row, column);
+        public void ShowPossiblePlayerMoves(QuoridorGame gameState, bool isWhitePlayer) => board.ShowPossiblePlayerMoveCells(gameState, isWhitePlayer);
 
-        public void UseWallCell(int row, int column) => board.UseWallCell(row, column);
+        public void UpdateUsedBoardWallCells(QuoridorGame gameState) => board.UpdateUsedWallCells(gameState);
 
-        public void FreeWallCell(int row, int column) => board.FreeWallCell(row, column);
+        public void UpdateFreeBoardWallCells(QuoridorGame gameState) => board.UpdateFreeWallCells(gameState);
 
-        public void PlaceWallCell(int row, int column) => board.PlaceWallCell(row, column, true);
-
-        public void RemoveWallCell(int row, int column) => board.PlaceWallCell(row, column, false);
+        public void UpdatePlacedBoardWallCells(QuoridorGame gameState) => board.UpdatePlacedWallCells(gameState);
 
         public void SetPlayerWallCounter(bool isWhitePlayer, int numOfWalls) => getPlayerWallsCounter(isWhitePlayer).SetWallNum(numOfWalls);
 
