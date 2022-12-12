@@ -34,6 +34,7 @@ namespace QuoridorEngine.src.ui.gui
             Click -= onClick;
         }
 
+        // Paint player pawn as rectangle with smooth round corners
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);

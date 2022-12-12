@@ -321,24 +321,30 @@ namespace QuoridorEngine.src.ui.gui
         }
 
         // Game over handler
-        private void gameOver()
+        private bool gameOver()
         {
-            // Ignore if game is not over
-            if (!game.IsTerminalState()) return;
+            // Game is not over
+            if (!game.IsTerminalState()) return false;
 
             // Freeze state 
             guiFrame.BoardEventsSubscribe();
+            return true;
         }
 
         // Utility to determine which player has the next move
         private void switchPlayerTurn()
         {
-            gameOver();
+            // Check if game has ended 
+            if(gameOver()) return;
+
+            // Switch turns
             isWhitePlayerTurn = !isWhitePlayerTurn;
             
+            // AI has the move 
             if ((isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
                (!isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
                 guiFrame.BoardEventsUnsubscribe();
+            // Player has the move
             else if ((!isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
                     (isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
                 guiFrame.BoardEventsSubscribe();

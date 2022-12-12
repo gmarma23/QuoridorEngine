@@ -61,6 +61,7 @@ namespace QuoridorEngine.src.ui.gui
             ((WallPartCell)boardCells[row, column]).IsPlaced = isPlaced;
         }
 
+        // Add event handlers to all board events
         public void AddEventHandlers()
         {
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
@@ -75,6 +76,7 @@ namespace QuoridorEngine.src.ui.gui
             blackPawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
         }
 
+        // Remove event handlers from all board events
         public void RemoveEventHandlers()
         {
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
@@ -89,9 +91,7 @@ namespace QuoridorEngine.src.ui.gui
             blackPawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
         }
 
-        /// <summary>
-        /// Coordinate board cells drawing on board panel
-        /// </summary>
+        // Coordinate board cells drawing on board panel
         private void drawBoard()
         {
             boardCells = new BoardCell[dimension, dimension];
@@ -132,7 +132,7 @@ namespace QuoridorEngine.src.ui.gui
         /// <summary>
         /// Render player pawn to board 
         /// </summary>
-        /// <param name="player">Player enum option</param>
+        /// <param name="isWhitePlayer">Player option</param>
         public void drawPlayerPawn(bool isWhitePlayer)
         {
             ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
