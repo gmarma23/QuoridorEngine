@@ -8,7 +8,7 @@ namespace QuoridorEngine.UI
     public class GuiClient
     {
         private GuiFrame guiFrame;
-        private QuoridorGame game;
+        private QuoridorGame gameState;
         private GameMode gameMode;
 
         private readonly Dictionary<string, EventHandler> boardEventHandlers;
@@ -20,11 +20,11 @@ namespace QuoridorEngine.UI
 
         public GuiClient(int boardDimension, int playerWallsCount, GameMode gameMode) 
         {
-            game = new QuoridorGame(boardDimension);
+            gameState = new QuoridorGame(boardDimension);
             guiFrame = new GuiFrame();
 
-            game.SetPlayerWalls(true, playerWallsCount);
-            game.SetPlayerWalls(false, playerWallsCount);
+            gameState.SetPlayerWalls(true, playerWallsCount);
+            gameState.SetPlayerWalls(false, playerWallsCount);
 
             this.gameMode = gameMode;
 
@@ -71,7 +71,7 @@ namespace QuoridorEngine.UI
             try
             {
                 // Attempt new move execution
-                game.ExecuteMove(newMove);
+                gameState.ExecuteMove(newMove);
             }
             catch (InvalidMoveException)
             {
@@ -83,7 +83,7 @@ namespace QuoridorEngine.UI
             refreshWallCells(guiFrame.UseWallCell, true);
 
             // Update player's wall counter in gui
-            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, game.GetPlayerWalls(isWhitePlayerTurn));
+            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, gameState.GetPlayerWalls(isWhitePlayerTurn));
         }
 
         // Event handler for a wall placing move
@@ -120,13 +120,13 @@ namespace QuoridorEngine.UI
             if (wallPartCell.IsPlaced) return;
 
             // Undo last move (wall preview) in core
-            game.UndoMoves(1);
+            gameState.UndoMoves(1);
 
             // Update gui wall cells based on new state
             refreshWallCells(guiFrame.FreeWallCell, false);
 
             // Update player's wall counter in gui
-            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, game.GetPlayerWalls(isWhitePlayerTurn));
+            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, gameState.GetPlayerWalls(isWhitePlayerTurn));
         }
 
         /// <summary>
@@ -144,9 +144,9 @@ namespace QuoridorEngine.UI
             // Get current player coordinates
             int currentGameRow = 0, currentGameColumn = 0;
             if(isWhitePlayerTurn)
-                game.GetWhiteCoordinates(ref currentGameRow, ref currentGameColumn);
+                gameState.GetWhiteCoordinates(ref currentGameRow, ref currentGameColumn);
             else
-                game.GetBlackCoordinates(ref currentGameRow, ref currentGameColumn);
+                gameState.GetBlackCoordinates(ref currentGameRow, ref currentGameColumn);
 
             // Construct new quoridor move
             (int newGameRow, int newGameColumn) = TransformCoordinates.GuiToGamePlayer(playerCell.Row, playerCell.Column);
@@ -155,7 +155,7 @@ namespace QuoridorEngine.UI
             try
             {
                 // Attempt new move execution
-                game.ExecuteMove(newMove);
+                gameState.ExecuteMove(newMove);
             }
             catch (InvalidMoveException)
             {
@@ -199,7 +199,7 @@ namespace QuoridorEngine.UI
         /// <param name="isWhitePlayer">Player to show possible moves</param>
         private void showPossiblePlayerMoves(bool isWhitePlayer)
         {
-            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)game.GetPossiblePlayerMoves(isWhitePlayer);
+            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)gameState.GetPossiblePlayerMoves(isWhitePlayer);
 
             foreach (QuoridorMove move in possiblePlayerMoves)
             {
@@ -214,8 +214,8 @@ namespace QuoridorEngine.UI
         // Reset all possible player move cells to normal state 
         private void hidePossiblePlayerMoves()
         {
-            for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
-                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
+            for (int gameRow = gameState.Dimension - 1; gameRow >= 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
                 {
                     (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
                     guiFrame.NormalPlayerCell(guiRow, guiColumn);
@@ -234,18 +234,18 @@ namespace QuoridorEngine.UI
         private void refreshWallCells(BoardCellAction function, bool hasWallPiece)
         {
             // Check horizontal wall pieces
-            for (int gameRow = game.Dimension - 1; gameRow > 0; gameRow--)
-                for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
-                    if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
+            for (int gameRow = gameState.Dimension - 1; gameRow > 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
+                    if (gameState.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
                     {
                         (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
                         function(guiRow, guiColumn);
                     }
 
             // Check vertical wall pieces
-            for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
-                for (int gameColumn = 0; gameColumn < game.Dimension - 1; gameColumn++)
-                    if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
+            for (int gameRow = gameState.Dimension - 1; gameRow >= 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < gameState.Dimension - 1; gameColumn++)
+                    if (gameState.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
                     {
                         (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
                         function(guiRow, guiColumn);
@@ -256,25 +256,25 @@ namespace QuoridorEngine.UI
         private void renderGameComponents()
         {
             // Render board
-            int guiBoardDimension = TransformCoordinates.GameToGuiDimension(game.Dimension);
+            int guiBoardDimension = TransformCoordinates.GameToGuiDimension(gameState.Dimension);
             guiFrame.RenderBoard(guiBoardDimension, boardEventHandlers);
             
             // Render player pawns
             int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
             
-            game.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
+            gameState.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
             (int guiWhitePawnRow, int guiWhitePawnColumn) = TransformCoordinates.GameToGuiPlayer(gameWhitePawnRow, gameWhitePawnColumn);
             guiFrame.MovePlayerPawn(true, guiWhitePawnRow, guiWhitePawnColumn);
 
-            game.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
+            gameState.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
             (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
             guiFrame.MovePlayerPawn(false, guiBlackPawnRow, guiBlackPawnColumn);
 
             // Render player wall counter panels 
             guiFrame.RenderPlayerWallsPanel(true);
             guiFrame.RenderPlayerWallsPanel(false);
-            guiFrame.SetPlayerWallCounter(true, game.GetPlayerWalls(true));
-            guiFrame.SetPlayerWallCounter(false, game.GetPlayerWalls(false));
+            guiFrame.SetPlayerWallCounter(true, gameState.GetPlayerWalls(true));
+            guiFrame.SetPlayerWallCounter(false, gameState.GetPlayerWalls(false));
         }
 
         // Group of methods for coordinate transformations to ensure proper game/gui communication
@@ -320,7 +320,7 @@ namespace QuoridorEngine.UI
         private bool gameOver()
         {
             // Game is not over
-            if (!game.IsTerminalState()) return false;
+            if (!gameState.IsTerminalState()) return false;
 
             // Freeze state 
             guiFrame.BoardEventsUnsubscribe();
