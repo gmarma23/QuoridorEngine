@@ -327,7 +327,7 @@ namespace QuoridorEngine.src.ui.gui
             if (!game.IsTerminalState()) return false;
 
             // Freeze state 
-            guiFrame.BoardEventsSubscribe();
+            guiFrame.BoardEventsUnsubscribe();
             return true;
         }
 
