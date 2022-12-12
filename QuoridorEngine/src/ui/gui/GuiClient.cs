@@ -233,25 +233,23 @@ namespace QuoridorEngine.UI
         /// is placed or not in quoridor core according to performed action</param>
         private void refreshWallCells(BoardCellAction function, bool hasWallPiece)
         {
-            for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+            // Check horizontal wall pieces
+            for (int gameRow = game.Dimension - 1; gameRow > 0; gameRow--)
                 for (int gameColumn = 0; gameColumn < game.Dimension; gameColumn++)
-                {
-                    // Check horizontal wall pieces
-                    if (gameRow > 0)
-                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
-                        {
-                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
-                            function(guiRow, guiColumn);
-                        }
+                    if (game.HasWallPiece(gameRow, gameColumn, Orientation.Horizontal) == hasWallPiece)
+                    {
+                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Horizontal);
+                        function(guiRow, guiColumn);
+                    }
 
-                    // Check vertical wall pieces
-                    if (gameColumn < game.Dimension - 1)
-                        if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
-                        {
-                            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
-                            function(guiRow, guiColumn);
-                        }
-                }
+            // Check vertical wall pieces
+            for (int gameRow = game.Dimension - 1; gameRow >= 0; gameRow--)
+                for (int gameColumn = 0; gameColumn < game.Dimension - 1; gameColumn++)
+                    if (game.HasWallPiece(gameRow, gameColumn, Orientation.Vertical) == hasWallPiece)
+                    {
+                        (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiWall(gameRow, gameColumn, Orientation.Vertical);
+                        function(guiRow, guiColumn);
+                    }
         }
 
         // Render gui elements based on quoridor game core
