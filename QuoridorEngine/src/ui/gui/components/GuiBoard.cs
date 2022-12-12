@@ -133,13 +133,18 @@ namespace QuoridorEngine.UI
         /// <param name="isWhitePlayer">Player option</param>
         public void drawPlayerPawn(bool isWhitePlayer)
         {
-            ref GuiPlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
+            ref GuiPlayerPawn playerPawn = ref getPlayerPawnRef(isWhitePlayer);
             playerPawn = new GuiPlayerPawn(isWhitePlayer, maxCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
         }
 
-        private ref GuiPlayerPawn getPlayerPawn(bool isWhitePlayer)
+        private GuiPlayerPawn getPlayerPawn(bool isWhitePlayer)
+        {
+            return isWhitePlayer ? whitePawn : blackPawn;
+        }
+
+        private ref GuiPlayerPawn getPlayerPawnRef(bool isWhitePlayer)
         {
             return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
         }

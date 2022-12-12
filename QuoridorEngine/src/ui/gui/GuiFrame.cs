@@ -53,7 +53,7 @@ namespace QuoridorEngine.UI
 
         public void RenderPlayerWallsPanel(bool isWhitePlayer)
         {
-            ref GuiPlayerWallsCounter playerWallsCounter = ref getPlayerWallsCounter(isWhitePlayer);
+            ref GuiPlayerWallsCounter playerWallsCounter = ref getPlayerWallsCounterRef(isWhitePlayer);
             playerWallsCounter = new GuiPlayerWallsCounter(this, isWhitePlayer);
             Controls.Add(playerWallsCounter);
         }
@@ -70,7 +70,12 @@ namespace QuoridorEngine.UI
             base.OnPaint(e);
         }
 
-        private ref GuiPlayerWallsCounter getPlayerWallsCounter(bool isWhitePlayer)
+        private GuiPlayerWallsCounter getPlayerWallsCounter(bool isWhitePlayer)
+        {
+            return isWhitePlayer ? whitePlayerWallsCounter : blackPlayerWallsCounter;
+        }
+
+        private ref GuiPlayerWallsCounter getPlayerWallsCounterRef(bool isWhitePlayer)
         {
             return ref isWhitePlayer ? ref whitePlayerWallsCounter : ref blackPlayerWallsCounter;
         }
