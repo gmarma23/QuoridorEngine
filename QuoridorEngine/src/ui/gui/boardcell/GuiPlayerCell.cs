@@ -2,12 +2,12 @@
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
-    public class PlayerCell : BoardCell
+    public class GuiPlayerCell : GuiBoardCell
     {
         private Color normalColor;
         private Color possibleMoveColor;
 
-        public PlayerCell(int row, int column, int size) : base(row, column) 
+        public GuiPlayerCell(int row, int column, int size) : base(row, column) 
         {
             sizes(size);
             defaultStyle();

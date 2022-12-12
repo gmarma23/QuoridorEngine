@@ -7,9 +7,9 @@ namespace QuoridorEngine.UI
     {
         public const double boardFrameRatio = 0.75;
 
-        private Board board;
-        private PlayerWallsCounter whitePlayerWallsCounter;
-        private PlayerWallsCounter blackPlayerWallsCounter;
+        private GuiBoard board;
+        private GuiPlayerWallsCounter whitePlayerWallsCounter;
+        private GuiPlayerWallsCounter blackPlayerWallsCounter;
 
         private Color backgroundTopColor;
         private Color backgroundBottomColor;
@@ -47,14 +47,14 @@ namespace QuoridorEngine.UI
         /// </summary>
         public void RenderBoard(int boardDimension, Dictionary<string, EventHandler> boardEventHandlers)
         {
-            board = new Board(ClientRectangle.Width, ClientRectangle.Height, boardDimension, boardEventHandlers);
+            board = new GuiBoard(ClientRectangle.Width, ClientRectangle.Height, boardDimension, boardEventHandlers);
             Controls.Add(board);
         }
 
         public void RenderPlayerWallsPanel(bool isWhitePlayer)
         {
-            ref PlayerWallsCounter playerWallsCounter = ref getPlayerWallsCounter(isWhitePlayer);
-            playerWallsCounter = new PlayerWallsCounter(this, isWhitePlayer);
+            ref GuiPlayerWallsCounter playerWallsCounter = ref getPlayerWallsCounter(isWhitePlayer);
+            playerWallsCounter = new GuiPlayerWallsCounter(this, isWhitePlayer);
             Controls.Add(playerWallsCounter);
         }
 
@@ -70,7 +70,7 @@ namespace QuoridorEngine.UI
             base.OnPaint(e);
         }
 
-        private ref PlayerWallsCounter getPlayerWallsCounter(bool isWhitePlayer)
+        private ref GuiPlayerWallsCounter getPlayerWallsCounter(bool isWhitePlayer)
         {
             return ref isWhitePlayer ? ref whitePlayerWallsCounter : ref blackPlayerWallsCounter;
         }

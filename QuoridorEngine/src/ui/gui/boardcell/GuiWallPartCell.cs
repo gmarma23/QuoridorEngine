@@ -2,7 +2,7 @@
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE
-    public class WallPartCell : BoardCell
+    public class GuiWallPartCell : GuiBoardCell
     {
         private int expand;
         private int offset;
@@ -12,7 +12,7 @@ namespace QuoridorEngine.UI
         public bool IsPlaced { get; set; }
         public bool IsActive { get; private set; }
 
-        public WallPartCell(int row, int column, int minSize, int maxSize) : base (row, column)
+        public GuiWallPartCell(int row, int column, int minSize, int maxSize) : base (row, column)
         {
             IsPlaced = false;
 

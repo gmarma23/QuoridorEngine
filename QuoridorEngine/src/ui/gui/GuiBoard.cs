@@ -2,21 +2,21 @@
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
-    public class Board : Panel
+    public class GuiBoard : Panel
     {
         private const double wallPlayerCellRatio = 0.11;
 
         private readonly Dictionary<string, EventHandler> eventHandlers;
         private readonly int dimension;
 
-        private BoardCell[,] boardCells;
-        private PlayerPawn blackPawn;
-        private PlayerPawn whitePawn;
+        private GuiBoardCell[,] boardCells;
+        private GuiPlayerPawn blackPawn;
+        private GuiPlayerPawn whitePawn;
 
         private int maxCellSize;
         private int minCellSize;
 
-        public Board(int parrentWidth, int parrentHeight, int dimension, Dictionary<string, EventHandler> eventHandlers)
+        public GuiBoard(int parrentWidth, int parrentHeight, int dimension, Dictionary<string, EventHandler> eventHandlers)
         {
             this.dimension = dimension;
             this.eventHandlers = eventHandlers;
@@ -36,27 +36,27 @@ namespace QuoridorEngine.UI
 
         public void NormalPlayerCell(int row, int column)
         {
-            ((PlayerCell)boardCells[row, column]).Normal();
+            ((GuiPlayerCell)boardCells[row, column]).Normal();
         }
 
         public void PossibleMovePlayerCell(int row, int column)
         {
-            ((PlayerCell)boardCells[row, column]).PossibleMove();
+            ((GuiPlayerCell)boardCells[row, column]).PossibleMove();
         }
 
         public void UseWallCell(int row, int column)
         {
-            ((WallPartCell)boardCells[row, column]).Use();
+            ((GuiWallPartCell)boardCells[row, column]).Use();
         }
 
         public void FreeWallCell(int row, int column)
         {
-            ((WallPartCell)boardCells[row, column]).Free();
+            ((GuiWallPartCell)boardCells[row, column]).Free();
         }
 
         public void PlaceWallCell(int row, int column, bool isPlaced)
         {
-            ((WallPartCell)boardCells[row, column]).IsPlaced = isPlaced;
+            ((GuiWallPartCell)boardCells[row, column]).IsPlaced = isPlaced;
         }
 
         // Add event handlers to all board events
@@ -64,10 +64,10 @@ namespace QuoridorEngine.UI
         {
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
                 for (int column = 0; column < boardCells.GetLength(1); column++)
-                    if (boardCells[row, column] is PlayerCell)
-                        ((PlayerCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnPlayerCellClick"]);
-                    else if (boardCells[row, column] is WallPartCell)
-                        ((WallPartCell)boardCells[row, column]).AddEventHandlers(
+                    if (boardCells[row, column] is GuiPlayerCell)
+                        ((GuiPlayerCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnPlayerCellClick"]);
+                    else if (boardCells[row, column] is GuiWallPartCell)
+                        ((GuiWallPartCell)boardCells[row, column]).AddEventHandlers(
                             eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
 
             whitePawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
@@ -79,10 +79,10 @@ namespace QuoridorEngine.UI
         {
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
                 for (int column = 0; column < boardCells.GetLength(1); column++)
-                    if (boardCells[row, column] is PlayerCell)
-                        ((PlayerCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnPlayerCellClick"]);
-                    else if (boardCells[row, column] is WallPartCell)
-                        ((WallPartCell)boardCells[row, column]).RemoveEventHandlers(
+                    if (boardCells[row, column] is GuiPlayerCell)
+                        ((GuiPlayerCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnPlayerCellClick"]);
+                    else if (boardCells[row, column] is GuiWallPartCell)
+                        ((GuiWallPartCell)boardCells[row, column]).RemoveEventHandlers(
                             eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
 
             whitePawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
@@ -92,7 +92,7 @@ namespace QuoridorEngine.UI
         // Coordinate board cells drawing on board panel
         private void drawBoard()
         {
-            boardCells = new BoardCell[dimension, dimension];
+            boardCells = new GuiBoardCell[dimension, dimension];
             int xLoc = 0, yLoc = 0;
 
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
@@ -117,11 +117,11 @@ namespace QuoridorEngine.UI
         private void drawBoardCell(int row, int column, int xLoc, int yLoc)
         {
             if (row % 2 == 0 && column % 2 == 0)
-                boardCells[row, column] = new PlayerCell(row, column, maxCellSize);
+                boardCells[row, column] = new GuiPlayerCell(row, column, maxCellSize);
             else if (row % 2 == 1 && column % 2 == 1)
-                boardCells[row, column] = new WallCornerCell(row, column, minCellSize);
+                boardCells[row, column] = new GuiWallCornerCell(row, column, minCellSize);
             else
-                boardCells[row, column] = new WallPartCell(row, column, minCellSize, maxCellSize);
+                boardCells[row, column] = new GuiWallPartCell(row, column, minCellSize, maxCellSize);
 
             boardCells[row, column].Location = new Point(xLoc, yLoc);
             Controls.Add(boardCells[row, column]);
@@ -133,13 +133,13 @@ namespace QuoridorEngine.UI
         /// <param name="isWhitePlayer">Player option</param>
         public void drawPlayerPawn(bool isWhitePlayer)
         {
-            ref PlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
-            playerPawn = new PlayerPawn(isWhitePlayer, maxCellSize);
+            ref GuiPlayerPawn playerPawn = ref getPlayerPawn(isWhitePlayer);
+            playerPawn = new GuiPlayerPawn(isWhitePlayer, maxCellSize);
             Controls.Add(playerPawn);
             playerPawn.BringToFront();
         }
 
-        private ref PlayerPawn getPlayerPawn(bool isWhitePlayer)
+        private ref GuiPlayerPawn getPlayerPawn(bool isWhitePlayer)
         {
             return ref isWhitePlayer ? ref whitePawn : ref blackPawn;
         }

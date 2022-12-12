@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE
-    public class PlayerWallsCounter : Panel
+    public class GuiPlayerWallsCounter : Panel
     {
         private const int panelBoardMargin = 40;
         private const int descriptionCounterMargin = 48;
@@ -13,7 +13,7 @@ namespace QuoridorEngine.UI
         private Label description;
         private Label availableWallsCounter;
 
-        public PlayerWallsCounter(GuiFrame guiFrame, bool isWhitePlayer)
+        public GuiPlayerWallsCounter(GuiFrame guiFrame, bool isWhitePlayer)
         {
             initializeLabels();
             sizesAndArrangement(guiFrame.ClientRectangle.Width, isWhitePlayer);

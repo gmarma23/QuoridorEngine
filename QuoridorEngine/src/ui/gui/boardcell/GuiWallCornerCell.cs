@@ -2,9 +2,9 @@
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE
-    public class WallCornerCell : BoardCell
+    public class GuiWallCornerCell : GuiBoardCell
     {
-        public WallCornerCell(int row, int column, int size) : base(row, column)
+        public GuiWallCornerCell(int row, int column, int size) : base(row, column)
         {
             sizes(size);
             defaultStyle();

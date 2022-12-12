@@ -58,7 +58,7 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void PreviewWall(object sender, EventArgs e)
         {
-            WallPartCell wallPartCell = (WallPartCell)sender;
+            GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
             // Ignore if wall part is already placed
             if (wallPartCell.IsPlaced) return;
@@ -89,7 +89,7 @@ namespace QuoridorEngine.UI
         // Event handler for a wall placing move
         private void PlaceWall(object sender, EventArgs e)
         {
-            WallPartCell wallPartCell = (WallPartCell)sender;
+            GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
             // Ignore if wall part is already placed
             if (wallPartCell.IsPlaced) return;
@@ -111,7 +111,7 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void RemoveWallPreview(object sender, EventArgs e)
         {
-            WallPartCell wallPartCell = (WallPartCell)sender;
+            GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
             // Ignore if wall part has no active preview
             if (!wallPartCell.IsActive) return;
@@ -139,7 +139,7 @@ namespace QuoridorEngine.UI
             // Ignore if player move is not initiated
             if (!initPlayerMove) return;
 
-            PlayerCell playerCell = (PlayerCell)sender;
+            GuiPlayerCell playerCell = (GuiPlayerCell)sender;
 
             // Get current player coordinates
             int currentGameRow = 0, currentGameColumn = 0;
@@ -180,7 +180,7 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void PlayerPawnClicked(object sender, EventArgs e)
         {
-            bool isWhitePlayer = ((PlayerPawn)sender).IsWhite;
+            bool isWhitePlayer = ((GuiPlayerPawn)sender).IsWhite;
 
             // Ignore if not player's turn
             if (isWhitePlayer != isWhitePlayerTurn) return;
@@ -313,7 +313,7 @@ namespace QuoridorEngine.UI
         /// </summary>
         /// <param name="wallcell">Provided wall cell</param>
         /// <returns>Wall cell orientation</returns>
-        private Orientation getWallOrientation(WallPartCell wallcell)
+        private Orientation getWallOrientation(GuiWallPartCell wallcell)
         {
             return (wallcell.Row % 2 == 1 && wallcell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
         }

@@ -3,7 +3,7 @@
 namespace QuoridorEngine.UI
 {
 #if !CONSOLE
-    public class PlayerPawn : Label
+    public class GuiPlayerPawn : Label
     {
         private const double cornerRadiusWidthRatio = 0.5;
         private const double pawnCellRatio = 0.66;
@@ -14,7 +14,7 @@ namespace QuoridorEngine.UI
 
         public bool IsWhite { get; init; }
 
-        public PlayerPawn(bool isWhite, int cellSize)
+        public GuiPlayerPawn(bool isWhite, int cellSize)
         {
             IsWhite = isWhite;
 
