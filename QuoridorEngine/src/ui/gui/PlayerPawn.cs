@@ -1,6 +1,6 @@
 ﻿using System.Drawing.Drawing2D;
 
-namespace QuoridorEngine.src.ui.gui
+namespace QuoridorEngine.UI
 {
 #if !CONSOLE
     public class PlayerPawn : Label

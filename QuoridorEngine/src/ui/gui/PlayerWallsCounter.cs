@@ -1,7 +1,7 @@
 ﻿using QuoridorEngine.UI;
 using System.Diagnostics;
 
-namespace QuoridorEngine.src.ui.gui
+namespace QuoridorEngine.UI
 {
 #if !CONSOLE
     public class PlayerWallsCounter : Panel

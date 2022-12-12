@@ -2,7 +2,7 @@
 using QuoridorEngine.Utils;
 using Orientation = QuoridorEngine.Core.Orientation;
 
-namespace QuoridorEngine.src.ui.console
+namespace QuoridorEngine.UI
 {
     public class ConsoleClient
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Orientation = QuoridorEngine.Core.Orientation;
 
-namespace QuoridorEngine.src.ui.console
+namespace QuoridorEngine.UI
 {
     public static class OutputUtility
     {

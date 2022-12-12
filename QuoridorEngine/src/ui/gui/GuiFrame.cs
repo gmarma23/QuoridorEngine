@@ -1,4 +1,3 @@
-using QuoridorEngine.src.ui.gui;
 using System.Drawing.Drawing2D;
 
 namespace QuoridorEngine.UI

@@ -1,10 +1,8 @@
 ﻿using QuoridorEngine.Core;
-using QuoridorEngine.src.ui.gui.board;
-using QuoridorEngine.UI;
 using QuoridorEngine.Utils;
 using Orientation = QuoridorEngine.Core.Orientation;
 
-namespace QuoridorEngine.src.ui.gui
+namespace QuoridorEngine.UI
 {
 #if !CONSOLE
     public class GuiClient

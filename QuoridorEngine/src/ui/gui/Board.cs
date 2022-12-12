@@ -1,7 +1,5 @@
-﻿using QuoridorEngine.src.ui.gui.board;
-using QuoridorEngine.UI;
-
-namespace QuoridorEngine.src.ui.gui
+﻿
+namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
     public class Board : Panel

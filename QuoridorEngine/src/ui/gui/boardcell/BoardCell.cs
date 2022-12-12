@@ -1,5 +1,5 @@
 ﻿
-namespace QuoridorEngine.src.ui.gui.board
+namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
     public class BoardCell : Label

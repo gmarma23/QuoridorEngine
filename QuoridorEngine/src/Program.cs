@@ -1,5 +1,4 @@
-using QuoridorEngine.src.ui.console;
-using QuoridorEngine.src.ui.gui;
+using QuoridorEngine.UI;
 
 namespace QuoridorEngine
 {
