@@ -66,7 +66,7 @@ namespace QuoridorEngine.UI
             if (wallPartCell.IsPlaced) return;
 
             // Construct new quoridor move
-            Orientation orientation = getWallOrientation(wallPartCell);
+            Orientation orientation = (wallPartCell.Row % 2 == 1 && wallPartCell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
             (int gameRow, int gameColumn) = TransformCoordinates.GuiToGameWall(wallPartCell.Row, wallPartCell.Column, orientation);
             QuoridorMove newMove = new QuoridorMove(gameRow, gameColumn, isWhitePlayerTurn, orientation);
 
@@ -244,16 +244,6 @@ namespace QuoridorEngine.UI
             guiFrame.RenderPlayerWallsPanel(false);
             guiFrame.SetPlayerWallCounter(gameState, true);
             guiFrame.SetPlayerWallCounter(gameState, false);
-        }
-
-        /// <summary>
-        /// Determine orientation of provided wall cell
-        /// </summary>
-        /// <param name="wallcell">Provided wall cell</param>
-        /// <returns>Wall cell orientation</returns>
-        private Orientation getWallOrientation(GuiWallPartCell wallcell)
-        {
-            return (wallcell.Row % 2 == 1 && wallcell.Column % 2 == 0) ? Orientation.Horizontal : Orientation.Vertical;
         }
 
         // Game over handler
