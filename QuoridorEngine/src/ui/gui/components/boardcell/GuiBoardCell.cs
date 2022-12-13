@@ -1,5 +1,4 @@
-﻿
-namespace QuoridorEngine.UI
+﻿namespace QuoridorEngine.UI
 {
 #if !CONSOLE 
     public abstract class GuiBoardCell : Label

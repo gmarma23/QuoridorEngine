@@ -1,5 +1,4 @@
-﻿
-using QuoridorEngine.Core;
+﻿using QuoridorEngine.Core;
 using QuoridorEngine.Utils;
 using Orientation = QuoridorEngine.Core.Orientation;
 
