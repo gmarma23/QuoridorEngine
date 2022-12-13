@@ -36,11 +36,11 @@ namespace QuoridorEngine.UI
             addEventHandlers();
         }
 
-        public void UpdateUsedWallCells(QuoridorGame gameState) => updateWallCells(gameState, UseWallCell, true);
+        public void UpdateUsedWallCells(QuoridorGame gameState) => updateWallCells(gameState, useWallCell, true);
 
-        public void UpdatePlacedWallCells(QuoridorGame gameState) => updateWallCells(gameState, PlaceWallCell, true);
+        public void UpdatePlacedWallCells(QuoridorGame gameState) => updateWallCells(gameState, placeWallCell, true);
 
-        public void UpdateFreeWallCells(QuoridorGame gameState) => updateWallCells(gameState, FreeWallCell, false);
+        public void UpdateFreeWallCells(QuoridorGame gameState) => updateWallCells(gameState, freeWallCell, false);
  
         /// <summary>
         /// Update gui board player cells to show player's pawn possible moves
@@ -53,7 +53,7 @@ namespace QuoridorEngine.UI
             foreach (QuoridorMove move in possiblePlayerMoves)
             {
                 (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(move.Row, move.Column);
-                PossiblePlayerMoveCell(guiRow, guiColumn);
+                possiblePlayerMoveCell(guiRow, guiColumn);
             }
         }
 
@@ -64,8 +64,20 @@ namespace QuoridorEngine.UI
                 for (int gameColumn = 0; gameColumn < gameState.Dimension; gameColumn++)
                 {
                     (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
-                    NormalPlayerCell(guiRow, guiColumn);
+                    normalPlayerCell(guiRow, guiColumn);
                 }
+        }
+
+        public void MovePlayerPawn(QuoridorGame gameState, bool isWhitePlayer)
+        {
+            int gameRow = 0, gameColumn = 0;
+            if (isWhitePlayer)
+                gameState.GetWhiteCoordinates(ref gameRow, ref gameColumn);
+            else
+                gameState.GetBlackCoordinates(ref gameRow, ref gameColumn);
+
+            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
+            getPlayerPawn(isWhitePlayer).Parent = boardCells[guiRow, guiColumn];
         }
 
         /// <summary>
@@ -95,39 +107,27 @@ namespace QuoridorEngine.UI
                     }
         }
 
-        public void MovePlayerPawn(QuoridorGame gameState, bool isWhitePlayer)
-        {
-            int gameRow = 0, gameColumn = 0;
-            if (isWhitePlayer)
-                gameState.GetWhiteCoordinates(ref gameRow, ref gameColumn);
-            else
-                gameState.GetBlackCoordinates(ref gameRow, ref gameColumn);
-
-            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
-            getPlayerPawn(isWhitePlayer).Parent = boardCells[guiRow, guiColumn];
-        }
-
-        private void NormalPlayerCell(int row, int column)
+        private void normalPlayerCell(int row, int column)
         {
             ((GuiPlayerCell)boardCells[row, column]).ToNormal();
         }
 
-        private void PossiblePlayerMoveCell(int row, int column)
+        private void possiblePlayerMoveCell(int row, int column)
         {
             ((GuiPlayerCell)boardCells[row, column]).ToPossibleMove();
         }
 
-        private void UseWallCell(int row, int column)
+        private void useWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).Use();
         }
 
-        private void FreeWallCell(int row, int column)
+        private void freeWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).Free();
         }
 
-        private void PlaceWallCell(int row, int column)
+        private void placeWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).IsPlaced = true;
         }
