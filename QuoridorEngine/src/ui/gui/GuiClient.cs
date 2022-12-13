@@ -1,5 +1,7 @@
 ﻿using QuoridorEngine.Core;
+using QuoridorEngine.resources;
 using QuoridorEngine.Utils;
+using System.Media;
 using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.UI
@@ -102,6 +104,9 @@ namespace QuoridorEngine.UI
             // Make wall preview permanent in gui
             guiFrame.UpdatePlacedBoardWallCells(gameState);
 
+            // Play wall placement sound
+            new SoundPlayer(Resources.wall_move).Play();
+
             // Cancel interrupted player pawn move 
             if (initPlayerMove) endPlayerPawnMove();
 
@@ -179,6 +184,9 @@ namespace QuoridorEngine.UI
 
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
+            
+            // Play pawn move sound
+            new SoundPlayer(Resources.pawn_move).Play();
 
             // Player's turn has finished
             switchPlayerTurn();
