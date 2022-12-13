@@ -203,12 +203,32 @@ namespace QuoridorEngine.UI
                 endPlayerPawnMove();
             else
                 beginPayerPawnMove(isWhitePlayer); 
-        }  
-        
+        }
+
+        // Utility to determine which player has the next move
+        private void switchPlayerTurn()
+        {
+            // Check if game has ended 
+            if (gameOver()) return;
+
+            // Switch turns
+            isWhitePlayerTurn = !isWhitePlayerTurn;
+
+            // AI has the move 
+            if ((isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
+               (!isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
+                activeBoardEvents = false;
+            // Player has the move
+            else if ((!isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
+                    (isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
+                activeBoardEvents = true;
+        }
+
         private void beginPayerPawnMove(bool isWhitePlayer)
         {
             // Player pawn move initiated
             initPlayerMove = true;
+
             // Initiate player move 
             guiFrame.ShowPossiblePlayerMoves(gameState, isWhitePlayer);
         }
@@ -217,11 +237,11 @@ namespace QuoridorEngine.UI
         {
             // Player pawn move completed, canceled or interrupted
             initPlayerMove = false;
+
             // Cancel initiated player move
             guiFrame.HidePossiblePlayerMoves(gameState);
         }
 
-        // Render gui elements based on quoridor game core
         private void renderGameComponents()
         {
             // Render board
@@ -229,14 +249,7 @@ namespace QuoridorEngine.UI
             guiFrame.RenderBoard(guiBoardDimension, boardEventHandlers);
             
             // Render player pawns
-            int gameWhitePawnRow = 0, gameWhitePawnColumn = 0, gameBlackPawnRow = 0, gameBlackPawnColumn = 0;
-            
-            gameState.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
-            (int guiWhitePawnRow, int guiWhitePawnColumn) = TransformCoordinates.GameToGuiPlayer(gameWhitePawnRow, gameWhitePawnColumn);
             guiFrame.MovePlayerPawn(gameState, true);
-
-            gameState.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
-            (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
             guiFrame.MovePlayerPawn(gameState, false);
 
             // Render player wall counter panels 
@@ -253,27 +266,8 @@ namespace QuoridorEngine.UI
             if (!gameState.IsTerminalState()) return false;
 
             // Freeze state 
-            //guiFrame.BoardEventsUnsubscribe();
+            activeBoardEvents = false;
             return true;
-        }
-
-        // Utility to determine which player has the next move
-        private void switchPlayerTurn()
-        {
-            // Check if game has ended 
-            if(gameOver()) return;
-
-            // Switch turns
-            isWhitePlayerTurn = !isWhitePlayerTurn;
-
-            // AI has the move 
-            if ((isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
-               (!isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
-                activeBoardEvents = false;
-            // Player has the move
-            else if ((!isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
-                    (isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
-                activeBoardEvents = true;
         }
     }
 

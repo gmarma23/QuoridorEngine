@@ -36,10 +36,22 @@ namespace QuoridorEngine.UI
             addEventHandlers();
         }
 
+        /// <summary>
+        /// Show used wall cells based on provided game state
+        /// </summary>
+        /// <param name="gameState">Current game state</param>
         public void UpdateUsedWallCells(QuoridorGame gameState) => updateWallCells(gameState, useWallCell, true);
 
+        /// <summary>
+        /// Make wall cells permanently used based on provided game state
+        /// </summary>
+        /// <param name="gameState">Current game state</param>
         public void UpdatePlacedWallCells(QuoridorGame gameState) => updateWallCells(gameState, placeWallCell, true);
 
+        /// <summary>
+        /// Show free wall cells based on provided game state
+        /// </summary>
+        /// <param name="gameState">Current game state</param>
         public void UpdateFreeWallCells(QuoridorGame gameState) => updateWallCells(gameState, freeWallCell, false);
  
         /// <summary>
@@ -68,6 +80,11 @@ namespace QuoridorEngine.UI
                 }
         }
 
+        /// <summary>
+        /// Move player pawn based on provided game state
+        /// </summary>
+        /// <param name="gameState">Current game state</param>
+        /// <param name="isWhitePlayer">Player pawn to move</param>
         public void MovePlayerPawn(QuoridorGame gameState, bool isWhitePlayer)
         {
             int gameRow = 0, gameColumn = 0;
@@ -81,9 +98,9 @@ namespace QuoridorEngine.UI
         }
 
         /// <summary>
-        /// Utility to refresh/update wall cells on gui based on changes made in quoridor core
+        /// Utility to update gui wall cells based on provided game state
         /// </summary>
-        /// <param name="function"> An action to perform on gui wall cells</param>
+        /// <param name="function">An action to perform on gui wall cells</param>
         /// <param name="hasWallPiece">Utility parameter to determine whether a wall piece 
         /// is placed or not in quoridor core according to performed action</param>
         private void updateWallCells(QuoridorGame gameState, BoardCellAction function, bool hasWallPiece)
@@ -107,26 +124,51 @@ namespace QuoridorEngine.UI
                     }
         }
 
+        /// <summary>
+        /// Show gui board player cell as normal player cell
+        /// </summary>
+        /// <param name="row">Gui board row</param>
+        /// <param name="column">Gui board column</param>
         private void normalPlayerCell(int row, int column)
         {
             ((GuiPlayerCell)boardCells[row, column]).ToNormal();
         }
 
+        /// <summary>
+        /// Show gui board player cell as possible move player cell
+        /// </summary>
+        /// <param name="row">Gui board row</param>
+        /// <param name="column">Gui board column</param>
         private void possiblePlayerMoveCell(int row, int column)
         {
             ((GuiPlayerCell)boardCells[row, column]).ToPossibleMove();
         }
 
+        /// <summary>
+        /// Show gui board wall cell as used wall cell
+        /// </summary>
+        /// <param name="row">Gui board row</param>
+        /// <param name="column">Gui board column</param>
         private void useWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).Use();
         }
 
+        /// <summary>
+        /// Show gui board wall cell as free wall cell
+        /// </summary>
+        /// <param name="row">Gui board row</param>
+        /// <param name="column">Gui board column</param>
         private void freeWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).Free();
         }
 
+        /// <summary>
+        /// Make gui board cell permanently used
+        /// </summary>
+        /// <param name="row">Gui board row</param>
+        /// <param name="column">Gui board column</param>
         private void placeWallCell(int row, int column)
         {
             ((GuiWallPartCell)boardCells[row, column]).IsPlaced = true;

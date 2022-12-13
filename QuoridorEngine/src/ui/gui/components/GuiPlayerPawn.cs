@@ -47,6 +47,7 @@ namespace QuoridorEngine.UI
             Width = (int)(cellSize * pawnCellRatio);
             Height = Width;
             Location = new Point(cellSize / 2 - Width / 2, cellSize / 2 - Height / 2);
+            boarderSize = 3.0f;
         }
 
         private void applyDefaultStyle()
@@ -54,7 +55,6 @@ namespace QuoridorEngine.UI
             mainColor = IsWhite ? Color.Red : Color.Purple;
             boarderColor = Color.White;
             BackColor = Color.Transparent;
-            boarderSize = 3.0f;
         }
 
         private GraphicsPath getRoundRectangle(Rectangle rectangle)
