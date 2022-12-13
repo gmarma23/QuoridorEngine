@@ -16,7 +16,7 @@ namespace QuoridorEngine.Core
     {
         // TODO: maybe this variable should only be handled by Board
         // class in the future
-        private readonly int dimension = 9;
+        private readonly int dimension;
 
         private QuoridorBoard board;
         private QuoridorPlayer white;
@@ -28,7 +28,7 @@ namespace QuoridorEngine.Core
         /// </summary>
         /// <param name="dimension">The dimension of the board.
         /// Needs to be odd and greater than 2. Throws an ArgumentException if not</param>
-        public QuoridorGame(int dimension)
+        public QuoridorGame(int dimension = 9)
         {
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 

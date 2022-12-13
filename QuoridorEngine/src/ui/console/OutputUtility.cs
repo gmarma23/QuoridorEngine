@@ -13,7 +13,7 @@ namespace QuoridorEngine.UI
         /// Text Protocol.
         /// </summary>
         /// <param name="message">The message to print</param>
-        public static void PrintSuccessMessage(String message)
+        public static void PrintSuccessMessage(string message)
         {
             Console.Write("=" + message + "\n\n");
         }
@@ -23,7 +23,7 @@ namespace QuoridorEngine.UI
         /// Text Protocol.
         /// </summary>
         /// <param name="message">The message to print</param>
-        public static void PrintFailureMessage(String message)
+        public static void PrintFailureMessage(string message)
         {
             Console.Write("? " + message + "\n\n");
         }
@@ -41,7 +41,7 @@ namespace QuoridorEngine.UI
             Console.WriteLine();
             printLetterRow(state.Dimension);
 
-            for(int row = state.Dimension-1; row >= 0; row--)
+            for (int row = state.Dimension - 1; row >= 0; row--)
             {
                 printBorderRow(state, row);
                 printCellRow(state, row);
@@ -58,7 +58,7 @@ namespace QuoridorEngine.UI
         private static void printLetterRow(int dimension)
         {
             printSpaces(cellSize + 2);
-            for(int i = 0; i < dimension; i++)
+            for (int i = 0; i < dimension; i++)
             {
                 Console.Write("" + Convert.ToChar('A' + i));
                 printSpaces(cellSize);
@@ -71,16 +71,16 @@ namespace QuoridorEngine.UI
             printSpaces(3);
             Console.Write("+");
 
-            for(int i = 0; i < state.Dimension; i++)
+            for (int i = 0; i < state.Dimension; i++)
             {
-                if(row >= state.Dimension-1 || row < 0)
+                if (row >= state.Dimension - 1 || row < 0)
                 {
                     printHorizontalBorder();
                     Console.Write('+');
                     continue;
                 }
 
-                if (state.HasWallPiece(row+1, i, Orientation.Horizontal))
+                if (state.HasWallPiece(row + 1, i, Orientation.Horizontal))
                     printHorizontalWall();
                 else
                     printHorizontalBorder();
@@ -89,7 +89,7 @@ namespace QuoridorEngine.UI
                 continue;
             }
 
-            Console.WriteLine();           
+            Console.WriteLine();
         }
 
         private static void printCellRow(QuoridorGame state, int row)
@@ -97,9 +97,9 @@ namespace QuoridorEngine.UI
             Console.Write(row + 1);
             printSpaces(2);
 
-            for(int i = 0; i < state.Dimension; i++)
+            for (int i = 0; i < state.Dimension; i++)
             {
-                if(i > 0 && state.HasWallPiece(row, i-1, Orientation.Vertical))
+                if (i > 0 && state.HasWallPiece(row, i - 1, Orientation.Vertical))
                     Console.Write('H');
                 else
                     Console.Write("|");
@@ -117,7 +117,7 @@ namespace QuoridorEngine.UI
                     printSpaces(cellSize);
             }
 
-            Console.WriteLine("| " + row+1);
+            Console.WriteLine("| " + row + 1);
         }
 
         private static void printSpaces(int amountOfSpaces)
@@ -128,7 +128,7 @@ namespace QuoridorEngine.UI
 
         private static void printHorizontalBorder()
         {
-            for(int i = 0; i < cellSize; i++)
+            for (int i = 0; i < cellSize; i++)
                 Console.Write('-');
         }
 

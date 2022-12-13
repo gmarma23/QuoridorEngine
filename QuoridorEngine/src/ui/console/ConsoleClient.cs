@@ -7,12 +7,11 @@ namespace QuoridorEngine.UI
     public class ConsoleClient
     {
         private const string engineName = "Quoridor Engine";
-        private const int defaultBoardSize = 7;
         private static QuoridorGame game;
-        private static List<String> knownCommands = new List<string>
+        private static List<string> knownCommands = new List<string>
         {
-            "name", "known_command", "list_commands", "quit", "boardsize", 
-            "clear_board", "walls", "playmove", "playwall", "undo", "winner", 
+            "name", "known_command", "list_commands", "quit", "boardsize",
+            "clear_board", "walls", "playmove", "playwall", "undo", "winner",
             "showboard"
         };
 
@@ -22,23 +21,23 @@ namespace QuoridorEngine.UI
         /// </summary>
         public static void Play()
         {
-            game = new QuoridorGame(defaultBoardSize);
+            game = new QuoridorGame();
 
             Console.WriteLine("#Welcome to Quoridor Engine's Terminal Implementation. Please type any commands\n");
             do
             {
-                String line = Console.ReadLine();
+                string line = Console.ReadLine();
                 if (line == null) break;
 
                 line.Trim();
                 line.ToLower();
 
                 // Ignore blank and comment lines
-                if (String.IsNullOrEmpty(line)) continue;
+                if (string.IsNullOrEmpty(line)) continue;
                 if (line.StartsWith("#")) continue;
 
                 // If the command was the exit one we exit the loop
-                if(handleCommand(line)) break;
+                if (handleCommand(line)) break;
             } while (true);
         }
 
@@ -47,22 +46,22 @@ namespace QuoridorEngine.UI
         /// </summary>
         /// <param name="rawCommand">The command to handle</param>
         /// <returns>Returns true if the exit command was given</returns>
-        private static bool handleCommand(String rawCommand)
+        private static bool handleCommand(string rawCommand)
         {
-            String[] tokens = rawCommand.Split(' ');
+            string[] tokens = rawCommand.Split(' ');
             if (tokens.Length == 0) return false;
 
-            String commandBody = tokens[0];
-            if (String.Equals(commandBody, "quit"))
+            string commandBody = tokens[0];
+            if (string.Equals(commandBody, "quit"))
             {
                 OutputUtility.PrintSuccessMessage("");
                 return true;
             }
-            else if (String.Equals(commandBody, "name"))
+            else if (string.Equals(commandBody, "name"))
                 Console.WriteLine("=" + engineName + "\n");
             else if (commandBody.Equals("known_command"))
             {
-                if(tokens.Length < 2)
+                if (tokens.Length < 2)
                 {
                     OutputUtility.PrintFailureMessage("syntax error");
                     return false;
@@ -76,7 +75,7 @@ namespace QuoridorEngine.UI
             else if (commandBody.Equals("list_commands"))
             {
                 Console.Write("=");
-                foreach (String command in knownCommands)
+                foreach (string command in knownCommands)
                     Console.WriteLine(command);
                 Console.WriteLine();
             }
@@ -90,7 +89,7 @@ namespace QuoridorEngine.UI
 
                 try
                 {
-                    int boardSize = Int32.Parse(tokens[1]);
+                    int boardSize = int.Parse(tokens[1]);
                     game = new QuoridorGame(boardSize);
                     OutputUtility.PrintSuccessMessage("");
                 }
@@ -120,7 +119,7 @@ namespace QuoridorEngine.UI
 
                 try
                 {
-                    int walls = Int32.Parse(tokens[1]);
+                    int walls = int.Parse(tokens[1]);
                     game.SetPlayerWalls(true, walls);
                     game.SetPlayerWalls(false, walls);
                     OutputUtility.PrintSuccessMessage("");
@@ -203,7 +202,7 @@ namespace QuoridorEngine.UI
 
                 try
                 {
-                    int moves = Int32.Parse(tokens[1]);
+                    int moves = int.Parse(tokens[1]);
                     game.UndoMoves(moves);
                     OutputUtility.PrintSuccessMessage("");
                 }
@@ -224,7 +223,7 @@ namespace QuoridorEngine.UI
                     OutputUtility.PrintSuccessMessage("false");
                 else
                 {
-                    String winnerName = game.WinnerIsWhite() ? "white" : "black";
+                    string winnerName = game.WinnerIsWhite() ? "white" : "black";
                     OutputUtility.PrintSuccessMessage("true " + winnerName);
                 }
             }
@@ -240,12 +239,12 @@ namespace QuoridorEngine.UI
             return false;
         }
 
-        private static bool parsePlayer(ref bool isWhite, String[] arguments, int indexOfArgument)
+        private static bool parsePlayer(ref bool isWhite, string[] arguments, int indexOfArgument)
         {
-            String player = arguments[indexOfArgument];
+            string player = arguments[indexOfArgument];
             player.Trim();
 
-            if(player.Equals("w") || player.Equals("white"))
+            if (player.Equals("w") || player.Equals("white"))
             {
                 isWhite = true;
                 return true;
@@ -259,22 +258,22 @@ namespace QuoridorEngine.UI
             return false;
         }
 
-        private static bool parsePosition(ref int row, ref int column, String[] arguments, int indexOfArgument)
+        private static bool parsePosition(ref int row, ref int column, string[] arguments, int indexOfArgument)
         {
             if (indexOfArgument >= arguments.Length)
                 return false;
 
             char columnLetter = arguments[indexOfArgument][0];
 
-            if (!Char.IsLetter(columnLetter))
+            if (!char.IsLetter(columnLetter))
                 return false;
 
             column = columnLetter - 'a';
-            String rawRow = arguments[indexOfArgument].Substring(1);
+            string rawRow = arguments[indexOfArgument].Substring(1);
 
             try
             {
-                row = Int32.Parse(rawRow) - 1;
+                row = int.Parse(rawRow) - 1;
             }
             catch (FormatException)
             {
@@ -284,12 +283,12 @@ namespace QuoridorEngine.UI
             return true;
         }
 
-        private static bool parseOrientation(ref Orientation orientation, String[] arguments, int indexOfArgument)
+        private static bool parseOrientation(ref Orientation orientation, string[] arguments, int indexOfArgument)
         {
             if (indexOfArgument >= arguments.Length)
                 return false;
 
-            String rawOrientation = arguments[indexOfArgument];
+            string rawOrientation = arguments[indexOfArgument];
             rawOrientation.Trim();
 
             if (rawOrientation.Equals("h") || rawOrientation.Equals("horizontal"))
