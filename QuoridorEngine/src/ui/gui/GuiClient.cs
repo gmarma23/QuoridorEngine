@@ -19,6 +19,9 @@ namespace QuoridorEngine.UI
         private bool isWhitePlayerTurn;
         private bool initPlayerMove;
 
+        private SoundPlayer pawnMoveSound;
+        private SoundPlayer wallPlacementSound;
+
         public GuiClient(int boardDimension, int playerWallsCount, GameMode gameMode) 
         {
             gameState = new QuoridorGame(boardDimension);
@@ -42,6 +45,9 @@ namespace QuoridorEngine.UI
             
             if (gameMode != GameMode.WhiteIsAI) 
                 activeBoardEvents = true;
+
+            pawnMoveSound = new SoundPlayer(Resources.pawn_move);
+            wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
@@ -108,7 +114,7 @@ namespace QuoridorEngine.UI
             guiFrame.UpdatePlacedBoardWallCells(gameState);
 
             // Play wall placement sound
-            new SoundPlayer(Resources.wall_move).Play();
+            wallPlacementSound.Play();
 
             // Cancel interrupted player pawn move 
             if (initPlayerMove) endPlayerPawnMove();
@@ -188,8 +194,7 @@ namespace QuoridorEngine.UI
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
             
-            // Play pawn move sound
-            new SoundPlayer(Resources.pawn_move).Play();
+            pawnMoveSound.Play();
 
             // Player's turn has finished
             switchPlayerTurn();
