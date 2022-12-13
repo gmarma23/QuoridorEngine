@@ -6,17 +6,22 @@ namespace QuoridorEngine.UI
     {
         public GuiWallCornerCell(int row, int column, int size) : base(row, column)
         {
-            setSizes(size);
+            setSizes(size, size);
             applyDefaultStyle();
         }
 
-        private void setSizes(int size)
+        public override void AddEventHandlers(Dictionary<string, EventHandler> eventHandlers)
         {
-            Width = size;
+            return;
+        }
+
+        protected override void setSizes(int minSize, int maxSize)
+        {
+            Width = minSize;
             Height = Width;
         }
 
-        private void applyDefaultStyle()
+        protected override void applyDefaultStyle()
         {
             BackColor = Color.Transparent;
         }

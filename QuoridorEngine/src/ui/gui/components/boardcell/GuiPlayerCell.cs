@@ -9,7 +9,7 @@ namespace QuoridorEngine.UI
 
         public GuiPlayerCell(int row, int column, int size) : base(row, column) 
         {
-            setSizes(size);
+            setSizes(size, size);
             applyDefaultStyle();
         }
 
@@ -23,23 +23,18 @@ namespace QuoridorEngine.UI
             BackColor = possibleMoveColor;
         }
 
-        public void AddEventHandlers(EventHandler onClick)
+        public override void AddEventHandlers(Dictionary<string, EventHandler> eventHandlers)
         {
-            Click += onClick;
+            Click += eventHandlers["OnPlayerCellClick"];
         }
 
-        public void RemoveEventHandlers(EventHandler onClick)
+        protected override void setSizes(int minSize, int maxSize)
         {
-            Click -= onClick;
-        }
-
-        private void setSizes(int size)
-        {
-            Width = size;
+            Width = minSize;
             Height = Width;
         }
 
-        private void applyDefaultStyle()
+        protected override void applyDefaultStyle()
         {
             normalColor = Color.RoyalBlue;
             possibleMoveColor = Color.YellowGreen;

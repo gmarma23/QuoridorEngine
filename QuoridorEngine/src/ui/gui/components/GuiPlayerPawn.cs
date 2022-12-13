@@ -24,14 +24,9 @@ namespace QuoridorEngine.UI
             applyDefaultStyle();
         }
 
-        public void AddEventHandlers(EventHandler onClick)
+        public void AddEventHandlers(Dictionary<string, EventHandler> eventHandlers)
         {
-            Click += onClick;
-        }
-
-        public void RemoveEventHandlers(EventHandler onClick)
-        {
-            Click -= onClick;
+            Click += eventHandlers["OnPlayerPawnClick"];
         }
 
         // Paint player pawn as rectangle with smooth round corners

@@ -138,14 +138,10 @@ namespace QuoridorEngine.UI
         {
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
                 for (int column = 0; column < boardCells.GetLength(1); column++)
-                    if (boardCells[row, column] is GuiPlayerCell)
-                        ((GuiPlayerCell)boardCells[row, column]).AddEventHandlers(eventHandlers["OnPlayerCellClick"]);
-                    else if (boardCells[row, column] is GuiWallPartCell)
-                        ((GuiWallPartCell)boardCells[row, column]).AddEventHandlers(
-                            eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
+                    boardCells[row, column].AddEventHandlers(eventHandlers);
 
-            whitePawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
-            blackPawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
+            whitePawn.AddEventHandlers(eventHandlers);
+            blackPawn.AddEventHandlers(eventHandlers);
         }
 
         // Coordinate board cells drawing on board panel

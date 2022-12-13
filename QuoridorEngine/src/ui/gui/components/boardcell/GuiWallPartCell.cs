@@ -44,21 +44,14 @@ namespace QuoridorEngine.UI
             SendToBack();
         }
 
-        public void AddEventHandlers(EventHandler onMouseEnter, EventHandler onMouseLeave, EventHandler onClick)
+        public override void AddEventHandlers(Dictionary<string, EventHandler> eventHandlers)
         {
-            MouseEnter += onMouseEnter;
-            MouseLeave += onMouseLeave;
-            Click += onClick;
+            MouseEnter += eventHandlers["OnWallCellEnter"];
+            MouseLeave += eventHandlers["OnWallCellLeave"];
+            Click += eventHandlers["OnWallCellClick"];
         }
 
-        public void RemoveEventHandlers(EventHandler onMouseEnter, EventHandler onMouseLeave, EventHandler onClick)
-        {
-            MouseEnter -= onMouseEnter;
-            MouseLeave -= onMouseLeave;
-            Click -= onClick;
-        }
-
-        private void setSizes(int minSize, int maxSize)
+        protected override void setSizes(int minSize, int maxSize)
         {
             if (Row % 2 == 1 && Column % 2 == 0)
             {
@@ -75,7 +68,7 @@ namespace QuoridorEngine.UI
             offset = expand / 2;
         }
 
-        private void applyDefaultStyle()
+        protected override void applyDefaultStyle()
         {
             freeColor = Color.Transparent;
             usedColor = Color.LightGray;
