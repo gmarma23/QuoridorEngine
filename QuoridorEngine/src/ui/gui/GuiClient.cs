@@ -98,6 +98,9 @@ namespace QuoridorEngine.UI
 
             GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
+            // Ignore if wall part has no active preview
+            if (!wallPartCell.IsActive) return;
+
             // Ignore if wall part is already placed
             if (wallPartCell.IsPlaced) return;
 
