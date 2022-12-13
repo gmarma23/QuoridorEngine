@@ -82,9 +82,9 @@ namespace QuoridorEngine.resources {
         /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
-        internal static System.IO.UnmanagedMemoryStream wall_move {
+        internal static System.IO.UnmanagedMemoryStream wall_placement {
             get {
-                return ResourceManager.GetStream("wall_move", resourceCulture);
+                return ResourceManager.GetStream("wall_placement", resourceCulture);
             }
         }
     }
