@@ -22,7 +22,7 @@ namespace QuoridorEngine.UI
             applyDefaultStyle();
         }
 
-        public void MovePlayerPawn(bool isWhitePlayer, int row, int column) => board.MovePlayerPawn(isWhitePlayer, row, column);
+        public void MovePlayerPawn(QuoridorGame gameState, bool isWhitePlayer) => board.MovePlayerPawn(gameState, isWhitePlayer);
 
         public void HidePossiblePlayerMoves(QuoridorGame gameState) => board.HidePossiblePlayerMoveCells(gameState);
 
@@ -34,12 +34,11 @@ namespace QuoridorEngine.UI
 
         public void UpdatePlacedBoardWallCells(QuoridorGame gameState) => board.UpdatePlacedWallCells(gameState);
 
-        public void SetPlayerWallCounter(bool isWhitePlayer, int numOfWalls) => getPlayerWallsCounter(isWhitePlayer).SetWallNum(numOfWalls);
-
-        public void BoardEventsSubscribe() => board.AddEventHandlers();
-
-        public void BoardEventsUnsubscribe() => board.RemoveEventHandlers();
-
+        public void SetPlayerWallCounter(QuoridorGame gameState, bool isWhitePlayer)
+        {
+            int numOfWalls = gameState.GetPlayerWalls(isWhitePlayer);
+            getPlayerWallsCounter(isWhitePlayer).SetWallNum(numOfWalls);
+        }
 
         /// <summary>
         /// Initialize and include board panel to frame

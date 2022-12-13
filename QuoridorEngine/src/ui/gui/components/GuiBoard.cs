@@ -33,6 +33,8 @@ namespace QuoridorEngine.UI
             drawBoard();
             drawPlayerPawn(true);
             drawPlayerPawn(false);
+
+            addEventHandlers();
         }
 
         public void UpdateUsedWallCells(QuoridorGame gameState) => updateWallCells(gameState, UseWallCell, true);
@@ -94,9 +96,16 @@ namespace QuoridorEngine.UI
                     }
         }
 
-        public void MovePlayerPawn(bool isWhitePlayer, int newRow, int newColumn)
+        public void MovePlayerPawn(QuoridorGame gameState, bool isWhitePlayer)
         {
-            getPlayerPawn(isWhitePlayer).Parent = boardCells[newRow, newColumn];
+            int gameRow = 0, gameColumn = 0;
+            if (isWhitePlayer)
+                gameState.GetWhiteCoordinates(ref gameRow, ref gameColumn);
+            else
+                gameState.GetBlackCoordinates(ref gameRow, ref gameColumn);
+
+            (int guiRow, int guiColumn) = TransformCoordinates.GameToGuiPlayer(gameRow, gameColumn);
+            getPlayerPawn(isWhitePlayer).Parent = boardCells[guiRow, guiColumn];
         }
 
         private void NormalPlayerCell(int row, int column)
@@ -125,7 +134,7 @@ namespace QuoridorEngine.UI
         }
 
         // Add event handlers to all board events
-        public void AddEventHandlers()
+        private void addEventHandlers()
         {
             for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
                 for (int column = 0; column < boardCells.GetLength(1); column++)
@@ -137,21 +146,6 @@ namespace QuoridorEngine.UI
 
             whitePawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
             blackPawn.AddEventHandlers(eventHandlers["OnPlayerPawnClick"]);
-        }
-
-        // Remove event handlers from all board events
-        public void RemoveEventHandlers()
-        {
-            for (int row = boardCells.GetLength(0) - 1; row >= 0; row--)
-                for (int column = 0; column < boardCells.GetLength(1); column++)
-                    if (boardCells[row, column] is GuiPlayerCell)
-                        ((GuiPlayerCell)boardCells[row, column]).RemoveEventHandlers(eventHandlers["OnPlayerCellClick"]);
-                    else if (boardCells[row, column] is GuiWallPartCell)
-                        ((GuiWallPartCell)boardCells[row, column]).RemoveEventHandlers(
-                            eventHandlers["OnWallCellEnter"], eventHandlers["OnWallCellLeave"], eventHandlers["OnWallCellClick"]);
-
-            whitePawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
-            blackPawn.RemoveEventHandlers(eventHandlers["OnPlayerPawnClick"]);
         }
 
         // Coordinate board cells drawing on board panel
