@@ -12,7 +12,8 @@ namespace QuoridorEngine.UI
         private GameMode gameMode;
 
         private readonly Dictionary<string, EventHandler> boardEventHandlers;
-        
+
+        private bool activeBoardEvents;
         private bool isWhitePlayerTurn;
         private bool initPlayerMove;
 
@@ -38,7 +39,7 @@ namespace QuoridorEngine.UI
             renderGameComponents();
             
             if (gameMode != GameMode.WhiteIsAI) 
-                //guiFrame.BoardEventsSubscribe();
+                activeBoardEvents = true;
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
@@ -56,6 +57,9 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void PreviewWall(object sender, EventArgs e)
         {
+            // Ignore if board events are not active
+            if (!activeBoardEvents) return;
+
             GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
             // Ignore if wall part is already placed
@@ -87,6 +91,9 @@ namespace QuoridorEngine.UI
         // Event handler for a wall placing move
         private void PlaceWall(object sender, EventArgs e)
         {
+            // Ignore if board events are not active
+            if (!activeBoardEvents) return;
+
             GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
             // Ignore if wall part is already placed
@@ -109,6 +116,9 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void RemoveWallPreview(object sender, EventArgs e)
         {
+            // Ignore if board events are not active
+            if (!activeBoardEvents) return;
+
             GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
             // Ignore if wall part has no active preview
@@ -134,6 +144,9 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void MovePlayer(object sender, EventArgs e)
         {
+            // Ignore if board events are not active
+            if (!activeBoardEvents) return;
+
             // Ignore if player move is not initiated
             if (!initPlayerMove) return;
 
@@ -178,6 +191,9 @@ namespace QuoridorEngine.UI
         /// <param name="e">Event arguments</param>
         private void PlayerPawnClicked(object sender, EventArgs e)
         {
+            // Ignore if board events are not active
+            if (!activeBoardEvents) return;
+
             bool isWhitePlayer = ((GuiPlayerPawn)sender).IsWhite;
 
             // Ignore if not player's turn
@@ -259,15 +275,15 @@ namespace QuoridorEngine.UI
 
             // Switch turns
             isWhitePlayerTurn = !isWhitePlayerTurn;
-            
+
             // AI has the move 
             if ((isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
                (!isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
-                //guiFrame.BoardEventsUnsubscribe();
+                activeBoardEvents = false;
             // Player has the move
             else if ((!isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
                     (isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
-                //guiFrame.BoardEventsSubscribe();
+                activeBoardEvents = true;
         }
     }
 
