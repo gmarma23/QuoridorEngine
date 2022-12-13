@@ -536,7 +536,7 @@ namespace QuoridorEngine.Core
             // Square 'RIGHT' is valid and not blocked by wall
             if (board.IsValidPlayerSquare(row, col + 1) && !board.CheckWallPartVertical(row, col))
                 // Opponent is in square 'RIGHT'
-                if (opponentOccupiesSquare(row, col - 1, !currentPlayerIsWhite))
+                if (opponentOccupiesSquare(row, col + 1, !currentPlayerIsWhite))
                 {
                     // Square 'RIGHT-RIGHT' is valid and not blocked by wall
                     if (board.IsValidPlayerSquare(row, col + 2) && !board.CheckWallPartVertical(row, col + 1))
@@ -562,7 +562,7 @@ namespace QuoridorEngine.Core
                 if (opponentOccupiesSquare(row + 1, col, !currentPlayerIsWhite))
                 {
                     // Square 'UP-UP' is valid and not blocked by wall
-                    if (board.IsValidPlayerSquare(row + 2, col) && !board.CheckWallPartVertical(row + 2, col))
+                    if (board.IsValidPlayerSquare(row + 2, col) && !board.CheckWallPartHorizontal(row + 2, col))
                         legalNeighbours.Add((row + 2, col));
                     else
                     {
