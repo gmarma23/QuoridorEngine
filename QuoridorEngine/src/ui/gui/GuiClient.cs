@@ -38,7 +38,7 @@ namespace QuoridorEngine.UI
             renderGameComponents();
             
             if (gameMode != GameMode.WhiteIsAI) 
-                guiFrame.BoardEventsSubscribe();
+                //guiFrame.BoardEventsSubscribe();
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
@@ -81,7 +81,7 @@ namespace QuoridorEngine.UI
             guiFrame.UpdateUsedBoardWallCells(gameState);
 
             // Update player's wall counter in gui
-            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, gameState.GetPlayerWalls(isWhitePlayerTurn));
+            guiFrame.SetPlayerWallCounter(gameState, isWhitePlayerTurn);
         }
 
         // Event handler for a wall placing move
@@ -124,7 +124,7 @@ namespace QuoridorEngine.UI
             guiFrame.UpdateFreeBoardWallCells(gameState);
 
             // Update player's wall counter in gui
-            guiFrame.SetPlayerWallCounter(isWhitePlayerTurn, gameState.GetPlayerWalls(isWhitePlayerTurn));
+            guiFrame.SetPlayerWallCounter(gameState, isWhitePlayerTurn);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace QuoridorEngine.UI
             endPlayerPawnMove();
 
             // Update player pawn location in gui based on last move
-            guiFrame.MovePlayerPawn(isWhitePlayerTurn, playerCell.Row, playerCell.Column);
+            guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
 
             // Player's turn has finished
             switchPlayerTurn();
@@ -217,17 +217,17 @@ namespace QuoridorEngine.UI
             
             gameState.GetWhiteCoordinates(ref gameWhitePawnRow, ref gameWhitePawnColumn);
             (int guiWhitePawnRow, int guiWhitePawnColumn) = TransformCoordinates.GameToGuiPlayer(gameWhitePawnRow, gameWhitePawnColumn);
-            guiFrame.MovePlayerPawn(true, guiWhitePawnRow, guiWhitePawnColumn);
+            guiFrame.MovePlayerPawn(gameState, true);
 
             gameState.GetBlackCoordinates(ref gameBlackPawnRow, ref gameBlackPawnColumn);
             (int guiBlackPawnRow, int guiBlackPawnColumn) = TransformCoordinates.GameToGuiPlayer(gameBlackPawnRow, gameBlackPawnColumn);
-            guiFrame.MovePlayerPawn(false, guiBlackPawnRow, guiBlackPawnColumn);
+            guiFrame.MovePlayerPawn(gameState, false);
 
             // Render player wall counter panels 
             guiFrame.RenderPlayerWallsPanel(true);
             guiFrame.RenderPlayerWallsPanel(false);
-            guiFrame.SetPlayerWallCounter(true, gameState.GetPlayerWalls(true));
-            guiFrame.SetPlayerWallCounter(false, gameState.GetPlayerWalls(false));
+            guiFrame.SetPlayerWallCounter(gameState, true);
+            guiFrame.SetPlayerWallCounter(gameState, false);
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace QuoridorEngine.UI
             if (!gameState.IsTerminalState()) return false;
 
             // Freeze state 
-            guiFrame.BoardEventsUnsubscribe();
+            //guiFrame.BoardEventsUnsubscribe();
             return true;
         }
 
@@ -263,11 +263,11 @@ namespace QuoridorEngine.UI
             // AI has the move 
             if ((isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
                (!isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
-                guiFrame.BoardEventsUnsubscribe();
+                //guiFrame.BoardEventsUnsubscribe();
             // Player has the move
             else if ((!isWhitePlayerTurn && gameMode == GameMode.WhiteIsAI) ||
                     (isWhitePlayerTurn && gameMode == GameMode.BlackIsAI))
-                guiFrame.BoardEventsSubscribe();
+                //guiFrame.BoardEventsSubscribe();
         }
     }
 
