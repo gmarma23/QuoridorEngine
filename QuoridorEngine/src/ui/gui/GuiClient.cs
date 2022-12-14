@@ -1,5 +1,7 @@
 ﻿using QuoridorEngine.Core;
+using QuoridorEngine.resources;
 using QuoridorEngine.Utils;
+using System.Media;
 using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.UI
@@ -16,6 +18,9 @@ namespace QuoridorEngine.UI
         private bool activeBoardEvents;
         private bool isWhitePlayerTurn;
         private bool initPlayerMove;
+
+        private SoundPlayer pawnMoveSound;
+        private SoundPlayer wallPlacementSound;
 
         public GuiClient(int boardDimension, int playerWallsCount, GameMode gameMode) 
         {
@@ -40,6 +45,9 @@ namespace QuoridorEngine.UI
             
             if (gameMode != GameMode.WhiteIsAI) 
                 activeBoardEvents = true;
+
+            pawnMoveSound = new SoundPlayer(Resources.pawn_move);
+            wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
@@ -96,11 +104,17 @@ namespace QuoridorEngine.UI
 
             GuiWallPartCell wallPartCell = (GuiWallPartCell)sender;
 
+            // Ignore if wall part has no active preview
+            if (!wallPartCell.IsActive) return;
+
             // Ignore if wall part is already placed
             if (wallPartCell.IsPlaced) return;
 
             // Make wall preview permanent in gui
             guiFrame.UpdatePlacedBoardWallCells(gameState);
+
+            // Play wall placement sound
+            wallPlacementSound.Play();
 
             // Cancel interrupted player pawn move 
             if (initPlayerMove) endPlayerPawnMove();
@@ -179,6 +193,8 @@ namespace QuoridorEngine.UI
 
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
+            
+            pawnMoveSound.Play();
 
             // Player's turn has finished
             switchPlayerTurn();
