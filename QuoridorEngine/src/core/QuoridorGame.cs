@@ -273,6 +273,7 @@ namespace QuoridorEngine.Core
         /// <param name="move">The move desribing the player movement</param>
         private void movePlayer(QuoridorMove move)
         {
+            /*
             // Checking if values are inside bounds
             if (!board.IsValidPlayerSquare(move.Row, move.Column)) 
                 throw new InvalidMoveException("Coordinates out of bounds");
@@ -281,6 +282,7 @@ namespace QuoridorEngine.Core
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
             Debug.Assert(targetPlayer is not null);
 
+            
             int deltaRow = move.Row - targetPlayer.Row;
             int deltaColumn = move.Column - targetPlayer.Column;
 
@@ -300,7 +302,18 @@ namespace QuoridorEngine.Core
             // Checking if another player is already located on destination coordinates
             if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
             if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");     
+            */
 
+            QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
+            Debug.Assert(targetPlayer is not null);
+
+            List<(int, int)> legalNeighbourSquares = getLegalNeighbourSquares(targetPlayer.Row, targetPlayer.Column, move.IsWhitePlayer);
+            Debug.Assert(legalNeighbourSquares.Count > 0);
+            
+            // Check player move's validity
+            if (!legalNeighbourSquares.Contains((move.Row, move.Column)))
+                throw new InvalidMoveException();
+;
             // Finally execute the move
             targetPlayer.Row = move.Row;
             targetPlayer.Column = move.Column;
