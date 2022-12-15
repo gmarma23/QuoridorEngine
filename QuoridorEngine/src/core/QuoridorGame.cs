@@ -23,6 +23,16 @@ namespace QuoridorEngine.Core
         private QuoridorPlayer black;
         private Stack<QuoridorMove> gameHistory;
 
+        /*
+        private long[,] whitePlayerCellRandNums;
+        private long[,] blackPlayerCellRandNums;
+        private long[,] horizontalWallCellRandNums;
+        private long[,] verticalWallCellRandNums;
+        private long whiteTurnRandNum;
+
+        private long prevZobristHash;
+        */
+
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
         /// </summary>
@@ -33,6 +43,14 @@ namespace QuoridorEngine.Core
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
+            
+            /*
+            whitePlayerCellRandNums = new long[dimension - 1, dimension - 1];
+            blackPlayerCellRandNums = new long[dimension - 1, dimension - 1];
+            horizontalWallCellRandNums = new long[dimension, dimension - 1];
+            verticalWallCellRandNums = new long[dimension - 1, dimension];
+            */
+
             ResetGame();
         }
 
@@ -263,6 +281,27 @@ namespace QuoridorEngine.Core
             for(int i = 0; i < x; i++)
                 UndoMove(gameHistory.Pop());
         }
+
+        /*
+        public long GetZobristHash(bool isWhitePlayer)
+        {
+            long zobristHash;
+
+            QuoridorPlayer whitePlayer = getTargetPlayer(true);
+            QuoridorPlayer blackPlayer = getTargetPlayer(false);
+
+            long currentWhitePosNum = whitePlayerCellRandNums[whitePlayer.Row, whitePlayer.Column];
+            long currentBlackPosNum = blackPlayerCellRandNums[blackPlayer.Row, blackPlayer.Column];
+
+            long playerPawnsHash = currentWhitePosNum ^ currentBlackPosNum;
+
+            if (gameHistory.Count() == 0)
+                zobristHash = playerPawnsHash ^ (isWhitePlayer ? whitePlayer: whitePlayer);
+            else
+                zobristHash = prevZobristHash ^ playerPawnsHash;
+
+        }
+        */
 
         public int Dimension { get => dimension; }
 
