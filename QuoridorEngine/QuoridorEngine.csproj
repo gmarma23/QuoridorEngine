@@ -33,6 +33,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="resources\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
