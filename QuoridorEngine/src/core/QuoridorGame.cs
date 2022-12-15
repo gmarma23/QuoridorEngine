@@ -273,37 +273,6 @@ namespace QuoridorEngine.Core
         /// <param name="move">The move desribing the player movement</param>
         private void movePlayer(QuoridorMove move)
         {
-            /*
-            // Checking if values are inside bounds
-            if (!board.IsValidPlayerSquare(move.Row, move.Column)) 
-                throw new InvalidMoveException("Coordinates out of bounds");
-
-            // Check if any walls make the move impossible
-            QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
-            Debug.Assert(targetPlayer is not null);
-
-            
-            int deltaRow = move.Row - targetPlayer.Row;
-            int deltaColumn = move.Column - targetPlayer.Column;
-
-            if (Math.Abs(deltaRow) + Math.Abs(deltaColumn) > 1) 
-                throw new InvalidMoveException("Player tried to move more than one square at a time");
-
-            if (deltaRow > 0 && board.CheckWallPartHorizontal(move.Row, move.Column)) 
-                throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaRow < 0 && board.CheckWallPartHorizontal(move.Row + 1, move.Column))
-                throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn > 0 && board.CheckWallPartVertical(move.Row, move.Column-1))
-                throw new InvalidMoveException("Wall is blocking player move");
-            if (deltaColumn < 0 && board.CheckWallPartVertical(move.Row, move.Column))
-                throw new InvalidMoveException("Wall is blocking player move");
-
-            // TODO: Check rewrite this to use the Vector2 class
-            // Checking if another player is already located on destination coordinates
-            if (white.Row == move.Row && white.Column == move.Column) throw new InvalidMoveException("This position is occupied");
-            if (black.Row == move.Row && black.Column == move.Column) throw new InvalidMoveException("This position is occupied");     
-            */
-
             QuoridorPlayer targetPlayer = getTargetPlayer(move.IsWhitePlayer);
             Debug.Assert(targetPlayer is not null);
 
