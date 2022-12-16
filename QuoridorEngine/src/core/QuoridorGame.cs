@@ -23,15 +23,15 @@ namespace QuoridorEngine.Core
         private QuoridorPlayer black;
         private Stack<QuoridorMove> gameHistory;
 
-        /*
+
         private long[,] whitePlayerCellRandNums;
         private long[,] blackPlayerCellRandNums;
         private long[,] horizontalWallCellRandNums;
         private long[,] verticalWallCellRandNums;
         private long whiteTurnRandNum;
 
-        private long prevZobristHash;
-        */
+        private long prevBoardZobristHash;
+
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -43,15 +43,9 @@ namespace QuoridorEngine.Core
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
-            
-            /*
-            whitePlayerCellRandNums = new long[dimension - 1, dimension - 1];
-            blackPlayerCellRandNums = new long[dimension - 1, dimension - 1];
-            horizontalWallCellRandNums = new long[dimension, dimension - 1];
-            verticalWallCellRandNums = new long[dimension - 1, dimension];
-            */
 
             ResetGame();
+            setRandomVariables();
         }
 
         /// <summary>
@@ -617,6 +611,35 @@ namespace QuoridorEngine.Core
         private QuoridorPlayer getTargetPlayer(bool isWhite)
         {
             return isWhite ? white : black;
+        }
+
+        private void setRandomVariables()
+        {
+            Random rand = new();
+            HashSet<long> usedRandNums= new();
+
+            set2DRandArray(ref whitePlayerCellRandNums, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref blackPlayerCellRandNums, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref horizontalWallCellRandNums, dimension, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref verticalWallCellRandNums, dimension - 1, dimension, ref rand, ref usedRandNums);
+
+            whiteTurnRandNum = getUniqueRandInt64(ref rand, ref usedRandNums);
+        }
+
+        private long getUniqueRandInt64(ref Random rand, ref HashSet<long> usedRandNums)
+        {
+            long uniqueRandInt64;
+            do uniqueRandInt64 = rand.NextInt64(); while (!usedRandNums.Contains(uniqueRandInt64));
+            usedRandNums.Add(uniqueRandInt64);
+            return uniqueRandInt64;
+        }
+
+        private void set2DRandArray(ref long[,] randNums, int rows, int columns, ref Random rand, ref HashSet<long> usedRandNums)
+        {
+            randNums = new long[rows, columns];
+            for (int row = 0; row < randNums.GetLength(0); row++)
+                for (int column = 0; column < randNums.GetLength(1); column++)
+                    randNums[row, column] = getUniqueRandInt64(ref rand, ref usedRandNums);
         }
     }
 }
