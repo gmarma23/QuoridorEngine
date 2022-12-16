@@ -112,6 +112,8 @@ namespace QuoridorEngine.Core
             if (newMove.Type == MoveType.WallPlacement) placeWall(newMove);
             else if (newMove.Type == MoveType.PlayerMovement) movePlayer(newMove);
             else throw new InvalidMoveException("Unknown move type");
+
+            storeBoardZobristHash();
         }
 
         /// <summary>
@@ -274,14 +276,16 @@ namespace QuoridorEngine.Core
             if(x <= 0 || x > gameHistory.Count) throw new ArgumentException();
 
             for(int i = 0; i < x; i++)
+            {
                 UndoMove(gameHistory.Pop());
+                boardZobristHashes.Pop();
+            }    
         }
 
         public long GetZobristHash(bool isWhitePlayer)
         {
             long zobristHash = boardZobristHashes.Peek();
-            if (isWhitePlayer)
-                zobristHash ^= whiteTurnHash;
+            if (isWhitePlayer) zobristHash ^= whiteTurnHash;
             return zobristHash;    
         }
 
