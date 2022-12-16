@@ -277,7 +277,13 @@ namespace QuoridorEngine.Core
                 UndoMove(gameHistory.Pop());
         }
 
-        
+        public long GetZobristHash(bool isWhitePlayer)
+        {
+            long zobristHash = boardZobristHashes.Peek();
+            if (isWhitePlayer)
+                zobristHash ^= whiteTurnHash;
+            return zobristHash;    
+        }
 
         public int Dimension { get => dimension; }
 
