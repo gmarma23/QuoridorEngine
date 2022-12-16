@@ -23,15 +23,13 @@ namespace QuoridorEngine.Core
         private QuoridorPlayer black;
         private Stack<QuoridorMove> gameHistory;
 
+        private long[,] whitePlayerCellHashes;
+        private long[,] blackPlayerCellHashes;
+        private long[,] horizontalWallCellHashes;
+        private long[,] verticalWallCellHashes;
+        private long whiteTurnHash;
 
-        private long[,] whitePlayerCellRandNums;
-        private long[,] blackPlayerCellRandNums;
-        private long[,] horizontalWallCellRandNums;
-        private long[,] verticalWallCellRandNums;
-        private long whiteTurnRandNum;
-
-        private long prevBoardZobristHash;
-
+        private Stack<long> boardZobristHashes;
 
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
@@ -45,7 +43,9 @@ namespace QuoridorEngine.Core
             this.dimension = dimension;
 
             ResetGame();
-            setRandomVariables();
+
+            setHashes();
+            storeBoardZobristHash();
         }
 
         /// <summary>
@@ -276,26 +276,7 @@ namespace QuoridorEngine.Core
                 UndoMove(gameHistory.Pop());
         }
 
-        /*
-        public long GetZobristHash(bool isWhitePlayer)
-        {
-            long zobristHash;
-
-            QuoridorPlayer whitePlayer = getTargetPlayer(true);
-            QuoridorPlayer blackPlayer = getTargetPlayer(false);
-
-            long currentWhitePosNum = whitePlayerCellRandNums[whitePlayer.Row, whitePlayer.Column];
-            long currentBlackPosNum = blackPlayerCellRandNums[blackPlayer.Row, blackPlayer.Column];
-
-            long playerPawnsHash = currentWhitePosNum ^ currentBlackPosNum;
-
-            if (gameHistory.Count() == 0)
-                zobristHash = playerPawnsHash ^ (isWhitePlayer ? whitePlayer: whitePlayer);
-            else
-                zobristHash = prevZobristHash ^ playerPawnsHash;
-
-        }
-        */
+        
 
         public int Dimension { get => dimension; }
 
@@ -613,17 +594,57 @@ namespace QuoridorEngine.Core
             return isWhite ? white : black;
         }
 
-        private void setRandomVariables()
+        private void storeBoardZobristHash()
+        {
+            long boardZobristHash;
+
+            if (boardZobristHashes.Count() == 0)
+            {
+                QuoridorPlayer whitePlayer = getTargetPlayer(true);
+                QuoridorPlayer blackPlayer = getTargetPlayer(false);
+
+                long initWhitePawnHash = whitePlayerCellHashes[whitePlayer.Row, whitePlayer.Column];
+                long initBlackPawnHash = blackPlayerCellHashes[blackPlayer.Row, blackPlayer.Column];
+
+                long initPlayerPawnsHash = initWhitePawnHash ^ initBlackPawnHash;
+
+                boardZobristHash = initPlayerPawnsHash;
+                boardZobristHashes.Push(boardZobristHash);
+                return;
+            }
+
+            QuoridorMove lastMove = gameHistory.Peek();
+            long previousBoardZobristHash = boardZobristHashes.Peek();
+            boardZobristHash = previousBoardZobristHash; 
+
+            if (lastMove.Type == MoveType.PlayerMovement)
+            {
+                long lastPawnMovePreviousHash = lastMove.PrevRow ^ lastMove.PrevCol;
+                long lastPawnMoveCurrentHash = lastMove.Row ^ lastMove.Column;
+
+                boardZobristHash ^= lastPawnMovePreviousHash;
+                boardZobristHash ^= lastPawnMoveCurrentHash;
+            }
+            else if (lastMove.Type == MoveType.WallPlacement)
+            {
+                long lastWallPlacementHash = lastMove.Row ^ lastMove.Column;
+                boardZobristHash ^= lastWallPlacementHash;
+            }
+
+            boardZobristHashes.Push(boardZobristHash);
+        }
+
+        private void setHashes()
         {
             Random rand = new();
             HashSet<long> usedRandNums= new();
 
-            set2DRandArray(ref whitePlayerCellRandNums, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
-            set2DRandArray(ref blackPlayerCellRandNums, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
-            set2DRandArray(ref horizontalWallCellRandNums, dimension, dimension - 1, ref rand, ref usedRandNums);
-            set2DRandArray(ref verticalWallCellRandNums, dimension - 1, dimension, ref rand, ref usedRandNums);
+            set2DRandArray(ref whitePlayerCellHashes, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref blackPlayerCellHashes, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref horizontalWallCellHashes, dimension, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref verticalWallCellHashes, dimension - 1, dimension, ref rand, ref usedRandNums);
 
-            whiteTurnRandNum = getUniqueRandInt64(ref rand, ref usedRandNums);
+            whiteTurnHash = getUniqueRandInt64(ref rand, ref usedRandNums);
         }
 
         private long getUniqueRandInt64(ref Random rand, ref HashSet<long> usedRandNums)
