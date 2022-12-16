@@ -45,7 +45,7 @@ namespace QuoridorEngine.Core
             ResetGame();
 
             setHashes();
-            storeBoardZobristHash();
+            //storeBoardZobristHash();
         }
 
         /// <summary>
@@ -650,7 +650,7 @@ namespace QuoridorEngine.Core
         private long getUniqueRandInt64(ref Random rand, ref HashSet<long> usedRandNums)
         {
             long uniqueRandInt64;
-            do uniqueRandInt64 = rand.NextInt64(); while (!usedRandNums.Contains(uniqueRandInt64));
+            do uniqueRandInt64 = rand.NextInt64(); while (usedRandNums.Contains(uniqueRandInt64));
             usedRandNums.Add(uniqueRandInt64);
             return uniqueRandInt64;
         }
