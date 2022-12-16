@@ -282,6 +282,11 @@ namespace QuoridorEngine.Core
             }    
         }
 
+        /// <summary>
+        /// Get the zobrist hash of to reference the current game state in a transposition table
+        /// </summary>
+        /// <param name="isWhitePlayer">Player whose turn it is</param>
+        /// <returns>Current game state's zobrist hash</returns>
         public long GetZobristHash(bool isWhitePlayer)
         {
             long zobristHash = boardZobristHashes.Peek();
@@ -605,10 +610,15 @@ namespace QuoridorEngine.Core
             return isWhite ? white : black;
         }
 
+        /// <summary>
+        /// Calculate and store (into the boardZobristHashes stack) the 
+        /// new zobrist hash of the board after execution of new move
+        /// </summary>
         private void storeBoardZobristHash()
         {
             long boardZobristHash;
 
+            // Initial board state (game has just started)
             if (boardZobristHashes.Count() == 0)
             {
                 QuoridorPlayer whitePlayer = getTargetPlayer(true);
@@ -633,7 +643,11 @@ namespace QuoridorEngine.Core
                 long lastPawnMovePreviousHash = lastMove.PrevRow ^ lastMove.PrevCol;
                 long lastPawnMoveCurrentHash = lastMove.Row ^ lastMove.Column;
 
+                // Removing pawn from initial location before last move
+                // (XOR self-inverse property)
                 boardZobristHash ^= lastPawnMovePreviousHash;
+
+                // Adding pawn to it's new location after last move's execution 
                 boardZobristHash ^= lastPawnMoveCurrentHash;
             }
             else if (lastMove.Type == MoveType.WallPlacement)
