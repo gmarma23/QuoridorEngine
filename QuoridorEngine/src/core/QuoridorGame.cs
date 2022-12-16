@@ -43,9 +43,6 @@ namespace QuoridorEngine.Core
             this.dimension = dimension;
 
             ResetGame();
-
-            setHashes();
-            //storeBoardZobristHash();
         }
 
         /// <summary>
@@ -226,6 +223,10 @@ namespace QuoridorEngine.Core
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
             gameHistory = new Stack<QuoridorMove>();
+            boardZobristHashes = new Stack<long>();
+
+            setHashes();
+            storeBoardZobristHash();
         }
 
         public void GetWhiteCoordinates(ref int row, ref int column)
@@ -639,8 +640,8 @@ namespace QuoridorEngine.Core
             Random rand = new();
             HashSet<long> usedRandNums= new();
 
-            set2DRandArray(ref whitePlayerCellHashes, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
-            set2DRandArray(ref blackPlayerCellHashes, dimension - 1, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref whitePlayerCellHashes, dimension, dimension, ref rand, ref usedRandNums);
+            set2DRandArray(ref blackPlayerCellHashes, dimension, dimension, ref rand, ref usedRandNums);
             set2DRandArray(ref horizontalWallCellHashes, dimension, dimension - 1, ref rand, ref usedRandNums);
             set2DRandArray(ref verticalWallCellHashes, dimension - 1, dimension, ref rand, ref usedRandNums);
 
