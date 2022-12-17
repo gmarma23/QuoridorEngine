@@ -356,6 +356,40 @@ namespace QuoridorEngine.Core.Tests
             Assert.IsTrue(wallsAfterUndoMove == initialWalls);
         }
 
+        [TestMethod()]
+        [DataRow(9, 0, 0, 0, 1, true)]
+        [DataRow(9, 3, 2, 3, 3, false)]
+        [DataRow(9, 5, 4, 6, 4, true)]
+        [DataRow(9, 6, 7, 7, 7, false)]
+        [DataRow(9, 7, 8, 6, 8, true)]
+        [DataRow(9, 8, 5, 8, 4, false)]
+
+        public void UndoPlayerMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+
+            game.ForcePlayerMovement(initRow, initColumn, isWhitePlayer);
+            QuoridorMove move = new QuoridorMove(initRow, initColumn, newRow, newColumn, isWhitePlayer);
+
+            int currentRow = 0, currentColumn = 0;
+
+            game.ExecuteMove(move);
+            if (isWhitePlayer)
+                game.GetWhiteCoordinates(ref currentRow, ref currentColumn);
+            else
+                game.GetBlackCoordinates(ref currentRow, ref currentColumn);
+            Assert.IsTrue(currentRow == newRow);
+            Assert.IsTrue(currentColumn == newColumn);
+
+            game.UndoMove(move);
+            if (isWhitePlayer)
+                game.GetWhiteCoordinates(ref currentRow, ref currentColumn);
+            else
+                game.GetBlackCoordinates(ref currentRow, ref currentColumn);
+            Assert.IsTrue(currentRow == initRow);
+            Assert.IsTrue(currentColumn == initColumn);
+        }
+
         // TODO: test when wall blocks player path to goal
     }
 }
