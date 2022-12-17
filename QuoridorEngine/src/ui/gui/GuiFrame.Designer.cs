@@ -1,6 +1,7 @@
-﻿namespace QuoridorEngine.UI
+﻿#if !CONSOLE
+namespace QuoridorEngine.UI
 {
-    partial class QuoridorUI
+    partial class GuiFrame
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,12 +29,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GuiFrame));
+            this.SuspendLayout();
+            // 
+            // GuiFrame
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.BackColor = System.Drawing.Color.Black;
+            this.ClientSize = new System.Drawing.Size(712, 713);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.Name = "GuiFrame";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Quoridor Engine";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
     }
 }
+#endif

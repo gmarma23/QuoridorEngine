@@ -10,9 +10,9 @@ namespace QuoridorEngine.Core
     /// to contain any functionality. Its purpose is to carry all
     /// the move-related data around.
     /// </summary>
-    internal class QuoridorMove : Move
+    public class QuoridorMove : Move
     {
-        private readonly int row, column;
+        private readonly int prevRow, prevColumn, row, column;
         private readonly bool isWhitePlayer;
         private readonly Orientation orientation;
         private readonly MoveType type;
@@ -26,8 +26,6 @@ namespace QuoridorEngine.Core
         /// <param name="orientation">The orientation of wall (Horizontal/Vertical)</param>
         public QuoridorMove(int row, int column, bool isWhitePlayer, Orientation orientation)
         {
-            Debug.Assert(row >= 0);
-            Debug.Assert(column >= 0);
             Debug.Assert(orientation == Orientation.Horizontal || orientation == Orientation.Vertical);
 
             this.row = row;
@@ -40,25 +38,28 @@ namespace QuoridorEngine.Core
         /// <summary>
         /// Initializes a Player Movement move with the data provided
         /// </summary>
+        /// <param name="prevRow">The previous row of the player</param>
+        /// <param name="prevColumn">The previous column of the player</param>
         /// <param name="row">The new row of the player</param>
         /// <param name="column">The new column of the player</param>
         /// <param name="isWhitePlayer">Whether this move is executed by the white player or not</param>
-        public QuoridorMove(int row, int column, bool isWhitePlayer)
+        public QuoridorMove(int prevRow, int prevColumn, int row, int column, bool isWhitePlayer)
         {
-            Debug.Assert(row >= 0);
-            Debug.Assert(column >= 0);
-
             this.row = row;
             this.column = column;
+            this.prevRow = prevRow;
+            this.prevColumn = prevColumn;
             this.isWhitePlayer = isWhitePlayer;
             type = MoveType.PlayerMovement;
         }
 
-        public int Row { get; }
-        public int Column { get; }
-        public bool IsWhitePlayer { get; } 
-        public Orientation Orientation { get; } 
-        public MoveType Type { get; }
+        public int Row { get => row; }
+        public int Column { get => column; }
+        public int PrevRow { get => prevRow; }
+        public int PrevCol { get => prevColumn; }
+        public bool IsWhitePlayer { get => isWhitePlayer; } 
+        public Orientation Orientation { get => orientation; } 
+        public MoveType Type { get => type; }
     }
 
     /// <summary>
