@@ -113,7 +113,7 @@ namespace QuoridorEngine.Core
             else if (newMove.Type == MoveType.PlayerMovement) movePlayer(newMove);
             else throw new InvalidMoveException("Unknown move type");
 
-            storeBoardZobristHash();
+            generateBoardZobristHash();
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace QuoridorEngine.Core
             boardZobristHashes = new Stack<long>();
 
             setHashes();
-            storeBoardZobristHash();
+            generateBoardZobristHash();
         }
 
         public void GetWhiteCoordinates(ref int row, ref int column)
@@ -614,7 +614,7 @@ namespace QuoridorEngine.Core
         /// Calculate and store (into the boardZobristHashes stack) the 
         /// new zobrist hash of the board after execution of new move
         /// </summary>
-        private void storeBoardZobristHash()
+        private void generateBoardZobristHash()
         {
             long boardZobristHash;
 
