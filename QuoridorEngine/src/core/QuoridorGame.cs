@@ -23,6 +23,14 @@ namespace QuoridorEngine.Core
         private QuoridorPlayer black;
         private Stack<QuoridorMove> gameHistory;
 
+        private long[,] whitePlayerCellHashes;
+        private long[,] blackPlayerCellHashes;
+        private long[,] horizontalWallCellHashes;
+        private long[,] verticalWallCellHashes;
+        private long whiteTurnHash;
+
+        private Stack<long> boardZobristHashes;
+
         /// <summary>
         /// Initializes a new Quoridor Game with the specified parameters
         /// </summary>
@@ -33,6 +41,7 @@ namespace QuoridorEngine.Core
             if (dimension < 2 || dimension % 2 == 0) throw new ArgumentException("Invalid Board Size");
 
             this.dimension = dimension;
+
             ResetGame();
         }
 
@@ -103,6 +112,8 @@ namespace QuoridorEngine.Core
             if (newMove.Type == MoveType.WallPlacement) placeWall(newMove);
             else if (newMove.Type == MoveType.PlayerMovement) movePlayer(newMove);
             else throw new InvalidMoveException("Unknown move type");
+
+            generateBoardZobristHash();
         }
 
         /// <summary>
@@ -214,6 +225,10 @@ namespace QuoridorEngine.Core
             black = new QuoridorPlayer(false, dimension - 1, startingColumn, 10, 0);
 
             gameHistory = new Stack<QuoridorMove>();
+            boardZobristHashes = new Stack<long>();
+
+            setHashes();
+            generateBoardZobristHash();
         }
 
         public void GetWhiteCoordinates(ref int row, ref int column)
@@ -261,7 +276,22 @@ namespace QuoridorEngine.Core
             if(x <= 0 || x > gameHistory.Count) throw new ArgumentException();
 
             for(int i = 0; i < x; i++)
+            {
                 UndoMove(gameHistory.Pop());
+                boardZobristHashes.Pop();
+            }    
+        }
+
+        /// <summary>
+        /// Get the zobrist hash of to reference the current game state in a transposition table
+        /// </summary>
+        /// <param name="isWhitePlayer">Player whose turn it is</param>
+        /// <returns>Current game state's zobrist hash</returns>
+        public long GetZobristHash(bool isWhitePlayer)
+        {
+            long zobristHash = boardZobristHashes.Peek();
+            if (isWhitePlayer) zobristHash ^= whiteTurnHash;
+            return zobristHash;    
         }
 
         public int Dimension { get => dimension; }
@@ -578,6 +608,84 @@ namespace QuoridorEngine.Core
         private QuoridorPlayer getTargetPlayer(bool isWhite)
         {
             return isWhite ? white : black;
+        }
+
+        /// <summary>
+        /// Calculate and store (into the boardZobristHashes stack) the 
+        /// new zobrist hash of the board after execution of new move
+        /// </summary>
+        private void generateBoardZobristHash()
+        {
+            long boardZobristHash;
+
+            // Initial board state (game has just started)
+            if (boardZobristHashes.Count() == 0)
+            {
+                QuoridorPlayer whitePlayer = getTargetPlayer(true);
+                QuoridorPlayer blackPlayer = getTargetPlayer(false);
+
+                long initWhitePawnHash = whitePlayerCellHashes[whitePlayer.Row, whitePlayer.Column];
+                long initBlackPawnHash = blackPlayerCellHashes[blackPlayer.Row, blackPlayer.Column];
+
+                long initPlayerPawnsHash = initWhitePawnHash ^ initBlackPawnHash;
+
+                boardZobristHash = initPlayerPawnsHash;
+                boardZobristHashes.Push(boardZobristHash);
+                return;
+            }
+
+            QuoridorMove lastMove = gameHistory.Peek();
+            long previousBoardZobristHash = boardZobristHashes.Peek();
+            boardZobristHash = previousBoardZobristHash; 
+
+            if (lastMove.Type == MoveType.PlayerMovement)
+            {
+                long lastPawnMovePreviousHash = lastMove.PrevRow ^ lastMove.PrevCol;
+                long lastPawnMoveCurrentHash = lastMove.Row ^ lastMove.Column;
+
+                // Removing pawn from initial location before last move
+                // (XOR self-inverse property)
+                boardZobristHash ^= lastPawnMovePreviousHash;
+
+                // Adding pawn to it's new location after last move's execution 
+                boardZobristHash ^= lastPawnMoveCurrentHash;
+            }
+            else if (lastMove.Type == MoveType.WallPlacement)
+            {
+                long lastWallPlacementHash = lastMove.Row ^ lastMove.Column;
+                boardZobristHash ^= lastWallPlacementHash;
+            }
+
+            boardZobristHashes.Push(boardZobristHash);
+        }
+
+        private void setHashes()
+        {
+            Random rand = new();
+            HashSet<long> usedRandNums= new();
+
+            set2DRandArray(ref whitePlayerCellHashes, dimension, dimension, ref rand, ref usedRandNums);
+            set2DRandArray(ref blackPlayerCellHashes, dimension, dimension, ref rand, ref usedRandNums);
+            set2DRandArray(ref horizontalWallCellHashes, dimension, dimension - 1, ref rand, ref usedRandNums);
+            set2DRandArray(ref verticalWallCellHashes, dimension - 1, dimension, ref rand, ref usedRandNums);
+
+            whiteTurnHash = getUniqueRandInt64(ref rand, ref usedRandNums);
+        }
+
+        private long getUniqueRandInt64(ref Random rand, ref HashSet<long> usedRandNums)
+        {
+            long uniqueRandInt64;
+            do uniqueRandInt64 = rand.NextInt64(); while (usedRandNums.Contains(uniqueRandInt64));
+            usedRandNums.Add(uniqueRandInt64);
+            return uniqueRandInt64;
+        }
+
+        private void set2DRandArray(ref long[,] randNums, int rows, int columns, ref Random rand, ref HashSet<long> usedRandNums)
+        {
+            randNums = new long[rows, columns];
+            for (int row = 0; row < randNums.GetLength(0); row++)
+                for (int column = 0; column < randNums.GetLength(1); column++)
+                    randNums[row, column] = getUniqueRandInt64(ref rand, ref usedRandNums);
         }
     }
 }
