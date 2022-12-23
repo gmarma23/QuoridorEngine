@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using QuoridorEngine.Core;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuoridorEngine.Utils;
 
 namespace QuoridorEngine.Core.Tests
@@ -78,7 +79,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(6, 5, 6, 4, 7, true)]
         [DataRow(1, 4, 0, 4, 7, true)]
         [DataRow(1, 5, 1, 4, 7, true)]
-        
+
         [DataRow(1, 0, 0, 0, 3, false)]
         [DataRow(2, 1, 2, 2, 3, false)]
         [DataRow(1, 0, 1, 1, 3, false)]
@@ -274,7 +275,7 @@ namespace QuoridorEngine.Core.Tests
 
             Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move2));
             Assert.IsFalse(game.HasWall(row, col, oppositeOrientation));
-            
+
         }
 
         [TestMethod]
@@ -284,7 +285,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(8, 6, Orientation.Vertical, 8, 5, Orientation.Horizontal, 8, 7, 9)]
 
         public void ExecuteWallMoveSimpleFromsLegalCross(
-            int row1, int col1, Orientation orientation1, 
+            int row1, int col1, Orientation orientation1,
             int row2, int col2, Orientation orientation2,
             int row3, int col3, int dimension
             )
@@ -320,6 +321,73 @@ namespace QuoridorEngine.Core.Tests
 
             Assert.ThrowsException<InvalidMoveException>(() => game.ExecuteMove(move));
             Assert.IsTrue(game.HasWall(row, col, orientation));
+        }
+
+        [TestMethod()]
+        [DataRow(9, 1, 0, true, Orientation.Horizontal)]
+        [DataRow(9, 1, 7, false, Orientation.Horizontal)]
+        [DataRow(9, 8, 0, true, Orientation.Horizontal)]
+        [DataRow(9, 8, 7, false, Orientation.Horizontal)]
+        [DataRow(9, 5, 4, true, Orientation.Horizontal)]
+
+        [DataRow(9, 1, 0, false, Orientation.Vertical)]
+        [DataRow(9, 1, 7, true, Orientation.Vertical)]
+        [DataRow(9, 8, 0, false, Orientation.Vertical)]
+        [DataRow(9, 8, 7, true, Orientation.Vertical)]
+        [DataRow(9, 5, 4, false, Orientation.Vertical)]
+
+        public void UndoWallPlacementTest(int dimension, int row, int column, bool isWhitePlayer, Orientation orientation)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            QuoridorMove move = new QuoridorMove(row, column, isWhitePlayer, orientation);
+
+            int initialWalls = game.GetPlayerWalls(isWhitePlayer);
+
+            game.ExecuteMove(move);
+            Assert.IsTrue(game.HasWall(row, column, orientation));
+
+            int wallsAfterMove = game.GetPlayerWalls(isWhitePlayer);
+            Assert.IsTrue(wallsAfterMove == initialWalls - 1);
+
+            game.UndoMove(move);
+            Assert.IsFalse(game.HasWall(row, column, orientation));
+
+            int wallsAfterUndoMove = game.GetPlayerWalls(isWhitePlayer);
+            Assert.IsTrue(wallsAfterUndoMove == initialWalls);
+        }
+
+        [TestMethod()]
+        [DataRow(9, 0, 0, 0, 1, true)]
+        [DataRow(9, 3, 2, 3, 3, false)]
+        [DataRow(9, 5, 4, 6, 4, true)]
+        [DataRow(9, 6, 7, 7, 7, false)]
+        [DataRow(9, 7, 8, 6, 8, true)]
+        [DataRow(9, 8, 5, 8, 4, false)]
+
+        public void UndoPlayerMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+
+            game.ForcePlayerMovement(initRow, initColumn, isWhitePlayer);
+            QuoridorMove move = new QuoridorMove(initRow, initColumn, newRow, newColumn, isWhitePlayer);
+
+            int currentRow = 0, currentColumn = 0;
+
+            game.ExecuteMove(move);
+            if (isWhitePlayer)
+                game.GetWhiteCoordinates(ref currentRow, ref currentColumn);
+            else
+                game.GetBlackCoordinates(ref currentRow, ref currentColumn);
+            Assert.IsTrue(currentRow == newRow);
+            Assert.IsTrue(currentColumn == newColumn);
+
+            game.UndoMove(move);
+            if (isWhitePlayer)
+                game.GetWhiteCoordinates(ref currentRow, ref currentColumn);
+            else
+                game.GetBlackCoordinates(ref currentRow, ref currentColumn);
+            Assert.IsTrue(currentRow == initRow);
+            Assert.IsTrue(currentColumn == initColumn);
         }
 
         // TODO: test when wall blocks player path to goal
