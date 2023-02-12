@@ -70,7 +70,7 @@ namespace QuoridorEngine.Core
             IEnumerable<QuoridorMove> possiblePlayerMoves = (IEnumerable<QuoridorMove>)GetPossiblePlayerMoves(playerIsWhite);
             possibleMoves.AddRange(possiblePlayerMoves);
 
-            if (currentPlayer.AvailableWalls <= 0)
+            //if (currentPlayer.AvailableWalls <= 0)
                 return possibleMoves;
             
             for (int row = 1; row < dimension; row++)
@@ -156,16 +156,12 @@ namespace QuoridorEngine.Core
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
         public float EvaluateState(bool playerIsWhite, bool whiteIsMaximizingPlayer)
         {
-            Debug.Assert(IsTerminalState());
+            QuoridorPlayer playerInTurn = getTargetPlayer(whiteIsMaximizingPlayer);
+            QuoridorPlayer oppositePlayer = getTargetPlayer(!whiteIsMaximizingPlayer);
 
-            if(WinnerIsWhite() && whiteIsMaximizingPlayer)
-                return 1000;
+            float eval = oppositePlayer.ManhattanDistanceToTargetBaseline() - playerInTurn.ManhattanDistanceToTargetBaseline();
 
-            if(!WinnerIsWhite() && !whiteIsMaximizingPlayer) 
-                return -1000;
-
-            Debug.Assert(false);
-            return 0;
+            return eval;
         }
 
         /// <summary>

@@ -69,5 +69,10 @@ namespace QuoridorEngine.Core
         public bool IsWhite { get => isWhite; }
         public int Row { get => row; set => row = value; }
         public int Column { get => column; set => column = value; }
+
+        public int ManhattanDistanceToTargetBaseline()
+        {
+            return Math.Abs(targetBaseline - row);
+        }
     }
 }
