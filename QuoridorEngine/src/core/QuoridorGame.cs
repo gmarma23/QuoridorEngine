@@ -154,9 +154,18 @@ namespace QuoridorEngine.Core
         /// </summary>
         /// <param name="playerIsWhite">True if player we are asking for is white, false otherwise</param>
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
-        public float EvaluateState(bool playerIsWhite)
+        public float EvaluateState(bool playerIsWhite, bool whiteIsMaximizingPlayer)
         {
-            throw new NotImplementedException();
+            Debug.Assert(IsTerminalState());
+
+            if(WinnerIsWhite() && whiteIsMaximizingPlayer)
+                return 1000;
+
+            if(!WinnerIsWhite() && !whiteIsMaximizingPlayer) 
+                return -1000;
+
+            Debug.Assert(false);
+            return 0;
         }
 
         /// <summary>
