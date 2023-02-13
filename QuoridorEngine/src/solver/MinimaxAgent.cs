@@ -18,9 +18,6 @@ namespace QuoridorEngine.Solver
             {
                 currentState.ExecuteMove(move);
 
-                // the third param (which determines the player in turn) shound be !whiteIsMaximizingPlayer
-                // (instead of whiteIsMaximizingPlayer) because after the current player executes a move
-                // (line 19), it is the opponent's turn
                 float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !whiteIsMaximizingPlayer, depth-1);
                 if(currentEval > eval)
                 {
@@ -40,9 +37,6 @@ namespace QuoridorEngine.Solver
             if (currentState.IsTerminalState() || depthRemaining <= 0)
             {
                 float value = currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
-                //OutputUtility.PrintState((Core.QuoridorGame)currentState);
-                //Console.WriteLine(!isWhitePlayerTurn);
-                //Console.WriteLine(value);
                 return value;
             }
 
@@ -66,9 +60,6 @@ namespace QuoridorEngine.Solver
             if (currentState.IsTerminalState() || depthRemaining <= 0)
             {
                 float value = currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
-                //OutputUtility.PrintState((Core.QuoridorGame)currentState);
-                //Console.WriteLine(!isWhitePlayerTurn);
-                //Console.WriteLine(value);
                 return value;
             }
 
