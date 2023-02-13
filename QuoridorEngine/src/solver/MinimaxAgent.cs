@@ -9,7 +9,7 @@ namespace QuoridorEngine.Solver
             Move bestMove = null;
 
             float maxEval = float.NegativeInfinity;
-            var possibleNextMoves = currentState.GetPossibleMoves(whiteIsMaximizingPlayer);
+            var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
 
             foreach(var nextMove in possibleNextMoves)
             {
