@@ -13,7 +13,7 @@ namespace QuoridorEngine.UI
         private static List<string> knownCommands = new List<string>
         {
             "name", "known_command", "list_commands", "quit", "boardsize",
-            "clear_board", "walls", "playmove", "playwall", "undo", "winner",
+            "clear_board", "walls", "genmove", "playmove", "playwall", "undo", "winner",
             "showboard"
         };
 
