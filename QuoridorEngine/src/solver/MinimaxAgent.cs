@@ -16,15 +16,16 @@ namespace QuoridorEngine.Solver
             foreach(var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-
                 float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !whiteIsMaximizingPlayer, depth - 1);
-                if(currentEval > maxEval)
+                currentState.UndoMove(nextMove);
+
+                if (currentEval > maxEval)
                 {
                     maxEval = currentEval;
                     bestMove = nextMove;
                 }
 
-                currentState.UndoMove(nextMove);
+                
             }
 
             Debug.Assert(bestMove != null);
@@ -42,11 +43,10 @@ namespace QuoridorEngine.Solver
             foreach(var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-
                 float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
-                maxEval = Math.Max(maxEval, currentEval);
-
                 currentState.UndoMove(nextMove);
+
+                maxEval = Math.Max(maxEval, currentEval);
             }
 
             return maxEval;
@@ -63,11 +63,11 @@ namespace QuoridorEngine.Solver
             foreach (var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-
                 float currentEval = maxValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
-                minEval = Math.Min(minEval, currentEval);
-
                 currentState.UndoMove(nextMove);
+
+                minEval = Math.Min(minEval, currentEval);
+                
             }
 
             return minEval;
