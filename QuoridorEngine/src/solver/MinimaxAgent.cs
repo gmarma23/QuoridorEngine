@@ -1,5 +1,4 @@
-﻿using QuoridorEngine.UI;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace QuoridorEngine.Solver
 {
@@ -11,21 +10,21 @@ namespace QuoridorEngine.Solver
         {
             Move bestMove = null;
 
-            float eval = float.NegativeInfinity;
-            var moves = currentState.GetPossibleMoves(whiteIsMaximizingPlayer);
+            float maxEval = float.NegativeInfinity;
+            var possibleNextMoves = currentState.GetPossibleMoves(whiteIsMaximizingPlayer);
 
-            foreach(var move in moves)
+            foreach(var nextMove in possibleNextMoves)
             {
-                currentState.ExecuteMove(move);
+                currentState.ExecuteMove(nextMove);
 
-                float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !whiteIsMaximizingPlayer, depth-1);
-                if(currentEval > eval)
+                float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !whiteIsMaximizingPlayer, depth - 1);
+                if(currentEval > maxEval)
                 {
-                    eval = currentEval;
-                    bestMove = move;
+                    maxEval = currentEval;
+                    bestMove = nextMove;
                 }
 
-                currentState.UndoMove(move);
+                currentState.UndoMove(nextMove);
             }
 
             Debug.Assert(bestMove != null);
@@ -34,48 +33,44 @@ namespace QuoridorEngine.Solver
 
         private static float maxValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
         {
-            if (currentState.IsTerminalState() || depthRemaining == 0)
+            if (depthRemaining == 0 || currentState.IsTerminalState())
+                return currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
+
+            float maxEval = float.NegativeInfinity;
+            var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+
+            foreach(var nextMove in possibleNextMoves)
             {
-                float value = currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
-                return value;
+                currentState.ExecuteMove(nextMove);
+
+                float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
+                maxEval = Math.Max(maxEval, currentEval);
+
+                currentState.UndoMove(nextMove);
             }
 
-            float eval = float.NegativeInfinity;
-            var moves = currentState.GetPossibleMoves(isWhitePlayerTurn);
-
-            foreach(var move in moves)
-            {
-                currentState.ExecuteMove(move);
-
-                eval = Math.Max(eval, minValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining-1));
-
-                currentState.UndoMove(move);
-            }
-
-            return eval;
+            return maxEval;
         }
 
         private static float minValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
         {
-            if (currentState.IsTerminalState() || depthRemaining == 0)
+            if (depthRemaining == 0 || currentState.IsTerminalState())
+                return currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
+
+            float minEval = float.PositiveInfinity;
+            var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+
+            foreach (var nextMove in possibleNextMoves)
             {
-                float value = currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
-                return value;
+                currentState.ExecuteMove(nextMove);
+
+                float currentEval = maxValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
+                minEval = Math.Min(minEval, currentEval);
+
+                currentState.UndoMove(nextMove);
             }
 
-            float eval = float.PositiveInfinity;
-            var moves = currentState.GetPossibleMoves(isWhitePlayerTurn);
-
-            foreach (var move in moves)
-            {
-                currentState.ExecuteMove(move);
-
-                eval = Math.Min(eval, maxValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining-1));
-
-                currentState.UndoMove(move);
-            }
-
-            return eval;
+            return minEval;
         }
     }
 }
