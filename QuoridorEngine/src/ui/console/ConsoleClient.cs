@@ -156,6 +156,7 @@ namespace QuoridorEngine.UI
                 try
                 {
                     game.ExecuteMove(move);
+                    OutputUtility.PrintSuccessMessage((char)(move.Column + 'A') + (move.Row + 1).ToString());
                 }
                 catch (InvalidMoveException)
                 {
