@@ -1,5 +1,6 @@
 ﻿using QuoridorEngine.Core;
 using QuoridorEngine.resources;
+using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
 using System.Media;
 using Orientation = QuoridorEngine.Core.Orientation;
@@ -51,6 +52,9 @@ namespace QuoridorEngine.UI
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
+
+            if (gameMode == GameMode.WhiteIsAI)
+                computerPlayMove();
         }
 
         public void RunGui()
@@ -198,6 +202,11 @@ namespace QuoridorEngine.UI
 
             // Player's turn has finished
             switchPlayerTurn();
+
+            // Check if game has ended 
+            if (gameOver()) return;
+            if (gameMode != GameMode.TwoPlayers)
+                computerPlayMove();
         }
 
         /// <summary>
@@ -284,6 +293,19 @@ namespace QuoridorEngine.UI
             // Freeze state 
             activeBoardEvents = false;
             return true;
+        }
+
+        private void computerPlayMove()
+        {
+            QuoridorMove bestMove = (Core.QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, isWhitePlayerTurn, 3);
+            gameState.ExecuteMove(bestMove);
+            // Update player pawn location in gui based on last move
+            guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
+
+            pawnMoveSound.Play();
+
+            // Player's turn has finished
+            switchPlayerTurn(); 
         }
     }
 
