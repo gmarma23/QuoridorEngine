@@ -43,9 +43,6 @@ namespace QuoridorEngine.UI
             };
 
             renderGameComponents();
-            
-            if (gameMode != GameMode.WhiteIsAI) 
-                activeBoardEvents = true;
 
             pawnMoveSound = new SoundPlayer(Resources.pawn_move);
             wallPlacementSound = new SoundPlayer(Resources.wall_placement);
@@ -53,8 +50,14 @@ namespace QuoridorEngine.UI
             isWhitePlayerTurn = true;
             initPlayerMove = false;
 
+            if (gameMode == GameMode.BlackIsAI)
+                activeBoardEvents = true;
+
             if (gameMode == GameMode.WhiteIsAI || gameMode == GameMode.SoloAI)
+            {
+                activeBoardEvents = false;
                 computerPlayMove();
+            }
         }
 
         public void RunGui()
