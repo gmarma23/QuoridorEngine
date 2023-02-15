@@ -4,7 +4,7 @@ namespace QuoridorEngine.Solver
 {
     public class MinimaxAgent : ISolver
     {
-        public static Move GetBestMove(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depth)
+        public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn, int depth)
         {
             Move bestMove = null;
 
@@ -14,8 +14,8 @@ namespace QuoridorEngine.Solver
             foreach(var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-                float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depth - 1);
-                MessageBox.Show($"CurrentEval: {currentEval}");
+                float currentEval = minValue(currentState, isWhitePlayerTurn, !isWhitePlayerTurn, depth - 1);
+                //MessageBox.Show($"CurrentEval: {currentEval}");
                 currentState.UndoMove(nextMove);
 
                 if (currentEval > maxEval)
@@ -24,7 +24,7 @@ namespace QuoridorEngine.Solver
                     bestMove = nextMove;
                 }
             }
-            MessageBox.Show($"MaxEval: {maxEval}");
+            //MessageBox.Show($"MaxEval: {maxEval}");
             Debug.Assert(bestMove != null);
             return bestMove;
         }
