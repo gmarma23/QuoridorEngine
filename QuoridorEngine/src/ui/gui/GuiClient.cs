@@ -299,7 +299,7 @@ namespace QuoridorEngine.UI
 
             // Show winner message box
             string winner = gameState.WinnerIsWhite() ? "Red" : "Purple";
-            MessageBox.Show($"{winner} is the winner", "Game Over!");
+            MessageBox.Show($"{winner} is the winner!", "Game Over");
 
             // Freeze state 
             activeBoardEvents = false;
