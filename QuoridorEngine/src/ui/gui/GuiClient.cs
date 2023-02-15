@@ -295,9 +295,11 @@ namespace QuoridorEngine.UI
             return true;
         }
 
-        private void computerPlayMove()
+        private async void computerPlayMove()
         {
-            QuoridorMove bestMove = (Core.QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, isWhitePlayerTurn, 3);
+            await Task.Delay(1000);
+
+            QuoridorMove bestMove = (Core.QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, 3);
             gameState.ExecuteMove(bestMove);
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
