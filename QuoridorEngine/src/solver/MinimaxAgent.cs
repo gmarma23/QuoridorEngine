@@ -15,7 +15,6 @@ namespace QuoridorEngine.Solver
             {
                 currentState.ExecuteMove(nextMove);
                 float currentEval = minValue(currentState, isWhitePlayerTurn, !isWhitePlayerTurn, depth - 1);
-                //MessageBox.Show($"CurrentEval: {currentEval}");
                 currentState.UndoMove(nextMove);
 
                 if (currentEval > maxEval)
@@ -24,7 +23,6 @@ namespace QuoridorEngine.Solver
                     bestMove = nextMove;
                 }
             }
-            //MessageBox.Show($"MaxEval: {maxEval}");
             Debug.Assert(bestMove != null);
             return bestMove;
         }
