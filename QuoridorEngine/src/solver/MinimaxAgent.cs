@@ -30,7 +30,7 @@ namespace QuoridorEngine.Solver
         private static float maxValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
         {
             if (depthRemaining == 0 || currentState.IsTerminalState())
-                return currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                return currentState.EvaluateState(whiteIsMaximizingPlayer);
 
             float maxEval = float.NegativeInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
@@ -50,7 +50,7 @@ namespace QuoridorEngine.Solver
         private static float minValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
         {
             if (depthRemaining == 0 || currentState.IsTerminalState())
-                return currentState.EvaluateState(isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                return currentState.EvaluateState(whiteIsMaximizingPlayer);
 
             float minEval = float.PositiveInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
