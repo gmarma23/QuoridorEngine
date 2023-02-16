@@ -159,7 +159,10 @@ namespace QuoridorEngine.Core
             QuoridorPlayer maximizingPlayer = getTargetPlayer(whiteIsMaximizingPlayer);
             QuoridorPlayer minimizingPlayer = getTargetPlayer(!whiteIsMaximizingPlayer);
 
-            float eval = minimizingPlayer.ManhattanDistanceToTargetBaseline() - maximizingPlayer.ManhattanDistanceToTargetBaseline();
+            int maxPlayerDistance = maximizingPlayer.ManhattanDistanceToTargetBaseline();
+            int minPlayerDistance = minimizingPlayer.ManhattanDistanceToTargetBaseline();
+            
+            float eval = minPlayerDistance - maxPlayerDistance;
 
             return eval;
         }

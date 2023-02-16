@@ -15,6 +15,7 @@ namespace QuoridorEngine.Solver
             {
                 currentState.ExecuteMove(nextMove);
                 float currentEval = minValue(currentState, isWhitePlayerTurn, !isWhitePlayerTurn, depth - 1);
+                //debugUtil(currentState, currentEval, !isWhitePlayerTurn, isWhitePlayerTurn);
                 currentState.UndoMove(nextMove);
 
                 if (currentEval > maxEval)
@@ -32,7 +33,7 @@ namespace QuoridorEngine.Solver
             if (depthRemaining == 0 || currentState.IsTerminalState())
             {
                 float currentEval = currentState.EvaluateState(whiteIsMaximizingPlayer);
-                debugUtil(currentState, currentEval, isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                //debugUtil(currentState, currentEval, isWhitePlayerTurn, whiteIsMaximizingPlayer);
                 return currentEval;
             }
                
@@ -44,6 +45,7 @@ namespace QuoridorEngine.Solver
             {
                 currentState.ExecuteMove(nextMove);
                 float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
+                //debugUtil(currentState, currentEval, !isWhitePlayerTurn, whiteIsMaximizingPlayer);
                 currentState.UndoMove(nextMove);
 
                 maxEval = Math.Max(maxEval, currentEval);
@@ -57,7 +59,7 @@ namespace QuoridorEngine.Solver
             if (depthRemaining == 0 || currentState.IsTerminalState())
             {
                 float currentEval = currentState.EvaluateState(whiteIsMaximizingPlayer);
-                debugUtil(currentState, currentEval,isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                //debugUtil(currentState, currentEval,isWhitePlayerTurn, whiteIsMaximizingPlayer);
                 return currentEval;
             }
 
@@ -68,6 +70,7 @@ namespace QuoridorEngine.Solver
             {
                 currentState.ExecuteMove(nextMove);
                 float currentEval = maxValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
+                //debugUtil(currentState, currentEval, !isWhitePlayerTurn, whiteIsMaximizingPlayer);
                 currentState.UndoMove(nextMove);
 
                 minEval = Math.Min(minEval, currentEval);

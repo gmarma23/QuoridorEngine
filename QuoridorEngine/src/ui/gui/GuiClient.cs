@@ -47,7 +47,7 @@ namespace QuoridorEngine.UI
             pawnMoveSound = new SoundPlayer(Resources.pawn_move);
             wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
-            isWhitePlayerTurn = true;
+            isWhitePlayerTurn = false;
             initPlayerMove = false;
 
             if (gameMode == GameMode.BlackIsAI)
@@ -312,7 +312,7 @@ namespace QuoridorEngine.UI
 
             await Task.Delay(1000);
 
-            QuoridorMove bestMove = (Core.QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, 3);
+            QuoridorMove bestMove = (QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, 6);
             gameState.ExecuteMove(bestMove);
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
