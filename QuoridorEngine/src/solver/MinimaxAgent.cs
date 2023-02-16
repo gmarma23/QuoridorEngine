@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using QuoridorEngine.Core;
+using System.Diagnostics;
 
 namespace QuoridorEngine.Solver
 {
@@ -30,7 +31,12 @@ namespace QuoridorEngine.Solver
         private static float maxValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
         {
             if (depthRemaining == 0 || currentState.IsTerminalState())
-                return currentState.EvaluateState(whiteIsMaximizingPlayer);
+            {
+                float currentEval = currentState.EvaluateState(whiteIsMaximizingPlayer);
+                debugUtil(currentState, currentEval, isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                return currentEval;
+            }
+               
 
             float maxEval = float.NegativeInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
@@ -50,7 +56,11 @@ namespace QuoridorEngine.Solver
         private static float minValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
         {
             if (depthRemaining == 0 || currentState.IsTerminalState())
-                return currentState.EvaluateState(whiteIsMaximizingPlayer);
+            {
+                float currentEval = currentState.EvaluateState(whiteIsMaximizingPlayer);
+                debugUtil(currentState, currentEval,isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                return currentEval;
+            }
 
             float minEval = float.PositiveInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
@@ -65,6 +75,25 @@ namespace QuoridorEngine.Solver
             }
 
             return minEval;
+        }
+
+        private static void debugUtil(IGameState currentState, float currentEval, bool isWhitePLayerTurn, bool whiteIsMaximizingPlayer)
+        {
+            int wrow = 0, wcol = 0, brow = 0, bcol = 0;
+            QuoridorGame gameState = (Core.QuoridorGame)currentState;
+
+            gameState.GetWhiteCoordinates(ref wrow, ref wcol);
+            gameState.GetBlackCoordinates(ref brow, ref bcol);
+
+            MessageBox.Show(
+                $"White: (row = {wrow}, col = {wcol})\n" +
+                $"Black: (row = {brow}, col = {bcol})\n" +
+                $"WhiteDist: {gameState.Dimension-1 - wrow}\n" +
+                $"BlackDist: {brow}\n" +
+                $"IsWhiteTurn: {isWhitePLayerTurn}\n" +
+                $"WhiteIsMax: {whiteIsMaximizingPlayer}\n" +
+                $"Eval: {currentEval}"
+                );
         }
     }
 }
