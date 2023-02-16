@@ -1,5 +1,4 @@
-﻿using QuoridorEngine.Core;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace QuoridorEngine.Solver
 {
@@ -80,7 +79,7 @@ namespace QuoridorEngine.Solver
         private static void debugUtil(IGameState currentState, float currentEval, bool isWhitePLayerTurn, bool whiteIsMaximizingPlayer)
         {
             int wrow = 0, wcol = 0, brow = 0, bcol = 0;
-            QuoridorGame gameState = (Core.QuoridorGame)currentState;
+            Core.QuoridorGame gameState = (Core.QuoridorGame)currentState;
 
             gameState.GetWhiteCoordinates(ref wrow, ref wcol);
             gameState.GetBlackCoordinates(ref brow, ref bcol);
