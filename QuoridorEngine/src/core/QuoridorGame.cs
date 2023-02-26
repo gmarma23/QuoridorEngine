@@ -511,7 +511,7 @@ namespace QuoridorEngine.Core
             pq.Enqueue((currentPlayer.Row, currentPlayer.Column, 0), 0);
 
             // Run until there are no more squares to explore
-            while(pq.Count() > 0)
+            while(pq.Count > 0)
             {
                 (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
 
