@@ -1,5 +1,6 @@
 ﻿using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
+using Priority_Queue;
 using System.Diagnostics;
 
 namespace QuoridorEngine.Core
@@ -481,6 +482,65 @@ namespace QuoridorEngine.Core
 
             // No path found
             return false;
+        }
+
+#if DEBUG
+        public int distanceToGoal(bool isWhite)
+#else
+        /// <summary>
+        /// Finds the minimum distance in squares the given player needs
+        /// to travel to reach their target baseline.
+        /// </summary>
+        /// <param name="isWhite">Whether current player is White</param>
+        /// <returns>The minimum distance of given player to goal</returns>
+        private int distanceToGoal(bool isWhite)
+#endif
+        {
+            QuoridorPlayer currentPlayer = getTargetPlayer(isWhite);
+            Debug.Assert(currentPlayer != null);
+
+            // Performing a simple A* search to find the distance to the goal row
+
+            // Frontier is a priority queue holding the current row, column and distance travelled
+            SimplePriorityQueue<(int, int, int)> pq = new();
+
+            // Used to store already visited nodes
+            HashSet<(int, int)> visitedSquares = new();
+
+            // Search starts from current position with 0 distance travelled so far
+            pq.Enqueue((currentPlayer.Row, currentPlayer.Column, 0), 0);
+
+            // Run until there are no more squares to explore
+            while(pq.Count() > 0)
+            {
+                (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
+
+                // Goal reached so return the distance
+                if(currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar;
+
+                // Skip already visited nodes
+                if (visitedSquares.Contains((currentRow, currentCol))) continue;
+
+                visitedSquares.Add((currentRow, currentCol));
+
+                // Expand neighbors
+                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentRow, currentCol, isWhite);
+
+                foreach(var neighborSquare in legalNeighbours)
+                {
+                    (int newRow, int newCol) = neighborSquare;
+
+                    // The heuristic is the manhttan distance of the player to the target base
+                    int heuristic = currentPlayer.ManhattanDistanceToTargetBaseline(newRow);
+                    int priority = heuristic + distanceSoFar + 1;
+
+                    pq.Enqueue((newRow, newCol,  distanceSoFar + 1), priority);
+                }
+            }
+
+            // Player should never be in a position where there is no path to goal row
+            Debug.Assert(false);
+            return -1;
         }
 
         /// <summary>
