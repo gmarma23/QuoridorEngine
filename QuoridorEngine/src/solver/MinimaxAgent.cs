@@ -81,6 +81,7 @@ namespace QuoridorEngine.Solver
 
         private static void debugUtil(IGameState currentState, float currentEval, bool isWhitePLayerTurn, bool whiteIsMaximizingPlayer)
         {
+#if !CONSOLE 
             int wrow = 0, wcol = 0, brow = 0, bcol = 0;
             Core.QuoridorGame gameState = (Core.QuoridorGame)currentState;
 
@@ -96,6 +97,7 @@ namespace QuoridorEngine.Solver
                 $"WhiteIsMax: {whiteIsMaximizingPlayer}\n" +
                 $"Eval: {currentEval}"
                 );
+#endif
         }
     }
 }
