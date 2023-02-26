@@ -74,5 +74,11 @@ namespace QuoridorEngine.Core
         {
             return Math.Abs(targetBaseline - row);
         }
+
+        // Returns the manhattan distance to target baseline if player was in given position
+        public int ManhattanDistanceToTargetBaseline(int playerRow)
+        {
+            return Math.Abs(playerRow - targetBaseline);
+        }
     }
 }
