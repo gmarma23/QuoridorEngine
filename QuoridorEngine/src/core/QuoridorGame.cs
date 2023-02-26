@@ -515,7 +515,7 @@ namespace QuoridorEngine.Core
             {
                 (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
 
-                // Goal reaches so return the distance
+                // Goal reached so return the distance
                 if(currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar;
 
                 // Skip already visited nodes
