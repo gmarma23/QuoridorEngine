@@ -43,18 +43,21 @@ namespace QuoridorEngine.UI
             };
 
             renderGameComponents();
-            
-            if (gameMode != GameMode.WhiteIsAI) 
-                activeBoardEvents = true;
 
             pawnMoveSound = new SoundPlayer(Resources.pawn_move);
             wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
-            isWhitePlayerTurn = true;
+            isWhitePlayerTurn = false;
             initPlayerMove = false;
 
-            if (gameMode == GameMode.WhiteIsAI)
+            if (gameMode == GameMode.BlackIsAI)
+                activeBoardEvents = true;
+
+            if (gameMode == GameMode.WhiteIsAI || gameMode == GameMode.SoloAI)
+            {
+                activeBoardEvents = false;
                 computerPlayMove();
+            }
         }
 
         public void RunGui()
@@ -204,7 +207,6 @@ namespace QuoridorEngine.UI
             switchPlayerTurn();
 
             // Check if game has ended 
-            if (gameOver()) return;
             if (gameMode != GameMode.TwoPlayers)
                 computerPlayMove();
         }
@@ -233,8 +235,12 @@ namespace QuoridorEngine.UI
         // Utility to determine which player has the next move
         private void switchPlayerTurn()
         {
-            // Check if game has ended 
-            if (gameOver()) return;
+            if (gameState.IsTerminalState())
+            {
+                // Check if game has ended 
+                gameOverActions();
+                return;
+            }
 
             // Switch turns
             isWhitePlayerTurn = !isWhitePlayerTurn;
@@ -285,27 +291,38 @@ namespace QuoridorEngine.UI
         }
 
         // Game over handler
-        private bool gameOver()
+        private void gameOverActions()
         {
-            // Game is not over
-            if (!gameState.IsTerminalState()) return false;
+            if (!gameState.IsTerminalState())
+                // Game is not over
+                return;
+
+            // Show winner message box
+            string winner = gameState.WinnerIsWhite() ? "Red" : "Purple";
+            MessageBox.Show($"{winner} is the winner!", "Game Over");
 
             // Freeze state 
             activeBoardEvents = false;
-            return true;
         }
 
-        private void computerPlayMove()
+        private async void computerPlayMove()
         {
-            QuoridorMove bestMove = (Core.QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, isWhitePlayerTurn, 3);
+            if (gameState.IsTerminalState()) 
+                return;
+
+            await Task.Delay(1000);
+
+            QuoridorMove bestMove = (QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, 6);
             gameState.ExecuteMove(bestMove);
             // Update player pawn location in gui based on last move
             guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
-
             pawnMoveSound.Play();
 
             // Player's turn has finished
-            switchPlayerTurn(); 
+            switchPlayerTurn();
+
+            if (gameMode == GameMode.SoloAI)
+                computerPlayMove();
         }
     }
 
@@ -313,7 +330,8 @@ namespace QuoridorEngine.UI
     {
         TwoPlayers,
         WhiteIsAI,
-        BlackIsAI
+        BlackIsAI,
+        SoloAI
     }
 #endif
 }

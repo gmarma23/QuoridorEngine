@@ -155,12 +155,15 @@ namespace QuoridorEngine.Core
         /// </summary>
         /// <param name="playerIsWhite">True if player we are asking for is white, false otherwise</param>
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
-        public float EvaluateState(bool playerIsWhite, bool whiteIsMaximizingPlayer)
+        public float EvaluateState(bool whiteIsMaximizingPlayer)
         {
-            QuoridorPlayer playerInTurn = getTargetPlayer(whiteIsMaximizingPlayer);
-            QuoridorPlayer oppositePlayer = getTargetPlayer(!whiteIsMaximizingPlayer);
+            QuoridorPlayer maximizingPlayer = getTargetPlayer(whiteIsMaximizingPlayer);
+            QuoridorPlayer minimizingPlayer = getTargetPlayer(!whiteIsMaximizingPlayer);
 
-            float eval = oppositePlayer.ManhattanDistanceToTargetBaseline() - playerInTurn.ManhattanDistanceToTargetBaseline();
+            int maxPlayerDistance = maximizingPlayer.ManhattanDistanceToTargetBaseline();
+            int minPlayerDistance = minimizingPlayer.ManhattanDistanceToTargetBaseline();
+            
+            float eval = minPlayerDistance - maxPlayerDistance;
 
             return eval;
         }
