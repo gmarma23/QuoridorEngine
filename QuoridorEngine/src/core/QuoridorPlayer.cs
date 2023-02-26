@@ -69,5 +69,11 @@ namespace QuoridorEngine.Core
         public bool IsWhite { get => isWhite; }
         public int Row { get => row; set => row = value; }
         public int Column { get => column; set => column = value; }
+
+        // Returns the manhattan distance to target baseline if player was in given position
+        public int ManhattanDistanceToTargetBaseline(int playerRow)
+        {
+            return Math.Abs(playerRow - targetBaseline);
+        }
     }
 }
