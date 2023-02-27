@@ -163,8 +163,11 @@ namespace QuoridorEngine.Core
             int maxPlayerDistance = distanceToGoal(whiteIsMaximizingPlayer);
             int minPlayerDistance = distanceToGoal(!whiteIsMaximizingPlayer);
 
-            float eval = minPlayerDistance - maxPlayerDistance;
-            eval += maximizingPlayer.AvailableWalls - minimizingPlayer.AvailableWalls;
+            int deltaDistance = minPlayerDistance - maxPlayerDistance;
+            int deltaWallsCount = maximizingPlayer.AvailableWalls - minimizingPlayer.AvailableWalls;
+
+            float eval = deltaDistance;
+            eval += (deltaWallsCount * deltaDistance) >> 1;
 
             return eval;
         }
@@ -523,7 +526,6 @@ namespace QuoridorEngine.Core
             while(pq.Count > 0)
             {
                 (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
-
                 // Goal reached so return the distance
                 if(currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar;
 
