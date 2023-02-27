@@ -131,6 +131,9 @@ namespace QuoridorEngine.UI
 
             // Player's turn has finished
             switchPlayerTurn();
+
+            if (gameMode != GameMode.TwoPlayers)
+                computerPlayMove();
         }
 
         /// <summary>
@@ -209,7 +212,6 @@ namespace QuoridorEngine.UI
             // Player's turn has finished
             switchPlayerTurn();
 
-            // Check if game has ended 
             if (gameMode != GameMode.TwoPlayers)
                 computerPlayMove();
         }
