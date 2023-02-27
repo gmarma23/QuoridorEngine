@@ -148,6 +148,9 @@ namespace QuoridorEngine.Core
 
                 getTargetPlayer(lastMove.IsWhitePlayer).IncreaseAvailableWalls();
             }
+
+            gameHistory.Pop();
+            boardZobristHashes.Pop();
         }
 
         /// <summary>
@@ -289,10 +292,7 @@ namespace QuoridorEngine.Core
             if(x <= 0 || x > gameHistory.Count) throw new ArgumentException();
 
             for(int i = 0; i < x; i++)
-            {
-                UndoMove(gameHistory.Pop());
-                boardZobristHashes.Pop();
-            }    
+                UndoMove(gameHistory.Peek()); 
         }
 
         /// <summary>
