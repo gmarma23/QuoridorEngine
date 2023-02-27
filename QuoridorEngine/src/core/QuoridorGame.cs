@@ -170,7 +170,7 @@ namespace QuoridorEngine.Core
             int deltaWallsCount = maximizingPlayer.AvailableWalls - minimizingPlayer.AvailableWalls;
 
             float eval = deltaDistance;
-            eval += (deltaWallsCount * deltaDistance) >> 1;
+            eval += deltaWallsCount >> 1;
 
             return eval;
         }
