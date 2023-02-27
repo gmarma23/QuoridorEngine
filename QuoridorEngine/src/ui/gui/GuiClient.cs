@@ -51,7 +51,8 @@ namespace QuoridorEngine.UI
             initPlayerMove = false;
 
             if ((gameMode == GameMode.BlackIsAI && isWhitePlayerTurn) || 
-                (gameMode == GameMode.WhiteIsAI && !isWhitePlayerTurn))
+                (gameMode == GameMode.WhiteIsAI && !isWhitePlayerTurn) ||
+                gameMode == GameMode.TwoPlayers)
                 activeBoardEvents = true;
 
             if ((gameMode == GameMode.WhiteIsAI && isWhitePlayerTurn) || 
