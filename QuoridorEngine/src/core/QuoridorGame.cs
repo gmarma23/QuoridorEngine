@@ -549,8 +549,6 @@ namespace QuoridorEngine.Core
                 }
             }
 
-            // Player should never be in a position where there is no path to goal row
-            Debug.Assert(false);
             return -1;
         }
 
