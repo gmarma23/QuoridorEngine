@@ -317,12 +317,23 @@ namespace QuoridorEngine.UI
 
             await Task.Delay(1000);
 
-            QuoridorMove bestMove = (QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, 6);
+            QuoridorMove bestMove = (QuoridorMove)MinimaxAgent.GetBestMove(gameState, isWhitePlayerTurn, 3);
             gameState.ExecuteMove(bestMove);
-            // Update player pawn location in gui based on last move
-            guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
-            pawnMoveSound.Play();
 
+            // Update player pawn location in gui based on last move
+            if(bestMove.Type == MoveType.PlayerMovement)
+            {
+                guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
+                pawnMoveSound.Play();
+            }
+            else if (bestMove.Type == MoveType.WallPlacement)
+            {
+                guiFrame.UpdateUsedBoardWallCells(gameState);
+                guiFrame.UpdatePlacedBoardWallCells(gameState);
+                guiFrame.SetPlayerWallCounter(gameState, isWhitePlayerTurn);
+                wallPlacementSound.Play();
+            }
+                
             // Player's turn has finished
             switchPlayerTurn();
 
