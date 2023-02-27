@@ -71,7 +71,7 @@ namespace QuoridorEngine.Core
             IEnumerable<QuoridorMove> possiblePlayerMoves = (IEnumerable<QuoridorMove>)GetPossiblePlayerMoves(playerIsWhite);
             possibleMoves.AddRange(possiblePlayerMoves);
 
-            //if (currentPlayer.AvailableWalls <= 0)
+            if (currentPlayer.AvailableWalls <= 0)
                 return possibleMoves;
             
             for (int row = 1; row < dimension; row++)
