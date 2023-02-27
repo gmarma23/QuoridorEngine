@@ -47,13 +47,16 @@ namespace QuoridorEngine.UI
             pawnMoveSound = new SoundPlayer(Resources.pawn_move);
             wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
-            isWhitePlayerTurn = false;
+            isWhitePlayerTurn = true;
             initPlayerMove = false;
 
-            if (gameMode == GameMode.BlackIsAI)
+            if ((gameMode == GameMode.BlackIsAI && isWhitePlayerTurn) || 
+                (gameMode == GameMode.WhiteIsAI && !isWhitePlayerTurn))
                 activeBoardEvents = true;
 
-            if (gameMode == GameMode.WhiteIsAI || gameMode == GameMode.SoloAI)
+            if ((gameMode == GameMode.WhiteIsAI && isWhitePlayerTurn) || 
+                (gameMode == GameMode.BlackIsAI && !isWhitePlayerTurn) ||
+                gameMode == GameMode.SoloAI)
             {
                 activeBoardEvents = false;
                 computerPlayMove();
