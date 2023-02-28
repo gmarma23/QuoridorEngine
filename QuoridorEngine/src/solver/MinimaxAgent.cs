@@ -10,19 +10,21 @@ namespace QuoridorEngine.Solver
         {
             Move bestMove = null;
 
-            float maxEval = float.NegativeInfinity;
+            float bestEval = isWhitePlayerTurn ? float.NegativeInfinity : float.PositiveInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
 
             foreach(var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-                float currentEval = minValue(currentState, isWhitePlayerTurn, !isWhitePlayerTurn, DEPTH - 1);
-                //debugUtil(currentState, currentEval, !isWhitePlayerTurn, isWhitePlayerTurn);
+                float currentEval = isWhitePlayerTurn ? minValue(currentState, !isWhitePlayerTurn, DEPTH - 1) : 
+                                                        maxValue(currentState, !isWhitePlayerTurn, DEPTH - 1);
+                //debugUtil(currentState, currentEval, !isWhitePlayerTurn);
                 currentState.UndoMove(nextMove);
 
-                if (currentEval > maxEval)
-                {
-                    maxEval = currentEval;
+                bool isCurrentEvalBetter = isWhitePlayerTurn ? currentEval > bestEval : currentEval < bestEval;
+                if (isCurrentEvalBetter) 
+                { 
+                    bestEval = currentEval;
                     bestMove = nextMove;
                 }
             }
@@ -30,12 +32,12 @@ namespace QuoridorEngine.Solver
             return bestMove;
         }
 
-        private static float maxValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
+        private static float maxValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining)
         {
             if (depthRemaining == 0 || currentState.IsTerminalState())
             {
-                float currentEval = currentState.EvaluateState(whiteIsMaximizingPlayer);
-                //debugUtil(currentState, currentEval, isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                float currentEval = currentState.EvaluateState(isWhitePlayerTurn);
+                //debugUtil(currentState, currentEval, isWhitePlayerTurn);
                 return currentEval;
             }
                
@@ -46,8 +48,8 @@ namespace QuoridorEngine.Solver
             foreach(var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-                float currentEval = minValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
-                //debugUtil(currentState, currentEval, !isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                float currentEval = minValue(currentState, !isWhitePlayerTurn, depthRemaining - 1);
+                //debugUtil(currentState, currentEval, !isWhitePlayerTurn);
                 currentState.UndoMove(nextMove);
 
                 maxEval = Math.Max(maxEval, currentEval);
@@ -56,12 +58,12 @@ namespace QuoridorEngine.Solver
             return maxEval;
         }
 
-        private static float minValue(IGameState currentState, bool whiteIsMaximizingPlayer, bool isWhitePlayerTurn, int depthRemaining)
+        private static float minValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining)
         {
             if (depthRemaining == 0 || currentState.IsTerminalState())
             {
-                float currentEval = currentState.EvaluateState(whiteIsMaximizingPlayer);
-                //debugUtil(currentState, currentEval,isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                float currentEval = currentState.EvaluateState(isWhitePlayerTurn);
+                //debugUtil(currentState, currentEval,isWhitePlayerTurn);
                 return currentEval;
             }
 
@@ -71,8 +73,8 @@ namespace QuoridorEngine.Solver
             foreach (var nextMove in possibleNextMoves)
             {
                 currentState.ExecuteMove(nextMove);
-                float currentEval = maxValue(currentState, whiteIsMaximizingPlayer, !isWhitePlayerTurn, depthRemaining - 1);
-                //debugUtil(currentState, currentEval, !isWhitePlayerTurn, whiteIsMaximizingPlayer);
+                float currentEval = maxValue(currentState, !isWhitePlayerTurn, depthRemaining - 1);
+                //debugUtil(currentState, currentEval, !isWhitePlayerTurn);
                 currentState.UndoMove(nextMove);
 
                 minEval = Math.Min(minEval, currentEval);
@@ -81,7 +83,7 @@ namespace QuoridorEngine.Solver
             return minEval;
         }
 
-        private static void debugUtil(IGameState currentState, float currentEval, bool isWhitePLayerTurn, bool whiteIsMaximizingPlayer)
+        private static void debugUtil(IGameState currentState, float currentEval, bool isWhitePLayerTurn)
         {
 #if !CONSOLE 
             int wrow = 0, wcol = 0, brow = 0, bcol = 0;
@@ -96,7 +98,6 @@ namespace QuoridorEngine.Solver
                 $"WhiteDist: {gameState.Dimension-1 - wrow}\n" +
                 $"BlackDist: {brow}\n" +
                 $"IsWhiteTurn: {isWhitePLayerTurn}\n" +
-                $"WhiteIsMax: {whiteIsMaximizingPlayer}\n" +
                 $"Eval: {currentEval}"
                 );
 #endif
