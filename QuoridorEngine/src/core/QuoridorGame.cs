@@ -158,19 +158,32 @@ namespace QuoridorEngine.Core
         /// </summary>
         /// <param name="playerIsWhite">True if player we are asking for is white, false otherwise</param>
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
-        public float EvaluateState(bool whiteIsMaximizingPlayer)
+        public float EvaluateState(bool isWhitePlayerTurn)
         {
-            QuoridorPlayer maximizingPlayer = getTargetPlayer(whiteIsMaximizingPlayer);
-            QuoridorPlayer minimizingPlayer = getTargetPlayer(!whiteIsMaximizingPlayer);
+            QuoridorPlayer whitePlayer = getTargetPlayer(true);
+            QuoridorPlayer blackPlayer = getTargetPlayer(false);
 
-            int maxPlayerDistance = distanceToGoal(whiteIsMaximizingPlayer);
-            int minPlayerDistance = distanceToGoal(!whiteIsMaximizingPlayer);
+            int whitePlayerDistance = distanceToGoal(true);
+            int blackPlayerDistance = distanceToGoal(false);
 
-            int deltaDistance = minPlayerDistance - maxPlayerDistance;
-            int deltaWallsCount = maximizingPlayer.AvailableWalls - minimizingPlayer.AvailableWalls;
+            int deltaDistance = blackPlayerDistance - whitePlayerDistance;
+            int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
 
-            float eval = deltaDistance;
-            eval += deltaWallsCount >> 1;
+            float eval = 0;
+            eval += deltaDistance;
+            eval += deltaWallsCount / 2;
+
+            if (isWhitePlayerTurn && blackPlayerDistance < 3)
+                eval -= 3 - blackPlayerDistance;
+
+            if (!isWhitePlayerTurn && whitePlayerDistance < 3)
+                eval += 3 - whitePlayerDistance;
+
+            if (whitePlayerDistance == 0)
+                eval += 1000;
+
+            if (blackPlayerDistance == 0)
+                eval -= 1000;
 
             return eval;
         }
