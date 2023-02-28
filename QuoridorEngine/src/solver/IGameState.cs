@@ -38,6 +38,6 @@
         /// </summary>
         /// <param name="playerIsWhite">True if player we are asking for is white, false otherwise</param>
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
-        public float EvaluateState(bool whiteIsMaximizingPlayer);
+        public float EvaluateState(bool isWhitePlayerTurn);
 	}
 }
