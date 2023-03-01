@@ -318,7 +318,7 @@ namespace QuoridorEngine.UI
 
             await Task.Delay(1000);
 
-            QuoridorMove bestMove = (QuoridorMove)MinimaxΑΒAgent.GetBestMove(gameState, isWhitePlayerTurn);
+            QuoridorMove bestMove = (QuoridorMove)AlphaBetaIDAgent.GetBestMove(gameState, isWhitePlayerTurn);
             gameState.ExecuteMove(bestMove);
 
             // Update player pawn location in gui based on last move
