@@ -398,8 +398,8 @@ namespace QuoridorEngine.Core.Tests
         public void GetIDInitStateTest(int dimension)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            long initIDWhite = game.GetID(true);
-            long initIDBlack = game.GetID(false);
+            long initIDWhite = game.GetHash(true);
+            long initIDBlack = game.GetHash(false);
 
             Assert.AreNotEqual(initIDWhite, initIDBlack);
         }
@@ -413,17 +413,17 @@ namespace QuoridorEngine.Core.Tests
         public void GetIDPawnMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            long initID1 = game.GetID(isWhitePlayer);
+            long initID1 = game.GetHash(isWhitePlayer);
 
             game.ForcePlayerMovement(initRow, initColumn, isWhitePlayer);
             QuoridorMove move = new QuoridorMove(initRow, initColumn, newRow, newColumn, isWhitePlayer);
 
             game.ExecuteMove(move);
-            long newID = game.GetID(!isWhitePlayer);
-            long samePlayerNewID = game.GetID(isWhitePlayer);
+            long newID = game.GetHash(!isWhitePlayer);
+            long samePlayerNewID = game.GetHash(isWhitePlayer);
             game.UndoMove(move);
 
-            long initID2 = game.GetID(isWhitePlayer);
+            long initID2 = game.GetHash(isWhitePlayer);
 
             Assert.AreEqual(initID1, initID2);
             Assert.AreNotEqual(samePlayerNewID, newID);
@@ -439,16 +439,16 @@ namespace QuoridorEngine.Core.Tests
         public void GetIDWallPlacementTest(int dimension, int row, int column, Orientation orientation, bool isWhitePlayer)
         {
             QuoridorGame game = new QuoridorGame(dimension);
-            long initID1 = game.GetID(isWhitePlayer);
+            long initID1 = game.GetHash(isWhitePlayer);
 
             QuoridorMove move = new QuoridorMove(row, column, isWhitePlayer, orientation);
 
             game.ExecuteMove(move);
-            long newID = game.GetID(!isWhitePlayer);
-            long samePlayerNewID = game.GetID(isWhitePlayer);
+            long newID = game.GetHash(!isWhitePlayer);
+            long samePlayerNewID = game.GetHash(isWhitePlayer);
             game.UndoMove(move);
 
-            long initID2 = game.GetID(isWhitePlayer);
+            long initID2 = game.GetHash(isWhitePlayer);
 
             Assert.AreEqual(initID1, initID2);
             Assert.AreNotEqual(samePlayerNewID, newID);

@@ -315,16 +315,16 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
-        /// Get state's id. Takes into account the player whose turn it is.
+        /// Get state's hash. Takes into account the player whose turn it is.
         /// </summary>
         /// <param name="isWhitePlayer">Player whose turn it is</param>
-        /// <returns>State's id</returns>
-        public long GetID(bool isWhitePlayer)
+        /// <returns>State's hash</returns>
+        public long GetHash(bool isWhitePlayerTurn)
         {
-            long id = boardZobristHashes.Peek();
-            if (isWhitePlayer)
-                id ^= whiteTurnHash;
-            return id;    
+            long hash = boardZobristHashes.Peek();
+            if (isWhitePlayerTurn)
+                hash ^= whiteTurnHash;
+            return hash;    
         }
 
         public int Dimension { get => dimension; }

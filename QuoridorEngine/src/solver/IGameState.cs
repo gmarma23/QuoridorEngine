@@ -36,8 +36,15 @@
         /// <summary>
         /// Returns an evaluation of the likelyhood of selected player winning the game from this state
         /// </summary>
-        /// <param name="playerIsWhite">True if player we are asking for is white, false otherwise</param>
+        /// <param name="isWhitePlayerTurn">True if player we are asking for is white, false otherwise</param>
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
         public float EvaluateState(bool isWhitePlayerTurn);
+
+        /// <summary>
+        /// Calculate current state's unique hash that acts like an identifier. 
+        /// </summary>
+        /// <param name="isWhitePlayerTurn"></param>
+        /// <returns>State's hash</returns>
+        public long GetHash(bool isWhitePlayerTurn);
 	}
 }
