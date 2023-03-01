@@ -47,7 +47,7 @@ namespace QuoridorEngine.UI
             pawnMoveSound = new SoundPlayer(Resources.pawn_move);
             wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
-            isWhitePlayerTurn = false;
+            isWhitePlayerTurn = true;
             initPlayerMove = false;
 
             if ((gameMode == GameMode.BlackIsAI && isWhitePlayerTurn) || 
