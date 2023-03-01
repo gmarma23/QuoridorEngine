@@ -185,7 +185,6 @@ namespace QuoridorEngine.Core
             if (!isWhitePlayerTurn && whitePlayerDistance < 3)
                 eval += 3 - whitePlayerDistance;
 
-
             return eval;
         }
 
