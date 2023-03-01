@@ -166,30 +166,22 @@ namespace QuoridorEngine.Core
             int whitePlayerDistance = distanceToGoal(true);
             int blackPlayerDistance = distanceToGoal(false);
 
-            //if (whitePlayerDistance == 0)
-                //return 1000;
-
-            //if (blackPlayerDistance == 0)
-                //return -1000;
+            if (whitePlayerDistance == 0)
+                return 10000f; 
+            else if (blackPlayerDistance == 0)
+                return -10000f;
 
             int deltaDistance = blackPlayerDistance - whitePlayerDistance;
             int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
 
             float eval = 0;
-            eval += deltaDistance;
-            eval += deltaWallsCount / 2;
+            eval += 10 * deltaDistance;
+            eval += 7 * deltaWallsCount;
 
             if (isWhitePlayerTurn && blackPlayerDistance < 3)
-                eval -= 3 - blackPlayerDistance;
-
-            if (!isWhitePlayerTurn && whitePlayerDistance < 3)
-                eval += 3 - whitePlayerDistance;
-
-            if (whitePlayerDistance == 0)
-                eval += 1000;
-
-            if (blackPlayerDistance == 0)
-                eval -= 1000;
+                eval -= 8 * (3 - blackPlayerDistance);
+            else if (!isWhitePlayerTurn && whitePlayerDistance < 3)
+                eval += 8 * (3 - whitePlayerDistance);
 
             return eval;
         }
