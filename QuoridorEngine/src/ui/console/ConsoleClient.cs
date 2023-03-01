@@ -152,11 +152,19 @@ namespace QuoridorEngine.UI
                     return false;
                 }
 
-                QuoridorMove move = (QuoridorMove)MinimaxAgent.GetBestMove(game, isWhite);
+                QuoridorMove move = (QuoridorMove)MinimaxΑΒAgent.GetBestMove(game, isWhite);
                 try
                 {
                     game.ExecuteMove(move);
-                    OutputUtility.PrintSuccessMessage((char)(move.Column + 'A') + (move.Row + 1).ToString());
+                    string positionStr = (char)(move.Column + 'A') + (move.Row + 1).ToString();
+
+                    if (move.Type == MoveType.WallPlacement)
+                    {
+                        OutputUtility.PrintSuccessMessage(positionStr + (move.Orientation == Orientation.Horizontal ?
+                            " horizontal" : " vertical"));
+                    }
+                    else
+                        OutputUtility.PrintSuccessMessage(positionStr);
                 }
                 catch (InvalidMoveException)
                 {
@@ -312,6 +320,7 @@ namespace QuoridorEngine.UI
             if (!char.IsLetter(columnLetter))
                 return false;
 
+            columnLetter = char.ToLower(columnLetter);
             column = columnLetter - 'a';
             string rawRow = arguments[indexOfArgument].Substring(1);
 
