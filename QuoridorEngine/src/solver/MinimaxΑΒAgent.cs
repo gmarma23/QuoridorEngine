@@ -4,7 +4,7 @@ namespace QuoridorEngine.Solver
 {
     public class MinimaxΑΒAgent : ISolver
     {
-        private const int DEPTH = 3;
+        private const int DEPTH = 5;
         
         public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn)
         {
