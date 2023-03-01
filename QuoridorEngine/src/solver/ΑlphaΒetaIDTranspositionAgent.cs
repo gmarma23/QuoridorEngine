@@ -5,9 +5,9 @@ namespace QuoridorEngine.Solver
 {
     public class AlphaBetaIDTranspositionAgent : ISolver
     {
-        private const float moveTime = 2000; // milliseconds
+        private const float moveTime = 5000; // milliseconds
         private static Stopwatch timer = new Stopwatch();
-        private static TranspositionTable transpositionTable = new (24000000);
+        private static TranspositionTable transpositionTable = new (1000000);
         private static bool timeout = false;
         
         public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn)
@@ -124,16 +124,12 @@ namespace QuoridorEngine.Solver
         {
             long stateHash = currentState.GetHash(isWhitePlayerTurn);
             if (transpositionTable.HasKey(stateHash))
-                return transpositionTable.Get(stateHash).evaluation;
+                return transpositionTable.Get(stateHash);
 
             if (depthRemaining == 0 || currentState.IsTerminalState())
             {
                 float eval = currentState.EvaluateState(isWhitePlayerTurn);
-
-                EntryType returnType;
-                returnType.evaluation = eval;
-
-                transpositionTable.Add(stateHash, returnType);
+                transpositionTable.Add(stateHash, eval);
                 return eval;
             }
 
@@ -164,16 +160,12 @@ namespace QuoridorEngine.Solver
         {
             long stateHash = currentState.GetHash(isWhitePlayerTurn);
             if (transpositionTable.HasKey(stateHash))
-                return transpositionTable.Get(stateHash).evaluation;
+                return transpositionTable.Get(stateHash);
 
             if (depthRemaining == 0 || currentState.IsTerminalState())
             {
                 float eval = currentState.EvaluateState(isWhitePlayerTurn);
-
-                EntryType returnType;
-                returnType.evaluation = eval;
-
-                transpositionTable.Add(stateHash, returnType);
+                transpositionTable.Add(stateHash, eval);
                 return eval;
             }
 
@@ -203,42 +195,59 @@ namespace QuoridorEngine.Solver
 
     public class TranspositionTable
     {
-      
-        private Dictionary<long, EntryType> table;
+        private struct EntryType
+        {
+            public bool valid;
+            public float evaluation;
+
+            public EntryType()
+            {
+                valid = false;
+                evaluation = -1;
+            }
+        }
+
+        private EntryType[] table;
         private readonly int capacity;
+        private int count;
 
         public TranspositionTable(int capacity)
         {
-            table = new Dictionary<long, EntryType>();
-            table.EnsureCapacity(capacity);
+            Debug.Assert(capacity > 0);
+
+            table = new EntryType[capacity];
+            count = 0;
             this.capacity = capacity;
+
+            Clear();
         }
 
-        public void Add(long key, EntryType data)
+        public void Add(long key, float data)
         {
-            //if (table.Count == capacity) return;
+            if (count == capacity) return;
 
-            table.Add(key, data);
+            table[hash(key)].evaluation = data;
         }
 
-        public EntryType Get(long key) { 
+        public float Get(long key) { 
             Debug.Assert(HasKey(key));
-            return table[key];      
+            return table[key].evaluation;      
         }
 
         public bool HasKey(long key)
         {
-            return table.ContainsKey(key);
+            return table[hash(key)].valid;
         }
 
         public void Clear()
         {
-            table.Clear();
+            for (int i = 0; i < capacity; i++)
+                table[i].valid = false;
         }
-    }
 
-    public struct EntryType
-    {
-        public float evaluation;
+        private int hash(long key)
+        {
+            return (int)(key % capacity);
+        }
     }
 }

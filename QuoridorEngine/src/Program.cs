@@ -11,7 +11,7 @@ namespace QuoridorEngine
         {
 #if !CONSOLE
             ApplicationConfiguration.Initialize();
-            new GuiClient(9, 5, GameMode.SoloAI).RunGui();
+            new GuiClient(5, 5, GameMode.SoloAI).RunGui();
 #else
             ConsoleClient.Play();
 #endif
