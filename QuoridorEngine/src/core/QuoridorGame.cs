@@ -148,6 +148,9 @@ namespace QuoridorEngine.Core
 
                 getTargetPlayer(lastMove.IsWhitePlayer).IncreaseAvailableWalls();
             }
+
+            gameHistory.Pop();
+            boardZobristHashes.Pop();
         }
 
         /// <summary>
@@ -155,9 +158,40 @@ namespace QuoridorEngine.Core
         /// </summary>
         /// <param name="playerIsWhite">True if player we are asking for is white, false otherwise</param>
         /// <returns>An evaluation of the likelyhood of selected player winning the game from this state</returns>
-        public float EvaluateState(bool playerIsWhite)
+        public float EvaluateState(bool isWhitePlayerTurn)
         {
-            throw new NotImplementedException();
+            QuoridorPlayer whitePlayer = getTargetPlayer(true);
+            QuoridorPlayer blackPlayer = getTargetPlayer(false);
+
+            int whitePlayerDistance = distanceToGoal(true);
+            int blackPlayerDistance = distanceToGoal(false);
+
+            //if (whitePlayerDistance == 0)
+                //return 1000;
+
+            //if (blackPlayerDistance == 0)
+                //return -1000;
+
+            int deltaDistance = blackPlayerDistance - whitePlayerDistance;
+            int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
+
+            float eval = 0;
+            eval += deltaDistance;
+            eval += deltaWallsCount / 2;
+
+            if (isWhitePlayerTurn && blackPlayerDistance < 3)
+                eval -= 3 - blackPlayerDistance;
+
+            if (!isWhitePlayerTurn && whitePlayerDistance < 3)
+                eval += 3 - whitePlayerDistance;
+
+            if (whitePlayerDistance == 0)
+                eval += 1000;
+
+            if (blackPlayerDistance == 0)
+                eval -= 1000;
+
+            return eval;
         }
 
         /// <summary>
@@ -277,10 +311,7 @@ namespace QuoridorEngine.Core
             if(x <= 0 || x > gameHistory.Count) throw new ArgumentException();
 
             for(int i = 0; i < x; i++)
-            {
-                UndoMove(gameHistory.Pop());
-                boardZobristHashes.Pop();
-            }    
+                UndoMove(gameHistory.Peek()); 
         }
 
         /// <summary>
@@ -514,7 +545,6 @@ namespace QuoridorEngine.Core
             while(pq.Count > 0)
             {
                 (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
-
                 // Goal reached so return the distance
                 if(currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar;
 
@@ -538,8 +568,6 @@ namespace QuoridorEngine.Core
                 }
             }
 
-            // Player should never be in a position where there is no path to goal row
-            Debug.Assert(false);
             return -1;
         }
 

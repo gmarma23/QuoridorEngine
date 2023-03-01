@@ -70,6 +70,11 @@ namespace QuoridorEngine.Core
         public int Row { get => row; set => row = value; }
         public int Column { get => column; set => column = value; }
 
+        public int ManhattanDistanceToTargetBaseline()
+        {
+            return Math.Abs(targetBaseline - row);
+        }
+
         // Returns the manhattan distance to target baseline if player was in given position
         public int ManhattanDistanceToTargetBaseline(int playerRow)
         {

@@ -1,5 +1,7 @@
 ﻿using QuoridorEngine.Core;
+using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
+using System.Diagnostics;
 using Orientation = QuoridorEngine.Core.Orientation;
 
 namespace QuoridorEngine.UI
@@ -11,7 +13,7 @@ namespace QuoridorEngine.UI
         private static List<string> knownCommands = new List<string>
         {
             "name", "known_command", "list_commands", "quit", "boardsize",
-            "clear_board", "walls", "playmove", "playwall", "undo", "winner",
+            "clear_board", "walls", "genmove", "playmove", "playwall", "undo", "winner",
             "showboard"
         };
 
@@ -21,7 +23,7 @@ namespace QuoridorEngine.UI
         /// </summary>
         public static void Play()
         {
-            game = new QuoridorGame();
+            game = new QuoridorGame(3);
 
             Console.WriteLine("#Welcome to Quoridor Engine's Terminal Implementation. Please type any commands\n");
             do
@@ -133,6 +135,40 @@ namespace QuoridorEngine.UI
                 {
                     OutputUtility.PrintFailureMessage("unacceptable number of walls");
                     return false;
+                }
+            }
+            else if (commandBody.Equals("genmove"))
+            {
+                if (tokens.Length < 2)
+                {
+                    OutputUtility.PrintFailureMessage("syntax error");
+                    return false;
+                }
+
+                bool isWhite = false;
+                if (!parsePlayer(ref isWhite, tokens, 1))
+                {
+                    OutputUtility.PrintFailureMessage("syntax error");
+                    return false;
+                }
+
+                QuoridorMove move = (QuoridorMove)AlphaBetaIDAgent.GetBestMove(game, isWhite);
+                try
+                {
+                    game.ExecuteMove(move);
+                    string positionStr = (char)(move.Column + 'A') + (move.Row + 1).ToString();
+
+                    if (move.Type == MoveType.WallPlacement)
+                    {
+                        OutputUtility.PrintSuccessMessage(positionStr + (move.Orientation == Orientation.Horizontal ?
+                            " horizontal" : " vertical"));
+                    }
+                    else
+                        OutputUtility.PrintSuccessMessage(positionStr);
+                }
+                catch (InvalidMoveException)
+                {
+                    Debug.Assert(false);
                 }
             }
             else if (commandBody.Equals("playmove"))
@@ -284,6 +320,7 @@ namespace QuoridorEngine.UI
             if (!char.IsLetter(columnLetter))
                 return false;
 
+            columnLetter = char.ToLower(columnLetter);
             column = columnLetter - 'a';
             string rawRow = arguments[indexOfArgument].Substring(1);
 

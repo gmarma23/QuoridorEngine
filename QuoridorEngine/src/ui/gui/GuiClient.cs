@@ -1,5 +1,6 @@
 ﻿using QuoridorEngine.Core;
 using QuoridorEngine.resources;
+using QuoridorEngine.Solver;
 using QuoridorEngine.Utils;
 using System.Media;
 using Orientation = QuoridorEngine.Core.Orientation;
@@ -42,15 +43,25 @@ namespace QuoridorEngine.UI
             };
 
             renderGameComponents();
-            
-            if (gameMode != GameMode.WhiteIsAI) 
-                activeBoardEvents = true;
 
             pawnMoveSound = new SoundPlayer(Resources.pawn_move);
             wallPlacementSound = new SoundPlayer(Resources.wall_placement);
 
             isWhitePlayerTurn = true;
             initPlayerMove = false;
+
+            if ((gameMode == GameMode.BlackIsAI && isWhitePlayerTurn) || 
+                (gameMode == GameMode.WhiteIsAI && !isWhitePlayerTurn) ||
+                gameMode == GameMode.TwoPlayers)
+                activeBoardEvents = true;
+
+            if ((gameMode == GameMode.WhiteIsAI && isWhitePlayerTurn) || 
+                (gameMode == GameMode.BlackIsAI && !isWhitePlayerTurn) ||
+                gameMode == GameMode.SoloAI)
+            {
+                activeBoardEvents = false;
+                computerPlayMove();
+            }
         }
 
         public void RunGui()
@@ -121,6 +132,9 @@ namespace QuoridorEngine.UI
 
             // Player's turn has finished
             switchPlayerTurn();
+
+            if (gameMode != GameMode.TwoPlayers)
+                computerPlayMove();
         }
 
         /// <summary>
@@ -198,6 +212,9 @@ namespace QuoridorEngine.UI
 
             // Player's turn has finished
             switchPlayerTurn();
+
+            if (gameMode != GameMode.TwoPlayers)
+                computerPlayMove();
         }
 
         /// <summary>
@@ -224,8 +241,12 @@ namespace QuoridorEngine.UI
         // Utility to determine which player has the next move
         private void switchPlayerTurn()
         {
-            // Check if game has ended 
-            if (gameOver()) return;
+            if (gameState.IsTerminalState())
+            {
+                // Check if game has ended 
+                gameOverActions();
+                return;
+            }
 
             // Switch turns
             isWhitePlayerTurn = !isWhitePlayerTurn;
@@ -276,14 +297,49 @@ namespace QuoridorEngine.UI
         }
 
         // Game over handler
-        private bool gameOver()
+        private void gameOverActions()
         {
-            // Game is not over
-            if (!gameState.IsTerminalState()) return false;
+            if (!gameState.IsTerminalState())
+                // Game is not over
+                return;
+
+            // Show winner message box
+            string winner = gameState.WinnerIsWhite() ? "Red" : "Purple";
+            MessageBox.Show($"{winner} is the winner!", "Game Over");
 
             // Freeze state 
             activeBoardEvents = false;
-            return true;
+        }
+
+        private async void computerPlayMove()
+        {
+            if (gameState.IsTerminalState()) 
+                return;
+
+            await Task.Delay(1000);
+
+            QuoridorMove bestMove = (QuoridorMove)AlphaBetaIDAgent.GetBestMove(gameState, isWhitePlayerTurn);
+            gameState.ExecuteMove(bestMove);
+
+            // Update player pawn location in gui based on last move
+            if(bestMove.Type == MoveType.PlayerMovement)
+            {
+                guiFrame.MovePlayerPawn(gameState, isWhitePlayerTurn);
+                pawnMoveSound.Play();
+            }
+            else if (bestMove.Type == MoveType.WallPlacement)
+            {
+                guiFrame.UpdateUsedBoardWallCells(gameState);
+                guiFrame.UpdatePlacedBoardWallCells(gameState);
+                guiFrame.SetPlayerWallCounter(gameState, isWhitePlayerTurn);
+                wallPlacementSound.Play();
+            }
+                
+            // Player's turn has finished
+            switchPlayerTurn();
+
+            if (gameMode == GameMode.SoloAI)
+                computerPlayMove();
         }
     }
 
@@ -291,7 +347,8 @@ namespace QuoridorEngine.UI
     {
         TwoPlayers,
         WhiteIsAI,
-        BlackIsAI
+        BlackIsAI,
+        SoloAI
     }
 #endif
 }
