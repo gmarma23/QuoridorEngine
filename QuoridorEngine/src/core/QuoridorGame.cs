@@ -584,6 +584,7 @@ namespace QuoridorEngine.Core
                 }
             }
 
+            // Primary search failed. Try search with different expansion function.
             pq.Clear();
             visitedSquares.Clear();
 
