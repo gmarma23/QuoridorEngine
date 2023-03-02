@@ -6,7 +6,7 @@ namespace QuoridorEngine.Solver
 {
     public class MinimaxΑΒIDTTAgent : ISolver
     {
-        private const float moveTime = 3800; // milliseconds
+        private const int moveTime = 3800; // milliseconds
         private static Stopwatch timer = new Stopwatch();
         private static TranspositionTable transpositionTable = new (25000000);
         private static bool timeout = false;
@@ -15,16 +15,26 @@ namespace QuoridorEngine.Solver
         {
             Move bestMove = null;
             timeout = false;
+            Stopwatch iterationTimer = new Stopwatch();
+
             timer.Restart();
 
             for (int i = 1; ; i++)
             {
+                iterationTimer.Restart();
+
                 transpositionTable.Clear();
                 Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i, bestMove);
                 if (!timeout)
                     bestMove = result;
                 else
-                    break;     
+                    break;
+
+                iterationTimer.Stop();
+
+                long remainingTime = moveTime - timer.ElapsedMilliseconds;
+                if (2.5f * iterationTimer.ElapsedMilliseconds > remainingTime)
+                    break;
             }
 
             timer.Stop();
