@@ -61,7 +61,7 @@ namespace QuoridorEngine.Core
         public Orientation Orientation { get => orientation; } 
         public MoveType Type { get => type; }
 
-        public override bool IsEqual(Move move)
+        public override bool Equals(Move? move)
         {
             QuoridorMove? quoridorMove = move as QuoridorMove;
             if (quoridorMove == null)
