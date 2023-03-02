@@ -569,7 +569,7 @@ namespace QuoridorEngine.Core
 
                 visitedSquares.Add((currentRow, currentCol));
 
-                // Expand neighbors
+                // Expand legal neighbors
                 List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentRow, currentCol, isWhite);
 
                 foreach(var neighborSquare in legalNeighbours)
@@ -582,8 +582,27 @@ namespace QuoridorEngine.Core
 
                     pq.Enqueue((newRow, newCol,  distanceSoFar + 1), priority);
                 }
+
+                if (pq.Count == 0)
+                {
+                    // Expand neighbors that are not blocked by walls
+                    List<(int, int)> unblockedNeighbours = getUnblockedNeighborSquares(currentRow, currentCol);
+
+                    foreach (var neighborSquare in unblockedNeighbours)
+                    {
+                        (int newRow, int newCol) = neighborSquare;
+
+                        // The heuristic is the manhttan distance of the player to the target base
+                        int heuristic = currentPlayer.ManhattanDistanceToTargetBaseline(newRow);
+                        int priority = heuristic + distanceSoFar + 1;
+
+                        pq.Enqueue((newRow, newCol, distanceSoFar + 1), priority);
+                    }
+                }
             }
 
+            // There must always be a path leading each player to the target baseline 
+            Debug.Assert(false);
             return -1;
         }
 
