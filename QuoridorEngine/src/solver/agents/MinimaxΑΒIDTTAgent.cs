@@ -6,7 +6,7 @@ namespace QuoridorEngine.Solver
 {
     public class MinimaxΑΒIDTTAgent : ISolver
     {
-        private const int moveTime = 3800; // milliseconds
+        private const int moveTime = 4200; // milliseconds
         private const int absoluteDepthLimit = 20;
         private static Stopwatch timer = new Stopwatch();
         private static TranspositionTable transpositionTable = new (25000000);
