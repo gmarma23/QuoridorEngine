@@ -59,16 +59,16 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
-        /// Returns a list of all the possible moves from this state for a given player
+        /// Returns a list of selected possible moves from this state for a given player
         /// </summary>
 		/// <param name="playerIsWhite">True if we want moves for white player, false otherwise</param>
         /// <returns>A list of all the possible moves from this state for given player</returns>
-        public IEnumerable<Move> GetPossibleMoves(bool playerIsWhite)
+        public IEnumerable<Move> GetPossibleAgentMoves(bool playerIsWhite)
         {
             List<QuoridorMove> possibleMoves = new();
             QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);
 
-            IEnumerable<QuoridorMove> possiblePlayerMoves = (IEnumerable<QuoridorMove>)GetPossiblePlayerMoves(playerIsWhite);
+            IEnumerable<QuoridorMove> possiblePlayerMoves = (IEnumerable<QuoridorMove>)GetPossiblePawnMoves(playerIsWhite);
             possibleMoves.AddRange(possiblePlayerMoves);
 
             if (currentPlayer.AvailableWalls <= 0)
@@ -89,7 +89,7 @@ namespace QuoridorEngine.Core
             return possibleMoves;
         }
 
-        public IEnumerable<Move> GetPossiblePlayerMoves(bool playerIsWhite)
+        public IEnumerable<Move> GetPossiblePawnMoves(bool playerIsWhite)
         {
             List<QuoridorMove> possiblePlayerMoves = new();
             QuoridorPlayer currentPlayer = getTargetPlayer(playerIsWhite);

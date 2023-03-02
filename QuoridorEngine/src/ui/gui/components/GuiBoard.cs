@@ -60,7 +60,7 @@ namespace QuoridorEngine.UI
         /// <param name="isWhitePlayer">Player to show possible moves</param>
         public void ShowPossiblePlayerMoveCells(QuoridorGame gameState, bool isWhitePlayer)
         {
-            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)gameState.GetPossiblePlayerMoves(isWhitePlayer);
+            List<QuoridorMove> possiblePlayerMoves = (List<QuoridorMove>)gameState.GetPossiblePawnMoves(isWhitePlayer);
 
             foreach (QuoridorMove move in possiblePlayerMoves)
             {

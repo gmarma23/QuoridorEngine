@@ -38,7 +38,7 @@ namespace QuoridorEngine.Solver
             if (isWhitePlayerTurn)
             {
                 float bestEval = float.NegativeInfinity;
-                var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+                var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
 
                 foreach (var nextMove in possibleNextMoves)
                 {
@@ -66,7 +66,7 @@ namespace QuoridorEngine.Solver
             else
             {
                 float bestEval = float.PositiveInfinity;
-                var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+                var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
 
                 foreach (var nextMove in possibleNextMoves)
                 {
@@ -123,7 +123,7 @@ namespace QuoridorEngine.Solver
                 return currentState.EvaluateState(isWhitePlayerTurn);
 
             float maxEval = float.NegativeInfinity;
-            var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+            var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
 
             foreach(var nextMove in possibleNextMoves)
             {
@@ -151,7 +151,7 @@ namespace QuoridorEngine.Solver
                 return currentState.EvaluateState(isWhitePlayerTurn);
 
             float minEval = float.PositiveInfinity;
-            var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+            var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
 
             foreach (var nextMove in possibleNextMoves)
             {
