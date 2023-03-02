@@ -698,6 +698,31 @@ namespace QuoridorEngine.Core
             return legalNeighbours;
         }
 
+        private List<(int, int)> getUnblockedNeighborSquares(int row, int col)
+        {
+            Debug.Assert(board.IsValidPlayerSquare(row, col));
+
+            List<(int, int)> legalNeighbours = new();
+
+            // Square 'DOWN' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row - 1, col) && !board.CheckWallPartHorizontal(row, col))
+                legalNeighbours.Add((row - 1, col));
+
+            // Square 'LEFT' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row, col - 1) && !board.CheckWallPartVertical(row, col - 1))
+                legalNeighbours.Add((row, col - 1));
+
+            // Square 'RIGHT' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row, col + 1) && !board.CheckWallPartVertical(row, col))
+                legalNeighbours.Add((row, col + 1));
+
+            // Square 'UP' is valid and not blocked by wall
+            if (board.IsValidPlayerSquare(row + 1, col) && !board.CheckWallPartHorizontal(row + 1, col))
+                legalNeighbours.Add((row + 1, col));
+
+            return legalNeighbours;
+        }
+
         private bool opponentOccupiesSquare(int squareRow, int squareCol, bool opponentIsWhite)
         {
             QuoridorPlayer opponent = getTargetPlayer(opponentIsWhite);
