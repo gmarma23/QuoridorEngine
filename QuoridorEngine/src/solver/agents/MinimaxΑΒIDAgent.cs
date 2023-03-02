@@ -1,14 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Collections.Generic;
-using QuoridorEngine.Core;
 
 namespace QuoridorEngine.Solver
 {
-    public class AlphaBetaIDTranspositionAgent : ISolver
+    public class MinimaxΑΒIDAgent : ISolver
     {
-        private const float moveTime = 3800; // milliseconds
+        private const float moveTime = 5000; // milliseconds
         private static Stopwatch timer = new Stopwatch();
-        private static TranspositionTable transpositionTable = new (25000000);
         private static bool timeout = false;
         
         public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn)
@@ -19,8 +16,7 @@ namespace QuoridorEngine.Solver
 
             for (int i = 1; ; i++)
             {
-                transpositionTable.Clear();
-                Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i, bestMove);
+                Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i);
                 if (!timeout)
                     bestMove = result;
                 else
@@ -33,24 +29,16 @@ namespace QuoridorEngine.Solver
             return bestMove;
         }
 
-        private static Move bestMoveInDepth(IGameState currentState, bool isWhitePlayerTurn, int depth, Move previousBestMove)
+        private static Move bestMoveInDepth(IGameState currentState, bool isWhitePlayerTurn, int depth)
         {
             Move bestMove = null;
-
             float a = float.NegativeInfinity;
             float b = float.PositiveInfinity;
-
-            List<Move> possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn).ToList();
-            if (previousBestMove != null)
-            {
-                Debug.Assert(possibleNextMoves.Contains(previousBestMove));
-                possibleNextMoves.Remove(previousBestMove);
-                possibleNextMoves.Insert(0, previousBestMove);
-            }
 
             if (isWhitePlayerTurn)
             {
                 float bestEval = float.NegativeInfinity;
+                var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
 
                 foreach (var nextMove in possibleNextMoves)
                 {
@@ -78,6 +66,7 @@ namespace QuoridorEngine.Solver
             else
             {
                 float bestEval = float.PositiveInfinity;
+                var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
 
                 foreach (var nextMove in possibleNextMoves)
                 {
@@ -105,20 +94,33 @@ namespace QuoridorEngine.Solver
 
             Debug.Assert(bestMove != null);
             return bestMove;
+
+            //float bestEval = isWhitePlayerTurn ? float.NegativeInfinity : float.PositiveInfinity;
+            //var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+
+            //foreach(var nextMove in possibleNextMoves)
+            //{
+            //    currentState.ExecuteMove(nextMove);
+            //    float currentEval = isWhitePlayerTurn ? minValue(currentState, !isWhitePlayerTurn, DEPTH - 1, float.NegativeInfinity, float.PositiveInfinity) : 
+            //                                            maxValue(currentState, !isWhitePlayerTurn, DEPTH - 1, float.NegativeInfinity, float.PositiveInfinity);
+            //    currentState.UndoMove(nextMove);
+
+            //    bool isCurrentEvalBetter = isWhitePlayerTurn ? currentEval > bestEval : currentEval < bestEval;
+            //    if (isCurrentEvalBetter) 
+            //    { 
+            //        bestEval = currentEval;
+            //        bestMove = nextMove;
+            //    }
+            //}
+
+            //Debug.Assert(bestMove != null);
+            //return bestMove;
         }
 
         private static float maxValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining, float a, float b)
         {
-            long stateHash = currentState.GetHash(isWhitePlayerTurn);
-            if (transpositionTable.HasKey(stateHash))
-                return transpositionTable.Get(stateHash);
-
             if (depthRemaining == 0 || currentState.IsTerminalState())
-            {
-                float eval = currentState.EvaluateState(isWhitePlayerTurn);
-                transpositionTable.Add(stateHash, eval);
-                return eval;
-            }
+                return currentState.EvaluateState(isWhitePlayerTurn);
 
             float maxEval = float.NegativeInfinity;
             var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
@@ -145,16 +147,8 @@ namespace QuoridorEngine.Solver
 
         private static float minValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining, float a, float b)
         {
-            long stateHash = currentState.GetHash(isWhitePlayerTurn);
-            if (transpositionTable.HasKey(stateHash))
-                return transpositionTable.Get(stateHash);
-
             if (depthRemaining == 0 || currentState.IsTerminalState())
-            {
-                float eval = currentState.EvaluateState(isWhitePlayerTurn);
-                transpositionTable.Add(stateHash, eval);
-                return eval;
-            }
+                return currentState.EvaluateState(isWhitePlayerTurn);
 
             float minEval = float.PositiveInfinity;
             var possibleNextMoves = currentState.GetPossibleAgentMoves(isWhitePlayerTurn);
@@ -177,63 +171,6 @@ namespace QuoridorEngine.Solver
             }
 
             return minEval;
-        }
-    }
-
-    public class TranspositionTable
-    {
-        private struct EntryType
-        {
-            public bool valid;
-            public float evaluation;
-
-            public EntryType()
-            {
-                valid = false;
-                evaluation = -1;
-            }
-        }
-
-        private EntryType[] table;
-        private readonly int capacity;
-        private int count;
-
-        public TranspositionTable(int capacity)
-        {
-            Debug.Assert(capacity > 0);
-
-            table = new EntryType[capacity];
-            count = 0;
-            this.capacity = capacity;
-
-            Clear();
-        }
-
-        public void Add(long key, float data)
-        {
-            count++;
-            table[hash(key)].evaluation = data;
-        }
-
-        public float Get(long key) { 
-            Debug.Assert(HasKey(key));
-            return table[key].evaluation;      
-        }
-
-        public bool HasKey(long key)
-        {
-            return table[hash(key)].valid;
-        }
-
-        public void Clear()
-        {
-            for (int i = 0; i < capacity; i++)
-                table[i].valid = false;
-        }
-
-        private int hash(long key)
-        {
-            return (int)(key % capacity);
         }
     }
 }

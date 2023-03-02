@@ -152,7 +152,7 @@ namespace QuoridorEngine.UI
                     return false;
                 }
 
-                QuoridorMove move = (QuoridorMove)AlphaBetaIDTranspositionAgent.GetBestMove(game, isWhite);
+                QuoridorMove move = (QuoridorMove)MinimaxΑΒIDTTAgent.GetBestMove(game, isWhite);
                 try
                 {
                     game.ExecuteMove(move);
