@@ -5,9 +5,9 @@ namespace QuoridorEngine.Solver
 {
     public class AlphaBetaIDTranspositionAgent : ISolver
     {
-        private const float moveTime = 5000; // milliseconds
+        private const float moveTime = 3800; // milliseconds
         private static Stopwatch timer = new Stopwatch();
-        private static TranspositionTable transpositionTable = new (1000000);
+        private static TranspositionTable transpositionTable = new (25000000);
         private static bool timeout = false;
         
         public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn)
@@ -224,8 +224,7 @@ namespace QuoridorEngine.Solver
 
         public void Add(long key, float data)
         {
-            if (count == capacity) return;
-
+            count++;
             table[hash(key)].evaluation = data;
         }
 
