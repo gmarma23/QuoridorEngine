@@ -60,6 +60,27 @@ namespace QuoridorEngine.Core
         public bool IsWhitePlayer { get => isWhitePlayer; } 
         public Orientation Orientation { get => orientation; } 
         public MoveType Type { get => type; }
+
+        public bool IsEqual(QuoridorMove move)
+        {
+            Debug.Assert(this != null);
+            if (move == null)
+                return false;
+
+            if (Type != move.Type || 
+                IsWhitePlayer != move.IsWhitePlayer ||
+                Row != move.Row ||
+                Column != move.Column)
+                return false;
+
+            if (Type == MoveType.PlayerMovement)
+                return PrevRow == move.PrevRow &&
+                       PrevCol == move.PrevCol;
+            else if (Type == MoveType.WallPlacement)
+                return Orientation == move.Orientation;
+
+            return false;
+        }
     }
 
     /// <summary>
