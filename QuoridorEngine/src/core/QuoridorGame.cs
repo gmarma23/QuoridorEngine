@@ -582,22 +582,36 @@ namespace QuoridorEngine.Core
 
                     pq.Enqueue((newRow, newCol,  distanceSoFar + 1), priority);
                 }
+            }
 
-                if (pq.Count == 0)
+            pq.Clear();
+            visitedSquares.Clear();
+
+            pq.Enqueue((currentPlayer.Row, currentPlayer.Column, 0), 0);
+
+            while (pq.Count > 0)
+            {
+                (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
+                // Goal reached so return the distance
+                if (currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar + 1;
+
+                // Skip already visited nodes
+                if (visitedSquares.Contains((currentRow, currentCol))) continue;
+
+                visitedSquares.Add((currentRow, currentCol));
+
+                // Expand neighbors that are not blocked by walls
+                List<(int, int)> unblockedNeighbours = getUnblockedNeighborSquares(currentRow, currentCol);
+
+                foreach (var neighborSquare in unblockedNeighbours)
                 {
-                    // Expand neighbors that are not blocked by walls
-                    List<(int, int)> unblockedNeighbours = getUnblockedNeighborSquares(currentRow, currentCol);
+                    (int newRow, int newCol) = neighborSquare;
 
-                    foreach (var neighborSquare in unblockedNeighbours)
-                    {
-                        (int newRow, int newCol) = neighborSquare;
+                    // The heuristic is the manhttan distance of the player to the target base
+                    int heuristic = currentPlayer.ManhattanDistanceToTargetBaseline(newRow);
+                    int priority = heuristic + distanceSoFar + 1;
 
-                        // The heuristic is the manhttan distance of the player to the target base
-                        int heuristic = currentPlayer.ManhattanDistanceToTargetBaseline(newRow);
-                        int priority = heuristic + distanceSoFar + 1;
-
-                        pq.Enqueue((newRow, newCol, distanceSoFar + 1), priority);
-                    }
+                    pq.Enqueue((newRow, newCol, distanceSoFar + 1), priority);
                 }
             }
 
