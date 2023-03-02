@@ -395,7 +395,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(7)]
         [DataRow(5)]
 
-        public void GetIDInitStateTest(int dimension)
+        public void GetHashInitStateTest(int dimension)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             long initIDWhite = game.GetHash(true);
@@ -410,7 +410,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(9, 5, 4, 5, 5, true)]
         [DataRow(9, 6, 3, 6, 2, false)]
 
-        public void GetIDPawnMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
+        public void GetHashPawnMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             long initID1 = game.GetHash(isWhitePlayer);
@@ -436,7 +436,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(9, 5, 4, Orientation.Vertical, true)]
         [DataRow(9, 6, 3, Orientation.Vertical, false)]
 
-        public void GetIDWallPlacementTest(int dimension, int row, int column, Orientation orientation, bool isWhitePlayer)
+        public void GetHashWallPlacementTest(int dimension, int row, int column, Orientation orientation, bool isWhitePlayer)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             long initID1 = game.GetHash(isWhitePlayer);
