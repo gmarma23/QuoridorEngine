@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Collections.Generic;
+using QuoridorEngine.Core;
 
 namespace QuoridorEngine.Solver
 {
@@ -19,7 +20,7 @@ namespace QuoridorEngine.Solver
             for (int i = 1; ; i++)
             {
                 transpositionTable.Clear();
-                Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i);
+                Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i, bestMove);
                 if (!timeout)
                     bestMove = result;
                 else
@@ -32,16 +33,25 @@ namespace QuoridorEngine.Solver
             return bestMove;
         }
 
-        private static Move bestMoveInDepth(IGameState currentState, bool isWhitePlayerTurn, int depth)
+        private static Move bestMoveInDepth(IGameState currentState, bool isWhitePlayerTurn, int depth, Move previousBestMove)
         {
             Move bestMove = null;
+            List<Move> possibleNextMoves;
+
             float a = float.NegativeInfinity;
             float b = float.PositiveInfinity;
 
             if (isWhitePlayerTurn)
             {
                 float bestEval = float.NegativeInfinity;
-                var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+
+                possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn).ToList();
+                if (previousBestMove != null)
+                {
+                    Debug.Assert(possibleNextMoves.Contains(previousBestMove));
+                    possibleNextMoves.Remove(previousBestMove);
+                    possibleNextMoves.Insert(0, previousBestMove);
+                }
 
                 foreach (var nextMove in possibleNextMoves)
                 {
@@ -69,7 +79,14 @@ namespace QuoridorEngine.Solver
             else
             {
                 float bestEval = float.PositiveInfinity;
-                var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
+
+                possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn).ToList();
+                if (previousBestMove != null)
+                {
+                    Debug.Assert(possibleNextMoves.Contains(previousBestMove));
+                    possibleNextMoves.Remove(previousBestMove);
+                    possibleNextMoves.Insert(0, previousBestMove);
+                }
 
                 foreach (var nextMove in possibleNextMoves)
                 {
