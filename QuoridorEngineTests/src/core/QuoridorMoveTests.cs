@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuoridorEngine.Solver;
 
 namespace QuoridorEngine.Core.Tests
 {
@@ -36,7 +37,7 @@ namespace QuoridorEngine.Core.Tests
             QuoridorMove move1 = null;
             QuoridorMove move2 = new QuoridorMove(1, 0, 2, 0, true);
 
-            Assert.IsFalse(move2.IsEqual(move1));
+            Assert.IsFalse(move2.Equals(move1));
         }
 
         [TestMethod()]
@@ -54,9 +55,9 @@ namespace QuoridorEngine.Core.Tests
             QuoridorMove move2 = new QuoridorMove(prevRow2, prevColumn2, row2, column2, isWhitePlayer2);
 
             if (areEqual)
-                Assert.IsTrue(move1.IsEqual(move2));
+                Assert.IsTrue(move1.Equals(move2));
             else
-                Assert.IsFalse(move1.IsEqual(move2));
+                Assert.IsFalse(move1.Equals(move2));
         }
 
         [TestMethod()]
@@ -75,9 +76,9 @@ namespace QuoridorEngine.Core.Tests
             QuoridorMove move2 = new QuoridorMove(row2, column2, isWhitePlayer2, orientation2);
 
             if (areEqual)
-                Assert.IsTrue(move1.IsEqual(move2));
+                Assert.IsTrue(move1.Equals(move2));
             else
-                Assert.IsFalse(move1.IsEqual(move2));
+                Assert.IsFalse(move1.Equals(move2));
         }
     }
 }
