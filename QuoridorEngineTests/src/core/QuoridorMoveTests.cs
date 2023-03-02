@@ -1,5 +1,4 @@
-﻿using QuoridorEngine.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace QuoridorEngine.Core.Tests
 {
