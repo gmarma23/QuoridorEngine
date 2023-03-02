@@ -390,6 +390,69 @@ namespace QuoridorEngine.Core.Tests
             Assert.IsTrue(currentColumn == initColumn);
         }
 
-        // TODO: test when wall blocks player path to goal
+        [TestMethod()]
+        [DataRow(9)]
+        [DataRow(7)]
+        [DataRow(5)]
+
+        public void GetIDInitStateTest(int dimension)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            long initIDWhite = game.GetHash(true);
+            long initIDBlack = game.GetHash(false);
+
+            Assert.AreNotEqual(initIDWhite, initIDBlack);
+        }
+        
+        [TestMethod()]
+        [DataRow(9, 0, 0, 0, 1, true)]
+        [DataRow(9, 8, 0, 7, 0, false)]
+        [DataRow(9, 5, 4, 5, 5, true)]
+        [DataRow(9, 6, 3, 6, 2, false)]
+
+        public void GetIDPawnMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            long initID1 = game.GetHash(isWhitePlayer);
+
+            game.ForcePlayerMovement(initRow, initColumn, isWhitePlayer);
+            QuoridorMove move = new QuoridorMove(initRow, initColumn, newRow, newColumn, isWhitePlayer);
+
+            game.ExecuteMove(move);
+            long newID = game.GetHash(!isWhitePlayer);
+            long samePlayerNewID = game.GetHash(isWhitePlayer);
+            game.UndoMove(move);
+
+            long initID2 = game.GetHash(isWhitePlayer);
+
+            Assert.AreEqual(initID1, initID2);
+            Assert.AreNotEqual(samePlayerNewID, newID);
+            Assert.AreNotEqual(initID1, newID);
+        }
+
+        [TestMethod()]
+        [DataRow(9, 1, 0, Orientation.Horizontal, true)]
+        [DataRow(9, 8, 7, Orientation.Horizontal, false)]
+        [DataRow(9, 5, 4, Orientation.Vertical, true)]
+        [DataRow(9, 6, 3, Orientation.Vertical, false)]
+
+        public void GetIDWallPlacementTest(int dimension, int row, int column, Orientation orientation, bool isWhitePlayer)
+        {
+            QuoridorGame game = new QuoridorGame(dimension);
+            long initID1 = game.GetHash(isWhitePlayer);
+
+            QuoridorMove move = new QuoridorMove(row, column, isWhitePlayer, orientation);
+
+            game.ExecuteMove(move);
+            long newID = game.GetHash(!isWhitePlayer);
+            long samePlayerNewID = game.GetHash(isWhitePlayer);
+            game.UndoMove(move);
+
+            long initID2 = game.GetHash(isWhitePlayer);
+
+            Assert.AreEqual(initID1, initID2);
+            Assert.AreNotEqual(samePlayerNewID, newID);
+            Assert.AreNotEqual(initID1, newID);
+        }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace QuoridorEngine.Solver
 {
-    public class AlphaBetaIDAgent : ISolver
+    public class AlphaBetaIDTranspositionAgent : ISolver
     {
-        private const float moveTime = 5000; // milliseconds
+        private const float moveTime = 3800; // milliseconds
         private static Stopwatch timer = new Stopwatch();
+        private static TranspositionTable transpositionTable = new (25000000);
         private static bool timeout = false;
         
         public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn)
@@ -16,6 +18,7 @@ namespace QuoridorEngine.Solver
 
             for (int i = 1; ; i++)
             {
+                transpositionTable.Clear();
                 Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i);
                 if (!timeout)
                     bestMove = result;
@@ -119,8 +122,16 @@ namespace QuoridorEngine.Solver
 
         private static float maxValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining, float a, float b)
         {
+            long stateHash = currentState.GetHash(isWhitePlayerTurn);
+            if (transpositionTable.HasKey(stateHash))
+                return transpositionTable.Get(stateHash);
+
             if (depthRemaining == 0 || currentState.IsTerminalState())
-                return currentState.EvaluateState(isWhitePlayerTurn);
+            {
+                float eval = currentState.EvaluateState(isWhitePlayerTurn);
+                transpositionTable.Add(stateHash, eval);
+                return eval;
+            }
 
             float maxEval = float.NegativeInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
@@ -147,8 +158,16 @@ namespace QuoridorEngine.Solver
 
         private static float minValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining, float a, float b)
         {
+            long stateHash = currentState.GetHash(isWhitePlayerTurn);
+            if (transpositionTable.HasKey(stateHash))
+                return transpositionTable.Get(stateHash);
+
             if (depthRemaining == 0 || currentState.IsTerminalState())
-                return currentState.EvaluateState(isWhitePlayerTurn);
+            {
+                float eval = currentState.EvaluateState(isWhitePlayerTurn);
+                transpositionTable.Add(stateHash, eval);
+                return eval;
+            }
 
             float minEval = float.PositiveInfinity;
             var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
@@ -171,6 +190,63 @@ namespace QuoridorEngine.Solver
             }
 
             return minEval;
+        }
+    }
+
+    public class TranspositionTable
+    {
+        private struct EntryType
+        {
+            public bool valid;
+            public float evaluation;
+
+            public EntryType()
+            {
+                valid = false;
+                evaluation = -1;
+            }
+        }
+
+        private EntryType[] table;
+        private readonly int capacity;
+        private int count;
+
+        public TranspositionTable(int capacity)
+        {
+            Debug.Assert(capacity > 0);
+
+            table = new EntryType[capacity];
+            count = 0;
+            this.capacity = capacity;
+
+            Clear();
+        }
+
+        public void Add(long key, float data)
+        {
+            count++;
+            table[hash(key)].evaluation = data;
+        }
+
+        public float Get(long key) { 
+            Debug.Assert(HasKey(key));
+            return table[key].evaluation;      
+        }
+
+        public bool HasKey(long key)
+        {
+            return table[hash(key)].valid;
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < capacity; i++)
+                table[i].valid = false;
+        }
+
+        private int hash(long key)
+        {
+            return (int)(key % capacity);
         }
     }
 }

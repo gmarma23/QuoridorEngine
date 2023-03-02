@@ -330,15 +330,16 @@ namespace QuoridorEngine.Core
         }
 
         /// <summary>
-        /// Get the zobrist hash of to reference the current game state in a transposition table
+        /// Get state's hash. Takes into account the player whose turn it is.
         /// </summary>
         /// <param name="isWhitePlayer">Player whose turn it is</param>
-        /// <returns>Current game state's zobrist hash</returns>
-        public long GetZobristHash(bool isWhitePlayer)
+        /// <returns>State's hash</returns>
+        public long GetHash(bool isWhitePlayerTurn)
         {
-            long zobristHash = boardZobristHashes.Peek();
-            if (isWhitePlayer) zobristHash ^= whiteTurnHash;
-            return zobristHash;    
+            long hash = boardZobristHashes.Peek();
+            if (isWhitePlayerTurn)
+                hash ^= whiteTurnHash;
+            return hash;    
         }
 
         public int Dimension { get => dimension; }
