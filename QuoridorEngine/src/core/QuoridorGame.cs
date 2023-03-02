@@ -514,15 +514,15 @@ namespace QuoridorEngine.Core
                     return true;
 
                 // Get current square's legal neighbours
-                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol, isWhite);
+                List<(int, int)> unblockedNeighbors = getUnblockedNeighborSquares(currentSquareRow, currentSquareCol);
 
                 // Sort neighbours by descending row if current
                 // player is black to reach his baseline faster 
                 if (!isWhite)
-                    legalNeighbours = legalNeighbours.OrderByDescending(x => x.Item1).ToList();
+                    unblockedNeighbors = unblockedNeighbors.OrderByDescending(x => x.Item1).ToList();
 
                 // Store current square's legal neighbours in frontier to be explored later
-                foreach ((int, int) neighbourSquare in legalNeighbours)
+                foreach ((int, int) neighbourSquare in unblockedNeighbors)
                     if (!visitedSquares.Contains(neighbourSquare)) 
                         frontierSquares.Push(neighbourSquare);
             }
@@ -702,25 +702,25 @@ namespace QuoridorEngine.Core
         {
             Debug.Assert(board.IsValidPlayerSquare(row, col));
 
-            List<(int, int)> unblockedNeighbours = new();
+            List<(int, int)> unblockedNeighbors = new();
 
             // Square 'DOWN' is valid and not blocked by wall
             if (board.IsValidPlayerSquare(row - 1, col) && !board.CheckWallPartHorizontal(row, col))
-                unblockedNeighbours.Add((row - 1, col));
+                unblockedNeighbors.Add((row - 1, col));
 
             // Square 'LEFT' is valid and not blocked by wall
             if (board.IsValidPlayerSquare(row, col - 1) && !board.CheckWallPartVertical(row, col - 1))
-                unblockedNeighbours.Add((row, col - 1));
+                unblockedNeighbors.Add((row, col - 1));
 
             // Square 'RIGHT' is valid and not blocked by wall
             if (board.IsValidPlayerSquare(row, col + 1) && !board.CheckWallPartVertical(row, col))
-                unblockedNeighbours.Add((row, col + 1));
+                unblockedNeighbors.Add((row, col + 1));
 
             // Square 'UP' is valid and not blocked by wall
             if (board.IsValidPlayerSquare(row + 1, col) && !board.CheckWallPartHorizontal(row + 1, col))
-                unblockedNeighbours.Add((row + 1, col));
+                unblockedNeighbors.Add((row + 1, col));
 
-            return unblockedNeighbours;
+            return unblockedNeighbors;
         }
 
         private bool opponentOccupiesSquare(int squareRow, int squareCol, bool opponentIsWhite)
