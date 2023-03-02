@@ -7,6 +7,7 @@ namespace QuoridorEngine.Solver
     public class MinimaxΑΒIDTTAgent : ISolver
     {
         private const int moveTime = 3800; // milliseconds
+        private const int absoluteDepthLimit = 20;
         private static Stopwatch timer = new Stopwatch();
         private static TranspositionTable transpositionTable = new (25000000);
         private static bool timeout = false;
@@ -19,7 +20,7 @@ namespace QuoridorEngine.Solver
 
             timer.Restart();
 
-            for (int i = 1; ; i++)
+            for (int i = 1; i <= absoluteDepthLimit; i++)
             {
                 iterationTimer.Restart();
 
