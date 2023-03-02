@@ -36,22 +36,21 @@ namespace QuoridorEngine.Solver
         private static Move bestMoveInDepth(IGameState currentState, bool isWhitePlayerTurn, int depth, Move previousBestMove)
         {
             Move bestMove = null;
-            List<Move> possibleNextMoves;
 
             float a = float.NegativeInfinity;
             float b = float.PositiveInfinity;
 
+            List<Move> possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn).ToList();
+            if (previousBestMove != null)
+            {
+                Debug.Assert(possibleNextMoves.Contains(previousBestMove));
+                possibleNextMoves.Remove(previousBestMove);
+                possibleNextMoves.Insert(0, previousBestMove);
+            }
+
             if (isWhitePlayerTurn)
             {
                 float bestEval = float.NegativeInfinity;
-
-                possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn).ToList();
-                if (previousBestMove != null)
-                {
-                    Debug.Assert(possibleNextMoves.Contains(previousBestMove));
-                    possibleNextMoves.Remove(previousBestMove);
-                    possibleNextMoves.Insert(0, previousBestMove);
-                }
 
                 foreach (var nextMove in possibleNextMoves)
                 {
@@ -80,14 +79,6 @@ namespace QuoridorEngine.Solver
             {
                 float bestEval = float.PositiveInfinity;
 
-                possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn).ToList();
-                if (previousBestMove != null)
-                {
-                    Debug.Assert(possibleNextMoves.Contains(previousBestMove));
-                    possibleNextMoves.Remove(previousBestMove);
-                    possibleNextMoves.Insert(0, previousBestMove);
-                }
-
                 foreach (var nextMove in possibleNextMoves)
                 {
                     if (timer.ElapsedMilliseconds > moveTime)
@@ -114,27 +105,6 @@ namespace QuoridorEngine.Solver
 
             Debug.Assert(bestMove != null);
             return bestMove;
-
-            //float bestEval = isWhitePlayerTurn ? float.NegativeInfinity : float.PositiveInfinity;
-            //var possibleNextMoves = currentState.GetPossibleMoves(isWhitePlayerTurn);
-
-            //foreach(var nextMove in possibleNextMoves)
-            //{
-            //    currentState.ExecuteMove(nextMove);
-            //    float currentEval = isWhitePlayerTurn ? minValue(currentState, !isWhitePlayerTurn, DEPTH - 1, float.NegativeInfinity, float.PositiveInfinity) : 
-            //                                            maxValue(currentState, !isWhitePlayerTurn, DEPTH - 1, float.NegativeInfinity, float.PositiveInfinity);
-            //    currentState.UndoMove(nextMove);
-
-            //    bool isCurrentEvalBetter = isWhitePlayerTurn ? currentEval > bestEval : currentEval < bestEval;
-            //    if (isCurrentEvalBetter) 
-            //    { 
-            //        bestEval = currentEval;
-            //        bestMove = nextMove;
-            //    }
-            //}
-
-            //Debug.Assert(bestMove != null);
-            //return bestMove;
         }
 
         private static float maxValue(IGameState currentState, bool isWhitePlayerTurn, int depthRemaining, float a, float b)
