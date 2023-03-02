@@ -14,7 +14,7 @@ namespace QuoridorEngine.Solver
             timeout = false;
             timer.Restart();
 
-            for (int i = 2; ; i++)
+            for (int i = 1; ; i++)
             {
                 Move result = bestMoveInDepth(currentState, isWhitePlayerTurn, i);
                 if (!timeout)
