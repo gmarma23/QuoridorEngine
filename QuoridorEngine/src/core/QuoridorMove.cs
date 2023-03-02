@@ -61,22 +61,23 @@ namespace QuoridorEngine.Core
         public Orientation Orientation { get => orientation; } 
         public MoveType Type { get => type; }
 
-        public bool IsEqual(QuoridorMove move)
+        public override bool IsEqual(Move move)
         {
-            if (move == null)
+            QuoridorMove? quoridorMove = move as QuoridorMove;
+            if (quoridorMove == null)
                 return false;
 
-            if (Type != move.Type || 
-                IsWhitePlayer != move.IsWhitePlayer ||
-                Row != move.Row ||
-                Column != move.Column)
+            if (Type != quoridorMove.Type || 
+                IsWhitePlayer != quoridorMove.IsWhitePlayer ||
+                Row != quoridorMove.Row ||
+                Column != quoridorMove.Column)
                 return false;
 
             if (Type == MoveType.PlayerMovement)
-                return PrevRow == move.PrevRow &&
-                       PrevCol == move.PrevCol;
+                return PrevRow == quoridorMove.PrevRow &&
+                       PrevCol == quoridorMove.PrevCol;
             else if (Type == MoveType.WallPlacement)
-                return Orientation == move.Orientation;
+                return Orientation == quoridorMove.Orientation;
 
             return false;
         }
