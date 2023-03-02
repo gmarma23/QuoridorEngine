@@ -37,7 +37,7 @@ namespace QuoridorEngine.Core.Tests
             QuoridorMove move1 = null;
             QuoridorMove move2 = new QuoridorMove(1, 0, 2, 0, true);
 
-            Assert.IsFalse(move2.Equals(move1));
+            Assert.IsFalse(move2.IsEqual(move1));
         }
 
         [TestMethod()]

@@ -63,7 +63,6 @@ namespace QuoridorEngine.Core
 
         public bool IsEqual(QuoridorMove move)
         {
-            Debug.Assert(this != null);
             if (move == null)
                 return false;
 
