@@ -1,6 +1,9 @@
 ﻿using QuoridorEngine.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuoridorEngine.Utils;
+using System.Data.Common;
+using System.Windows.Forms;
+using QuoridorEngine.Solver;
 
 namespace QuoridorEngine.Core.Tests
 {
@@ -395,7 +398,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(7)]
         [DataRow(5)]
 
-        public void GetIDInitStateTest(int dimension)
+        public void GetHashInitStateTest(int dimension)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             long initIDWhite = game.GetHash(true);
@@ -410,7 +413,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(9, 5, 4, 5, 5, true)]
         [DataRow(9, 6, 3, 6, 2, false)]
 
-        public void GetIDPawnMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
+        public void GetHashPawnMoveTest(int dimension, int initRow, int initColumn, int newRow, int newColumn, bool isWhitePlayer)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             long initID1 = game.GetHash(isWhitePlayer);
@@ -436,7 +439,7 @@ namespace QuoridorEngine.Core.Tests
         [DataRow(9, 5, 4, Orientation.Vertical, true)]
         [DataRow(9, 6, 3, Orientation.Vertical, false)]
 
-        public void GetIDWallPlacementTest(int dimension, int row, int column, Orientation orientation, bool isWhitePlayer)
+        public void GetHashWallPlacementTest(int dimension, int row, int column, Orientation orientation, bool isWhitePlayer)
         {
             QuoridorGame game = new QuoridorGame(dimension);
             long initID1 = game.GetHash(isWhitePlayer);
@@ -453,6 +456,29 @@ namespace QuoridorEngine.Core.Tests
             Assert.AreEqual(initID1, initID2);
             Assert.AreNotEqual(samePlayerNewID, newID);
             Assert.AreNotEqual(initID1, newID);
+        }
+
+        [TestMethod()]
+        [DataRow(1, 0, Orientation.Horizontal)]
+        [DataRow(4, 2, Orientation.Horizontal)]
+        [DataRow(2, 3, Orientation.Vertical)]
+        [DataRow(4, 3, Orientation.Vertical)]
+
+        public void PlayerPawnBlocksOpponentsPathToGoalTest(int row, int column, Orientation orientation)
+        {
+            QuoridorGame game = new QuoridorGame(5);
+            
+            game.ForcePlayerMovement(2, 2, false);
+            QuoridorMove wallMove1 = new QuoridorMove(3, 0, true, Orientation.Horizontal);
+            QuoridorMove wallMove2 = new QuoridorMove(3, 3, false, Orientation.Horizontal);
+            QuoridorMove wallMove3 = new QuoridorMove(2, 1, false, Orientation.Horizontal);
+
+            game.ExecuteMove(wallMove1);
+            game.ExecuteMove(wallMove2);
+            game.ExecuteMove(wallMove3);
+
+            QuoridorMove randomWallMove = new QuoridorMove(row, column, true, orientation);
+            game.ExecuteMove(randomWallMove);
         }
     }
 }
