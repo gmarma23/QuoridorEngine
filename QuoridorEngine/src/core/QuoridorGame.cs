@@ -163,10 +163,8 @@ namespace QuoridorEngine.Core
             QuoridorPlayer whitePlayer = getTargetPlayer(true);
             QuoridorPlayer blackPlayer = getTargetPlayer(false);
 
-            int whitePlayerDistance = distanceToGoal(true);
-            int blackPlayerDistance = distanceToGoal(false);
-
             #region InitEval
+            /*
             int deltaDistance = blackPlayerDistance - whitePlayerDistance;
             int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
 
@@ -187,6 +185,7 @@ namespace QuoridorEngine.Core
                 eval -= 1000;
 
             return eval;
+            */
             #endregion
 
             #region CoefsEval
@@ -213,7 +212,42 @@ namespace QuoridorEngine.Core
             #endregion
 
             #region EnhancedEval
+            int blackManhattanDistance = blackPlayer.ManhattanDistanceToTargetBaseline();
+            int whiteManhattanDistance = whitePlayer.ManhattanDistanceToTargetBaseline();
 
+            if (whiteManhattanDistance == 0)
+                return 100000;
+            else if (blackManhattanDistance == 0)
+                return -100000;
+
+            int whiteShortestPath = distanceToGoal(true);
+            int blackShortestPath = distanceToGoal(false);
+
+            int deltaManhattanDistance = blackManhattanDistance - whiteManhattanDistance;                  
+            int deltaShortestPath = blackShortestPath - whiteShortestPath;
+            int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
+
+            float eval = 0;
+            eval += 10 * deltaShortestPath;
+            eval += 7 * deltaWallsCount;
+            eval += 5 * deltaManhattanDistance;
+
+            if (isWhitePlayerTurn)
+            {
+                if(blackShortestPath < 3)
+                    eval -= 12 * (3 - blackShortestPath);
+
+                eval += (Dimension / 2) - whiteManhattanDistance;
+            }
+            else
+            {
+                if (whiteShortestPath < 3)
+                    eval += 12 * (3 - whiteShortestPath);
+
+                eval -= (Dimension / 2) - blackManhattanDistance;
+            }
+                    
+            return eval;
             #endregion
         }
 
