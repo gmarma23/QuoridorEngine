@@ -163,31 +163,6 @@ namespace QuoridorEngine.Core
             QuoridorPlayer whitePlayer = getTargetPlayer(true);
             QuoridorPlayer blackPlayer = getTargetPlayer(false);
 
-            #region InitEval
-            /*
-            int deltaDistance = blackPlayerDistance - whitePlayerDistance;
-            int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
-
-            float eval = 0;
-            eval += deltaDistance;
-            eval += deltaWallsCount / 2;
-
-            if (isWhitePlayerTurn && blackPlayerDistance < 3)
-                eval -= 3 - blackPlayerDistance;
-
-            if (!isWhitePlayerTurn && whitePlayerDistance < 3)
-                eval += 3 - whitePlayerDistance;
-
-            if (whitePlayerDistance == 0)
-                eval += 1000;
-
-            if (blackPlayerDistance == 0)
-                eval -= 1000;
-
-            return eval;
-            */
-            #endregion
-
             #region CoefsEval
             /*
             if (whitePlayerDistance == 0)
@@ -216,9 +191,9 @@ namespace QuoridorEngine.Core
             int whiteManhattanDistance = whitePlayer.ManhattanDistanceToTargetBaseline();
 
             if (whiteManhattanDistance == 0)
-                return 100000;
+                return 10000;
             else if (blackManhattanDistance == 0)
-                return -100000;
+                return -10000;
 
             int whiteShortestPath = distanceToGoal(true);
             int blackShortestPath = distanceToGoal(false);
@@ -230,21 +205,19 @@ namespace QuoridorEngine.Core
             float eval = 0;
             eval += 10 * deltaShortestPath;
             eval += 7 * deltaWallsCount;
-            eval += 5 * deltaManhattanDistance;
+            eval += 2 * deltaManhattanDistance;
 
             if (isWhitePlayerTurn)
             {
                 if(blackShortestPath < 3)
-                    eval -= 12 * (3 - blackShortestPath);
-
-                eval += (Dimension / 2) - whiteManhattanDistance;
+                    eval -= 12 * (3 - blackManhattanDistance);
+                eval -= gameHistory.Count / 2; 
             }
             else
             {
                 if (whiteShortestPath < 3)
-                    eval += 12 * (3 - whiteShortestPath);
-
-                eval -= (Dimension / 2) - blackManhattanDistance;
+                    eval += 12 * (3 - whiteManhattanDistance);
+                eval += gameHistory.Count / 2;
             }
                     
             return eval;
