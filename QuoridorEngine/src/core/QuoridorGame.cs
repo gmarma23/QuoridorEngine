@@ -197,25 +197,29 @@ namespace QuoridorEngine.Core
 
             int whiteShortestPath = distanceToGoal(true);
             int blackShortestPath = distanceToGoal(false);
-
-            int deltaManhattanDistance = blackManhattanDistance - whiteManhattanDistance;                  
+                 
             int deltaShortestPath = blackShortestPath - whiteShortestPath;
             int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
 
             float eval = 0;
             eval += 10 * deltaShortestPath;
             eval += 7 * deltaWallsCount;
-            eval += 2 * deltaManhattanDistance;
+
+            if (Dimension / 2 < whiteManhattanDistance)
+                eval += 30;
+
+            if (Dimension / 2 < blackManhattanDistance)
+                eval -= 30;
 
             if (isWhitePlayerTurn)
             {
-                if(blackShortestPath < 3)
+                if(blackManhattanDistance < 3)
                     eval -= 12 * (3 - blackManhattanDistance);
                 eval -= gameHistory.Count / 2; 
             }
             else
             {
-                if (whiteShortestPath < 3)
+                if (whiteManhattanDistance < 3)
                     eval += 12 * (3 - whiteManhattanDistance);
                 eval += gameHistory.Count / 2;
             }
