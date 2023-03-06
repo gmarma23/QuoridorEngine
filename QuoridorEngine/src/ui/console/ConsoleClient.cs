@@ -253,22 +253,6 @@ namespace QuoridorEngine.UI
                     return false;
                 }
             }
-#if DEBUG
-            else if (commandBody.Equals("dist"))
-            {
-                if (tokens.Length < 2)
-                {
-                    OutputUtility.PrintFailureMessage("syntax error");
-                    return false;
-                }
-
-                int option = int.Parse(tokens[1]);
-                if (option == 0)
-                    OutputUtility.PrintSuccessMessage(game.distanceToGoal(true).ToString());
-                else
-                    OutputUtility.PrintSuccessMessage(game.distanceToGoal(false).ToString());
-            }
-#endif
             else if (commandBody.Equals("winner"))
             {
                 if (!game.IsTerminalState())
