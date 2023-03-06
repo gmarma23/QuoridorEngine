@@ -123,7 +123,7 @@ namespace QuoridorEngine.Core
         /// </summary>
         public void UndoMove(Move move)
         {
-            QuoridorMove lastMove = (QuoridorMove)(move);
+            QuoridorMove lastMove = (QuoridorMove)move;
             if (lastMove.Type == MoveType.PlayerMovement)
             {
                 QuoridorPlayer targetPlayer = getTargetPlayer(lastMove.IsWhitePlayer);
@@ -163,30 +163,6 @@ namespace QuoridorEngine.Core
             QuoridorPlayer whitePlayer = getTargetPlayer(true);
             QuoridorPlayer blackPlayer = getTargetPlayer(false);
 
-            #region CoefsEval
-            /*
-            if (whitePlayerDistance == 0)
-                return 10000;
-            else if (blackPlayerDistance == 0)
-                return -10000;
-
-            int deltaDistance = blackPlayerDistance - whitePlayerDistance;
-            int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
-
-            float eval = 0;
-            eval += 10 * deltaDistance;
-            eval += 7 * deltaWallsCount;
-
-            if (isWhitePlayerTurn && blackPlayerDistance < 3)
-                eval -= 12 * (3 - blackPlayerDistance);
-            else if (!isWhitePlayerTurn && whitePlayerDistance < 3)
-                eval += 12 * (3 - whitePlayerDistance);
-
-            return eval; 
-            */
-            #endregion
-
-            #region EnhancedEval
             int blackManhattanDistance = blackPlayer.ManhattanDistanceToTargetBaseline();
             int whiteManhattanDistance = whitePlayer.ManhattanDistanceToTargetBaseline();
 
@@ -195,37 +171,38 @@ namespace QuoridorEngine.Core
             else if (blackManhattanDistance == 0)
                 return -10000;
 
-            int whiteShortestPath = distanceToGoal(true);
-            int blackShortestPath = distanceToGoal(false);
-                 
-            int deltaShortestPath = blackShortestPath - whiteShortestPath;
+            int whiteShortestPathToGoal = 0;
+            int blackShortestPathToGoal = 0;
+            int whiteShortestPathToNextRow = 0;
+            int blackShortestPathToNextRow = 0;
+
+            getShortestPathLength(true, ref whiteShortestPathToGoal, ref whiteShortestPathToNextRow);
+            getShortestPathLength(false, ref blackShortestPathToGoal, ref blackShortestPathToNextRow);
+            
+            int deltaShortestPathToGoal = blackShortestPathToGoal - whiteShortestPathToGoal;
+            int deltaShortestPathToNextRow = blackShortestPathToNextRow - whiteShortestPathToNextRow;
             int deltaWallsCount = whitePlayer.AvailableWalls - blackPlayer.AvailableWalls;
+            int elapsedTurns = gameHistory.Count / 2;
 
             float eval = 0;
-            eval += 10 * deltaShortestPath;
-            eval += 7 * deltaWallsCount;
+            eval += 10 * deltaShortestPathToGoal;
+            eval += 0.5f * elapsedTurns * deltaWallsCount;
 
-            if (Dimension / 2 < whiteManhattanDistance)
-                eval += 30;
-
-            if (Dimension / 2 < blackManhattanDistance)
-                eval -= 30;
+            if (elapsedTurns > 7)
+                eval += 0.05f * elapsedTurns * deltaShortestPathToNextRow;
 
             if (isWhitePlayerTurn)
             {
                 if(blackManhattanDistance < 3)
                     eval -= 12 * (3 - blackManhattanDistance);
-                eval -= gameHistory.Count / 2; 
             }
             else
             {
                 if (whiteManhattanDistance < 3)
                     eval += 12 * (3 - whiteManhattanDistance);
-                eval += gameHistory.Count / 2;
             }
                     
             return eval;
-            #endregion
         }
 
         /// <summary>
@@ -550,22 +527,23 @@ namespace QuoridorEngine.Core
             return false;
         }
 
-#if DEBUG
-        public int distanceToGoal(bool isWhite)
-#else
         /// <summary>
         /// Finds the minimum distance in squares the given player needs
-        /// to travel to reach their target baseline.
+        /// to travel to reach their target baseline and the next row.
         /// </summary>
         /// <param name="isWhite">Whether current player is White</param>
-        /// <returns>The minimum distance of given player to goal</returns>
-        private int distanceToGoal(bool isWhite)
-#endif
+        /// <param name="shortestPathToGoal">Stores the min number of squares needed to reach goal</param>
+        /// <param name="shortestPathToNextRow">Stores the min number of squares needed to reach next row</param>
+        private void getShortestPathLength(bool isWhite, ref int shortestPathToGoal, ref int shortestPathToNextRow)
         {
             QuoridorPlayer currentPlayer = getTargetPlayer(isWhite);
             Debug.Assert(currentPlayer != null);
 
-            // Performing a simple A* search to find the distance to the goal row
+            shortestPathToGoal = 0;
+            shortestPathToNextRow = 0;
+            bool shortestPathToNextRowFound = false;
+
+            // Performing a simple A* search to find the shortest path to the goal row and the next row
 
             // Frontier is a priority queue holding the current row, column and distance travelled
             SimplePriorityQueue<(int, int, int)> pq = new();
@@ -580,8 +558,18 @@ namespace QuoridorEngine.Core
             while(pq.Count > 0)
             {
                 (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
-                // Goal reached so return the distance
-                if(currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar;
+
+                if (!shortestPathToNextRowFound && currentRow == (currentPlayer.Row + (isWhite ? 1 : -1)))
+                {
+                    shortestPathToNextRow = distanceSoFar;
+                    shortestPathToNextRowFound = true;
+                }
+                    
+                if (currentPlayer.RowIsTargetBaseline(currentRow))
+                {
+                    shortestPathToGoal = distanceSoFar;
+                    return; 
+                }
 
                 // Skip already visited nodes
                 if (visitedSquares.Contains((currentRow, currentCol))) continue;
@@ -603,19 +591,30 @@ namespace QuoridorEngine.Core
                 }
             }
 
-            // Primary search failed. Try search with different expansion function.
+            // Primary search failed. Try search with different expansion function
+
             pq.Clear();
             visitedSquares.Clear();
+            shortestPathToNextRowFound = false;
 
             pq.Enqueue((currentPlayer.Row, currentPlayer.Column, 0), 0);
 
             while (pq.Count > 0)
             {
                 (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
-                // Goal reached so return the distance
-                if (currentPlayer.RowIsTargetBaseline(currentRow)) return distanceSoFar + 1;
 
-                // Skip already visited nodes
+                if (!shortestPathToNextRowFound && currentRow == (currentPlayer.Row + (isWhite ? 1 : -1)))
+                {
+                    shortestPathToNextRow = distanceSoFar;
+                    shortestPathToNextRowFound = true;
+                }
+
+                if (currentPlayer.RowIsTargetBaseline(currentRow))
+                {
+                    shortestPathToGoal = distanceSoFar + 1;
+                    return;
+                }
+
                 if (visitedSquares.Contains((currentRow, currentCol))) continue;
 
                 visitedSquares.Add((currentRow, currentCol));
@@ -627,7 +626,6 @@ namespace QuoridorEngine.Core
                 {
                     (int newRow, int newCol) = neighborSquare;
 
-                    // The heuristic is the manhttan distance of the player to the target base
                     int heuristic = currentPlayer.ManhattanDistanceToTargetBaseline(newRow);
                     int priority = heuristic + distanceSoFar + 1;
 
@@ -637,8 +635,50 @@ namespace QuoridorEngine.Core
 
             // There must always be a path leading each player to the target baseline 
             Debug.Assert(false);
+        }
+
+        /*
+        private int getPawnsMinDistance()
+        {
+            Debug.Assert(white != null);
+            Debug.Assert(black != null);
+
+            SimplePriorityQueue<(int, int, int)> pq = new();
+
+            // Used to store already visited nodes
+            HashSet<(int, int)> visitedSquares = new();
+
+            // Search starts from current position with 0 distance travelled so far
+            pq.Enqueue((white.Row, white.Column, 0), 0);
+
+            while (pq.Count > 0)
+            {
+                (int currentRow, int currentCol, int distanceSoFar) = pq.Dequeue();
+
+                if (black.Row == currentRow && black.Column == currentCol)
+                    return distanceSoFar;
+
+                if (visitedSquares.Contains((currentRow, currentCol))) continue;
+
+                visitedSquares.Add((currentRow, currentCol));
+
+                // Expand neighbors that are not blocked by walls
+                List<(int, int)> unblockedNeighbours = getUnblockedNeighborSquares(currentRow, currentCol);
+
+                foreach (var neighborSquare in unblockedNeighbours)
+                {
+                    (int newRow, int newCol) = neighborSquare;
+
+                    int heuristic = Math.Abs(black.Row - currentRow) + Math.Abs(black.Column - currentCol);
+                    int priority = heuristic + distanceSoFar + 1;
+
+                    pq.Enqueue((newRow, newCol, distanceSoFar + 1), priority);
+                }
+            }
+
             return -1;
         }
+        */
 
         /// <summary>
         /// Check for neighbour squares a player can move to 
