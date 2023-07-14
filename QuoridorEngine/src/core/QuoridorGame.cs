@@ -862,8 +862,19 @@ namespace QuoridorEngine.Core
 
             if (lastMove.Type == MoveType.PlayerMovement)
             {
-                long lastPawnMovePreviousHash = lastMove.PrevRow ^ lastMove.PrevCol;
-                long lastPawnMoveCurrentHash = lastMove.Row ^ lastMove.Column;
+                long lastPawnMovePreviousHash;
+                long lastPawnMoveCurrentHash;
+
+                if (lastMove.IsWhitePlayer)
+                {
+                    lastPawnMovePreviousHash = whitePlayerCellHashes[lastMove.PrevRow, lastMove.PrevCol];
+                    lastPawnMoveCurrentHash = whitePlayerCellHashes[lastMove.Row, lastMove.Column];
+                }
+                else
+                {
+                    lastPawnMovePreviousHash = blackPlayerCellHashes[lastMove.PrevRow, lastMove.PrevCol];
+                    lastPawnMoveCurrentHash = blackPlayerCellHashes[lastMove.Row, lastMove.Column];
+                }
 
                 // Removing pawn from initial location before last move
                 // (XOR self-inverse property)
@@ -874,7 +885,17 @@ namespace QuoridorEngine.Core
             }
             else if (lastMove.Type == MoveType.WallPlacement)
             {
-                long lastWallPlacementHash = lastMove.Row ^ lastMove.Column;
+                long lastWallPlacementHash;
+                if (lastMove.Orientation == Orientation.Horizontal)
+                    lastWallPlacementHash = horizontalWallCellHashes[lastMove.Row, lastMove.Column];
+                else if (lastMove.Orientation == Orientation.Vertical)
+                    lastWallPlacementHash = verticalWallCellHashes[lastMove.Row, lastMove.Column];
+                else
+                {
+                    lastWallPlacementHash = 0;
+                    Debug.Assert(false);
+                }
+
                 boardZobristHash ^= lastWallPlacementHash;
             }
 
@@ -888,8 +909,8 @@ namespace QuoridorEngine.Core
 
             set2DRandArray(ref whitePlayerCellHashes, dimension, dimension, ref rand, ref usedRandNums);
             set2DRandArray(ref blackPlayerCellHashes, dimension, dimension, ref rand, ref usedRandNums);
-            set2DRandArray(ref horizontalWallCellHashes, dimension, dimension - 1, ref rand, ref usedRandNums);
-            set2DRandArray(ref verticalWallCellHashes, dimension - 1, dimension, ref rand, ref usedRandNums);
+            set2DRandArray(ref horizontalWallCellHashes, dimension, dimension, ref rand, ref usedRandNums);
+            set2DRandArray(ref verticalWallCellHashes, dimension, dimension, ref rand, ref usedRandNums);
 
             whiteTurnHash = getUniqueRandInt64(ref rand, ref usedRandNums);
         }
