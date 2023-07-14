@@ -637,6 +637,104 @@ namespace QuoridorEngine.Core
             Debug.Assert(false);
         }
 
+        public void getShortestPathLengthBFS(bool isWhite, ref int shortestPathToGoal, ref int shortestPathToNextRow)
+        {
+            // Get current player object
+            QuoridorPlayer currentPlayer = getTargetPlayer(isWhite);
+            Debug.Assert(currentPlayer != null);
+
+            shortestPathToGoal = 0;
+            shortestPathToNextRow = 0;
+            bool shortestPathToNextRowFound = false;
+
+            // Pending squares to be explored
+            Queue<(int, int, int)> frontier = new();
+
+            // Already visited squares
+            HashSet<(int, int)> visitedSquares = new();
+
+            // Add player's current square in frontier as first square to be explored
+            frontier.Enqueue((currentPlayer.Row, currentPlayer.Column, 0));
+
+            // Run until there are no more squares to explore
+            while (frontier.Count != 0)
+            {
+                (int currentSquareRow, int currentSquareCol, int traversedDistance) = frontier.Dequeue();
+
+                // Skip already visited nodes
+                if (visitedSquares.Contains((currentSquareRow, currentSquareCol))) continue;
+
+                // Store current square as visited
+                visitedSquares.Add((currentSquareRow, currentSquareCol));
+
+                if (!shortestPathToNextRowFound && currentSquareRow == (currentPlayer.Row + (isWhite ? 1 : -1)))
+                {
+                    shortestPathToNextRow = traversedDistance;
+                    shortestPathToNextRowFound = true;
+                }
+
+                if (currentPlayer.RowIsTargetBaseline(currentSquareRow))
+                {
+                    shortestPathToGoal = traversedDistance;
+                    return;
+                }
+
+                // Expand legal neighbors
+                List<(int, int)> legalNeighbours = getLegalNeighbourSquares(currentSquareRow, currentSquareCol, isWhite);
+
+                foreach (var neighborSquare in legalNeighbours)
+                {
+                    (int newRow, int newCol) = neighborSquare;
+                    frontier.Enqueue((newRow, newCol, traversedDistance + 1));
+                }
+            }
+
+            // Primary search failed. Try search with different expansion function
+
+            frontier.Clear();
+            visitedSquares.Clear();
+            shortestPathToNextRowFound = false;
+
+            while (frontier.Count != 0)
+            {
+                // Get a square (and remove it) from frontier
+                (int currentSquareRow, int currentSquareCol, int traversedDistance) = frontier.Dequeue();
+
+                // Skip this square if it has already been visited
+                if (visitedSquares.Contains((currentSquareRow, currentSquareCol)))
+                    continue;
+
+                // Store current square as visited
+                visitedSquares.Add((currentSquareRow, currentSquareCol));
+
+                // Check if player has reached goal
+                if (!shortestPathToNextRowFound && currentSquareRow == (currentPlayer.Row + (isWhite ? 1 : -1)))
+                {
+                    shortestPathToNextRow = traversedDistance;
+                    shortestPathToNextRowFound = true;
+                }
+
+                if (currentPlayer.RowIsTargetBaseline(currentSquareRow))
+                {
+                    shortestPathToGoal = traversedDistance + 1;
+                    return;
+                }
+
+                // Get current square's legal neighbours
+                List<(int, int)> unblockedNeighbors = getUnblockedNeighborSquares(currentSquareRow, currentSquareCol);
+
+                // Store current square's legal neighbors in frontier to be explored later
+                foreach (var neighborSquare in unblockedNeighbors)
+                {
+                    (int newRow, int newCol) = neighborSquare;
+                    frontier.Enqueue((newRow, newCol, traversedDistance + 1));
+                }
+            }
+
+            // There must always be a path leading each player to the target baseline 
+            Debug.Assert(false);
+        }
+
         /*
         private int getPawnsMinDistance()
         {
