@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Collections.Generic;
-using QuoridorEngine.Core;
 
 namespace QuoridorEngine.Solver
 {
@@ -9,7 +7,7 @@ namespace QuoridorEngine.Solver
         private const int moveTime = 4200; // milliseconds
         private const int absoluteDepthLimit = 20;
         private static Stopwatch timer = new Stopwatch();
-        private static TranspositionTable transpositionTable = new (25000000);
+        private static TranspositionTable transpositionTable = new (25000009);
         private static bool timeout = false;
         
         public static Move GetBestMove(IGameState currentState, bool isWhitePlayerTurn)
@@ -82,7 +80,8 @@ namespace QuoridorEngine.Solver
                     }
 
                     Debug.Assert(bestMove != null);
-                    if (currentEval > b) return bestMove;
+                    if (currentEval > b)
+                        return bestMove;
                     a = Math.Max(a, currentEval);
                 }
             }
@@ -109,7 +108,8 @@ namespace QuoridorEngine.Solver
                     }
 
                     Debug.Assert(bestMove != null);
-                    if (currentEval < a) return bestMove;
+                    if (currentEval < a)
+                        return bestMove;
                     b = Math.Min(b, currentEval);
                 }
             }
@@ -147,7 +147,8 @@ namespace QuoridorEngine.Solver
                 currentState.UndoMove(nextMove);
 
                 maxEval = Math.Max(maxEval, currentEval);
-                if (maxEval > b) return maxEval;
+                if (maxEval > b) 
+                    return maxEval;
                 a = Math.Max(a, maxEval);         
             }
 
@@ -183,68 +184,12 @@ namespace QuoridorEngine.Solver
                 currentState.UndoMove(nextMove);
 
                 minEval = Math.Min(minEval, currentEval);
-                if(minEval < a) return minEval;
+                if(minEval < a) 
+                    return minEval;
                 b = Math.Min(b, minEval);
             }
 
             return minEval;
-        }
-    }
-
-    public class TranspositionTable
-    {
-        private struct EntryType
-        {
-            public bool valid;
-            public float evaluation;
-
-            public EntryType()
-            {
-                valid = false;
-                evaluation = -1;
-            }
-        }
-
-        private EntryType[] table;
-        private readonly int capacity;
-        private int count;
-
-        public TranspositionTable(int capacity)
-        {
-            Debug.Assert(capacity > 0);
-
-            table = new EntryType[capacity];
-            count = 0;
-            this.capacity = capacity;
-
-            Clear();
-        }
-
-        public void Add(long key, float data)
-        {
-            count++;
-            table[hash(key)].evaluation = data;
-        }
-
-        public float Get(long key) { 
-            Debug.Assert(HasKey(key));
-            return table[key].evaluation;      
-        }
-
-        public bool HasKey(long key)
-        {
-            return table[hash(key)].valid;
-        }
-
-        public void Clear()
-        {
-            for (int i = 0; i < capacity; i++)
-                table[i].valid = false;
-        }
-
-        private int hash(long key)
-        {
-            return (int)(key % capacity);
         }
     }
 }
